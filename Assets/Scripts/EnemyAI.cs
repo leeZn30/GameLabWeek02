@@ -6,10 +6,15 @@ using UnityEngine.Tilemaps;
 
 public class EnemyAI : MonoBehaviour
 {
+    [Header("정보")]
+    public CharacterData enemyData;
+    public int hp => enemyData.Hp;
+    public int step => enemyData.Step;
+
     GridHighlighter gridHighlighter;
     Tilemap tilemap;
 
-    public int step = 3; // Enemy의 최대 이동 거리
+    // attackRange > 0 무조건!!
     public int attackRange = 2; // 공격 범위
 
     List<Hero> heroes = new List<Hero>();

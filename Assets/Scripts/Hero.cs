@@ -6,9 +6,11 @@ using UnityEngine.Tilemaps;
 public class Hero : MonoBehaviour
 {
     [Header("정보")]
-    public HeroData heroData;
+    public CharacterData heroData;
     public int hp => heroData.Hp;
     public int step => heroData.Step;
+    int techIndex = 0;
+    public TechData equippedTech => heroData.Techs[techIndex];
 
 
     [Header("상태")]
@@ -38,6 +40,7 @@ public class Hero : MonoBehaviour
 
             gridHighlighter.selectedHero = null;
             gridHighlighter.UnHighlightAllTile();
+            gridHighlighter.RemoveAllAttackRange();
         }
     }
 
@@ -60,18 +63,25 @@ public class Hero : MonoBehaviour
 
     }
 
+    void Attack()
+    {
+    }
+
     Vector3Int GetCurrentTilePosition()
     {
         return tilemap.WorldToCell(transform.position);
     }
 
-    public void UnselectHero()
+    public void MoveHero()
     {
         CurrentTilePosition = GetCurrentTilePosition();
 
         isSelected = false;
 
         gridHighlighter.selectedHero = null;
+        gridHighlighter.RemoveAllAttackRange();
         gridHighlighter.UnHighlightAllTile();
+
+        Attack();
     }
 }

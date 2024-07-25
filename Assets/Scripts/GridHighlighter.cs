@@ -20,6 +20,8 @@ public class GridHighlighter : MonoBehaviour
     [Header("사용 오브젝트")]
     [SerializeField] Tile highlightedTile;
     [SerializeField] Tile originalTile;
+    [SerializeField] Tile rangeTile;
+    [SerializeField] GameObject attackRange;
 
     void Awake()
     {
@@ -40,8 +42,7 @@ public class GridHighlighter : MonoBehaviour
                 if (highlightedTilePositions.Contains(targetPosition) && targetPosition != selectedHero.CurrentTilePosition)
                 {
                     selectedHero.transform.position = targetPosition + new Vector3(0.5f, 0.5f, 0);
-
-                    selectedHero.UnselectHero();
+                    selectedHero.MoveHero();
                 }
             }
         }
@@ -72,6 +73,8 @@ public class GridHighlighter : MonoBehaviour
 
                     // 현재 위치 갱신
                     NowHighlightedPosition = mousePosition;
+
+                    showAttackRange(NowHighlightedPosition, selectedHero.equippedTech.Range, selectedHero.equippedTech.isInternal);
                 }
             }
         }
@@ -89,6 +92,9 @@ public class GridHighlighter : MonoBehaviour
                 PrevHighlightedPosition = highlightedTilePositions.ElementAt(1);
             else
                 PrevHighlightedPosition = highlightedTilePositions.Peek();
+
+
+            showAttackRange(NowHighlightedPosition, selectedHero.equippedTech.Range, selectedHero.equippedTech.isInternal);
         }
 
         lineRenderer.positionCount = highlightedTilePositions.Count;
@@ -146,6 +152,16 @@ public class GridHighlighter : MonoBehaviour
         highlightedTilePositions.Push(position);
         PrevHighlightedPosition = position;
         NowHighlightedPosition = position;
+    }
+
+    public void RemoveAllAttackRange()
+    {
+        // 일단 다 지우기 (오브젝트 풀 형식으로 변경)
+        List<GameObject> list = GameObject.FindGameObjectsWithTag("AttackRange").ToList();
+        foreach (GameObject go in list)
+        {
+            Destroy(go);
+        }
     }
     #endregion
 
@@ -294,6 +310,65 @@ public class GridHighlighter : MonoBehaviour
 
     #endregion
 
+    #region AttackRange
+
+    void showAttackRange(Vector3Int target, int range, bool isInternal)
+    {
+        // // 일단 다 지우기 (오브젝트 풀 형식으로 변경)
+        // List<GameObject> list = GameObject.FindGameObjectsWithTag("AttackRange").ToList();
+        // foreach (GameObject go in list)
+        // {
+        //     Destroy(go);
+        // }
+
+        // Vector2Int[] dir = new Vector2Int[]
+        // {
+        //     new Vector2Int(0, 1), // 상
+        //     new Vector2Int(0, -1), // 하
+        //     new Vector2Int(-1, 0), // 좌
+        //     new Vector2Int(1, 0)  // 우
+        // };
+
+        // foreach (Vector3Int vec in dir)
+        // {
+        //     Vector3Int targetPosition = target + range * vec;
+
+        //     Instantiate(attackRange, ConvertTileToWorldPosition(targetPosition), Quaternion.identity);
+        // }
+
+        RemoveAllAttackRange();
+
+        // 범위 내의 모든 좌표를 반복합니다.
+        for (int x = -range; x <= range; x++)
+        {
+            for (int y = -range; y <= range; y++)
+            {
+                Vector3Int position = new Vector3Int(target.x + x, target.y + y, target.z);
+
+                if (!isInternal)
+                {
+                    // 맨해튼 거리가 maxSteps 이하인 좌표만 고려합니다.
+                    if (Mathf.Abs(x) + Mathf.Abs(y) == range)
+                    {
+                        Instantiate(attackRange, ConvertTileToWorldPosition(position), Quaternion.identity);
+                    }
+                }
+                else
+                {
+                    // 맨해튼 거리가 maxSteps 이하인 좌표만 고려합니다.
+                    if (Mathf.Abs(x) + Mathf.Abs(y) <= range)
+                    {
+                        Instantiate(attackRange, ConvertTileToWorldPosition(position), Quaternion.identity);
+                    }
+                }
+            }
+        }
+    }
+
+    #endregion
+
+
+
     // 표시된 모든 타일 꺼주기
     public void UnHighlightAllTile()
     {
@@ -320,6 +395,11 @@ public class GridHighlighter : MonoBehaviour
             list.Add((Vector3)tmp.Pop() + new Vector3(0.5f, 0.5f, 0));
         }
         return list;
+    }
+
+    Vector3 ConvertTileToWorldPosition(Vector3Int pos)
+    {
+        return new Vector3(pos.x + 0.5f, pos.y + 0.5f, pos.z);
     }
 
 }

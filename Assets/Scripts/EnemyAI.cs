@@ -15,6 +15,7 @@ public class EnemyAI : MonoBehaviour
     List<Hero> heroes = new List<Hero>();
 
     private Vector3Int enemyPosition;
+    // Position은 기술의 사거리에 따라 달라짐(tragetplayer의 위치 != playerPosition)
     private Vector3Int playerPosition;
     public Hero targetPlayer;
 
@@ -39,8 +40,8 @@ public class EnemyAI : MonoBehaviour
     {
         enemyPosition = tilemap.WorldToCell(transform.position);
 
-        targetPlayer = FindClosestPlayer();
-        playerPosition = tilemap.WorldToCell(targetPlayer.transform.position);
+        // targetPlayer는 지정하면서 사거리 기준 위치 잡아주기
+        playerPosition = FindClosestPlayer();
 
         Vector3Int targetPosition = gridHighlighter.GetEnemyRoute(enemyPosition, playerPosition, step);
 
@@ -51,31 +52,51 @@ public class EnemyAI : MonoBehaviour
     1. 가장 가까이에 있는 플레이어를 찾음
     2. 여러개라면, 현재 체력이 가장 약한 애 찾음
     */
-    Hero FindClosestPlayer()
+    Vector3Int FindClosestPlayer()
     {
         Hero closestPlayer = null;
+        Vector3Int closestPosition = Vector3Int.zero;
         float minDistance = float.MaxValue;
         int lowestHealth = int.MaxValue;
+
+        Vector2Int[] dir = new Vector2Int[]
+        {
+            new Vector2Int(0, 1), // 상
+            new Vector2Int(0, -1), // 하
+            new Vector2Int(-1, 0), // 좌
+            new Vector2Int(1, 0)  // 우
+        };
 
         foreach (var player in heroes)
         {
             if (player != null)
             {
                 Vector3Int playerPosition = tilemap.WorldToCell(player.transform.position);
-                float distance = Vector3Int.Distance(enemyPosition, playerPosition);
-
                 int playerHealth = player.hp;
 
-                if (distance < minDistance || (distance == minDistance && playerHealth < lowestHealth))
+                // 공격 기술을 먼저 정함
+                // 해당 기술의 attackRange 만큼 떨어진 만큼이 목표 위치임
+                foreach (Vector3Int vec in dir)
                 {
-                    minDistance = distance;
-                    lowestHealth = playerHealth;
-                    closestPlayer = player;
+                    // 사거리 -1 만큼 가야함
+                    Vector3Int targetPosition = playerPosition + (attackRange - 1) * vec;
+
+                    float distance = Vector3Int.Distance(enemyPosition, targetPosition);
+
+                    if (distance < minDistance || (distance == minDistance && playerHealth < lowestHealth))
+                    {
+                        minDistance = distance;
+                        closestPosition = targetPosition;
+
+                        lowestHealth = playerHealth;
+                        closestPlayer = player;
+                    }
                 }
             }
         }
 
-        return closestPlayer;
+        targetPlayer = closestPlayer;
+        return closestPosition;
     }
 
     IEnumerator waitForMoving(Vector3Int position)

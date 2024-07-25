@@ -156,6 +156,7 @@ public class GridHighlighter : MonoBehaviour
         List<Vector3Int> path = FindPath(start, goal);
 
         Vector3Int targetPosition = start;
+        tilemap.SetTile(targetPosition, highlightedTile);
         if (path.Count > 0)
         {
             // targetPosition = path[Mathf.Min(step, path.Count - 1)];
@@ -164,8 +165,8 @@ public class GridHighlighter : MonoBehaviour
             for (int i = 0; i < Mathf.Min(step, path.Count - 1); i++)
             {
                 targetPosition = path[i];
-                tilemap.SetTile(path[i], highlightedTile);
-                highlightedTilePositions.Push(path[i]);
+                tilemap.SetTile(targetPosition, highlightedTile);
+                highlightedTilePositions.Push(targetPosition);
             }
         }
 

@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -8,10 +10,15 @@ public class GridHighlighter : MonoBehaviour
 {
     public Hero selectedHero;
     public Vector3Int PrevHighlightedPosition;
+    public Vector3Int NowHighlightedPosition;
 
     Tilemap tilemap;
     LineRenderer lineRenderer;
 
+    [Header("표시된 타일 정보")]
+    HashSet<Vector3Int> enemyTiles = new HashSet<Vector3Int>();
+
+    [Header("표시된 타일 정보")]
     Stack<Vector3Int> highlightedTilePositions = new Stack<Vector3Int>();
 
     [Header("사용 오브젝트")]
@@ -29,6 +36,18 @@ public class GridHighlighter : MonoBehaviour
         if (selectedHero != null)
         {
             HighlightMovableTiles();
+
+            // hero의 원래 위치가 아니고, 갈 수 있는 곳이며, 마우스가 클릭되면 해당 위치로 이동
+            if (Input.GetMouseButton(0))
+            {
+                Vector3Int targetPosition = tilemap.WorldToCell(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+                if (highlightedTilePositions.Contains(targetPosition) && targetPosition != selectedHero.CurrentTilePosition)
+                {
+                    selectedHero.transform.position = targetPosition + new Vector3(0.5f, 0.5f, 0);
+
+                    selectedHero.UnselectHero();
+                }
+            }
         }
     }
 
@@ -37,73 +56,110 @@ public class GridHighlighter : MonoBehaviour
         // 마우스 위치에서 타일을 가져옴
         Vector3Int mousePosition = tilemap.WorldToCell(Camera.main.ScreenToWorldPoint(Input.mousePosition));
 
-        // 표시된 타일이 있으며, 그 전 표시된 타일로 마우스를 옮긴다면 가장 마지막 타일의 표시를 지운다.
-        if (highlightedTilePositions.Count > 0 && mousePosition == PrevHighlightedPosition)
+        // 이전 위치로 가지 않음
+        if (mousePosition != PrevHighlightedPosition)
         {
-            tilemap.SetTile(highlightedTilePositions.Pop(), originalTile);
+            // 현재 위치와도 다른 곳이며, stepCount보다 낮을때(기본으로 원래 위치가 들어가서 +1)
+            if (mousePosition != NowHighlightedPosition && highlightedTilePositions.Count < selectedHero.StepCount + 1)
+            {
+                if (CanGo(mousePosition))
+                {
+                    // 이전 위치 갱신
+                    PrevHighlightedPosition = NowHighlightedPosition;
+
+                    // 해당 포지션 표시된 타일셋에 추가
+                    highlightedTilePositions.Push(mousePosition);
+
+                    // 해당 타일 타일베이스 변경
+                    tilemap.SetTile(mousePosition, highlightedTile);
+
+                    // 현재 위치 갱신
+                    NowHighlightedPosition = mousePosition;
+                }
+            }
+        }
+        else // 이전 위치로 갔으면 빼주기
+        {
+            if (highlightedTilePositions.Count > 1)
+                // 표시된 타일셋에서 제거
+                tilemap.SetTile(highlightedTilePositions.Pop(), originalTile);
+
+            // 현재 위치 갱신
+            NowHighlightedPosition = PrevHighlightedPosition;
 
             // 이전 위치 갱신
-            if (highlightedTilePositions.Count > 0)
-                PrevHighlightedPosition = highlightedTilePositions.Peek();
+            if (highlightedTilePositions.Count > 1)
+                PrevHighlightedPosition = highlightedTilePositions.ElementAt(1);
             else
-                PrevHighlightedPosition = selectedHero.CurrentTilePosition;
-
-        }
-
-        if (highlightedTilePositions.Count < selectedHero.StepCount)
-        {
-            // 
-            if (mousePosition != selectedHero.CurrentTilePosition && !highlightedTilePositions.Contains(mousePosition))
-            {
-                // 이전 위치 갱신
-                if (highlightedTilePositions.Count > 0)
-                    PrevHighlightedPosition = highlightedTilePositions.Peek();
-                else
-                    PrevHighlightedPosition = selectedHero.CurrentTilePosition;
-
-                highlightedTilePositions.Push(mousePosition);
-
-                // 해당 타일 타일베이스 변경
-                tilemap.SetTile(mousePosition, highlightedTile);
-
-                Debug.Log(highlightedTilePositions.Count);
-            }
+                PrevHighlightedPosition = highlightedTilePositions.Peek();
         }
 
         lineRenderer.positionCount = highlightedTilePositions.Count;
         lineRenderer.SetPositions(ConvertStackToList(highlightedTilePositions).ToArray());
     }
 
-    public void HighlightStartTile(Vector3Int position)
-    {
-        highlightedTilePositions.Clear();
-        highlightedTilePositions.Push(position);
-        PrevHighlightedPosition = position;
-    }
-
-    public void HighlightSpecificTile(Vector3Int position)
-    {
-        if (tilemap.GetTile(position) != highlightedTile)
-        {
-            tilemap.SetTile(position, highlightedTile);
-        }
-    }
-    public void UnHighlightSpecificTile(Vector3Int position)
-    {
-        if (tilemap.GetTile(position) != originalTile)
-        {
-            tilemap.SetTile(position, originalTile);
-        }
-    }
-
     bool CanGo(Vector3Int position)
     {
         /*
-        * 1. 4방향(상, 하, 좌, 우)에 있어야 함
+        * 1. 제일 마지막 방문 위치의 4방향(상, 하, 좌, 우)에 있어야 함
         * 2. 적이 없어야 함
         * 3. 한번 갔던 곳이면 안됨
         */
-        return true;
+
+        // 1번 조건
+        bool isLinked = false;
+        Vector2Int[] dir = new Vector2Int[]
+        {
+            new Vector2Int(0, 1), // 상
+            new Vector2Int(0, -1), // 하
+            new Vector2Int(-1, 0), // 좌
+            new Vector2Int(1, 0)  // 우
+        };
+
+        // 각 위치의 타일을 확인
+        foreach (Vector3Int d in dir)
+        {
+            if (position == NowHighlightedPosition + d)
+            {
+                isLinked = true;
+                break;
+            }
+        }
+
+        // 2번 조건
+        bool isNoEnemy = !enemyTiles.Contains(position);
+
+        // 3번 조건
+        bool isNoCameTile = !highlightedTilePositions.Contains(position);
+
+        return isLinked && isNoEnemy && isNoCameTile;
+    }
+
+    public void HighlightStartTile(Vector3Int position)
+    {
+        // 표시 초기화
+        highlightedTilePositions.Clear();
+
+        tilemap.SetTile(position, highlightedTile);
+        highlightedTilePositions.Push(position);
+        PrevHighlightedPosition = position;
+        NowHighlightedPosition = position;
+    }
+
+    // 표시된 모든 타일 꺼주기
+    public void UnHighlightAllTile()
+    {
+        while (highlightedTilePositions.Count > 0)
+        {
+            Vector3Int position = highlightedTilePositions.Pop();
+
+            if (tilemap.GetTile(position) != originalTile)
+            {
+                tilemap.SetTile(position, originalTile);
+            }
+        }
+
+        lineRenderer.positionCount = 0;
     }
 
     // Stack은 참조 형식으로 전달됨 -> 원본에 영향
@@ -117,5 +173,6 @@ public class GridHighlighter : MonoBehaviour
         }
         return list;
     }
+
 
 }

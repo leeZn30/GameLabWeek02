@@ -27,6 +27,18 @@ public class Hero : MonoBehaviour
         CurrentTilePosition = GetCurrentTilePosition();
     }
 
+    void Update()
+    {
+        // 임시
+        if (Input.GetKeyDown(KeyCode.Escape) && isSelected)
+        {
+            isSelected = false;
+
+            gridHighlighter.selectedHero = null;
+            gridHighlighter.UnHighlightAllTile();
+        }
+    }
+
     void OnMouseDown()
     {
         if (!isSelected)
@@ -34,21 +46,30 @@ public class Hero : MonoBehaviour
             isSelected = true;
 
             gridHighlighter.selectedHero = this;
-            gridHighlighter.PrevHighlightedPosition = CurrentTilePosition;
-            gridHighlighter.HighlightSpecificTile(CurrentTilePosition);
+            gridHighlighter.HighlightStartTile(CurrentTilePosition);
         }
         else
         {
             isSelected = false;
 
             gridHighlighter.selectedHero = null;
-            gridHighlighter.HighlightSpecificTile(CurrentTilePosition);
-            gridHighlighter.UnHighlightSpecificTile(CurrentTilePosition);
+            gridHighlighter.UnHighlightAllTile();
         }
+
     }
 
     Vector3Int GetCurrentTilePosition()
     {
         return tilemap.WorldToCell(transform.position);
+    }
+
+    public void UnselectHero()
+    {
+        CurrentTilePosition = GetCurrentTilePosition();
+
+        isSelected = false;
+
+        gridHighlighter.selectedHero = null;
+        gridHighlighter.UnHighlightAllTile();
     }
 }

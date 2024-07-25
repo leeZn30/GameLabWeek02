@@ -27,7 +27,6 @@ public class Hero : MonoBehaviour
     void Start()
     {
         CurrentTilePosition = GetCurrentTilePosition();
-        gridHighlighter.playerTiles.Add(CurrentTilePosition);
     }
 
     void Update()

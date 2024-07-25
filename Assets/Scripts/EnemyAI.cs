@@ -10,7 +10,7 @@ public class EnemyAI : MonoBehaviour
     Tilemap tilemap;
 
     public int step = 3; // Enemy의 최대 이동 거리
-    public int attackRange = 1; // 공격 범위
+    public int attackRange = 2; // 공격 범위
 
     List<Hero> heroes = new List<Hero>();
 
@@ -37,11 +37,14 @@ public class EnemyAI : MonoBehaviour
 
     void OnMouseDown()
     {
+        enemyPosition = tilemap.WorldToCell(transform.position);
+
         targetPlayer = FindClosestPlayer();
         playerPosition = tilemap.WorldToCell(targetPlayer.transform.position);
 
-        gridHighlighter.UnHighlightAllTile();
-        gridHighlighter.ShowEnemyRoute(enemyPosition, playerPosition, step);
+        Vector3Int targetPosition = gridHighlighter.GetEnemyRoute(enemyPosition, playerPosition, step);
+
+        StartCoroutine(waitForMoving(targetPosition));
     }
 
     /*
@@ -73,6 +76,14 @@ public class EnemyAI : MonoBehaviour
         }
 
         return closestPlayer;
+    }
+
+    IEnumerator waitForMoving(Vector3Int position)
+    {
+        yield return new WaitForSeconds(1f);
+
+        transform.position = position + new Vector3(0.5f, 0.5f, 0);
+        gridHighlighter.UnHighlightAllTile();
     }
 
     void Attack()

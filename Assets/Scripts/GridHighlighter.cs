@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -14,10 +13,6 @@ public class GridHighlighter : MonoBehaviour
 
     Tilemap tilemap;
     LineRenderer lineRenderer;
-
-    [Header("아군/적 타일")]
-    public HashSet<Vector3Int> enemyTiles = new HashSet<Vector3Int>();
-    public HashSet<Vector3Int> playerTiles = new HashSet<Vector3Int>();
 
     [Header("표시된 타일 정보")]
     Stack<Vector3Int> highlightedTilePositions = new Stack<Vector3Int>();
@@ -129,7 +124,12 @@ public class GridHighlighter : MonoBehaviour
         }
 
         // 2번 조건
-        bool isNoEnemy = !enemyTiles.Contains(position);
+        bool isNoEnemy;
+        // 타일의 월드 좌표를 계산합니다.
+        Vector3 worldPosition = tilemap.GetCellCenterWorld(position);
+        // 해당 위치에 태그가 지정된 오브젝트가 있는지 확인합니다.
+        Collider2D collider = Physics2D.OverlapPoint(worldPosition);
+        isNoEnemy = !(collider != null && collider.CompareTag("Enemy"));
 
         // 3번 조건
         bool isNoCameTile = !highlightedTilePositions.Contains(position);
@@ -151,7 +151,7 @@ public class GridHighlighter : MonoBehaviour
 
     #region Enemy 관련
 
-    public void ShowEnemyRoute(Vector3Int start, Vector3Int goal, int step)
+    public Vector3Int GetEnemyRoute(Vector3Int start, Vector3Int goal, int step)
     {
         List<Vector3Int> path = FindPath(start, goal);
 
@@ -163,11 +163,13 @@ public class GridHighlighter : MonoBehaviour
 
             for (int i = 0; i < Mathf.Min(step, path.Count - 1); i++)
             {
+                targetPosition = path[i];
                 tilemap.SetTile(path[i], highlightedTile);
                 highlightedTilePositions.Push(path[i]);
             }
         }
 
+        return targetPosition;
     }
 
     List<Vector3Int> FindPath(Vector3Int start, Vector3Int goal)
@@ -195,7 +197,14 @@ public class GridHighlighter : MonoBehaviour
 
             foreach (Vector3Int neighbor in GetNeighbors(current))
             {
-                if (playerTiles.Contains(neighbor) && neighbor != goal) continue;
+                // 타일의 월드 좌표를 계산합니다.
+                Vector3 worldPosition = tilemap.GetCellCenterWorld(neighbor);
+
+                // 해당 위치에 태그가 지정된 오브젝트가 있는지 확인합니다.
+                Collider2D collider = Physics2D.OverlapPoint(worldPosition);
+
+                if (collider != null && collider.CompareTag("Player") && neighbor != goal)
+                    continue;
 
                 int tentativeGScore = gScore[current] + 1;
 

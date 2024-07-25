@@ -6,7 +6,9 @@ using UnityEngine.Tilemaps;
 public class Hero : MonoBehaviour
 {
     [Header("정보")]
-    public int StepCount = 4;
+    public HeroData heroData;
+    public int hp => heroData.Hp;
+    public int step => heroData.Step;
 
 
     [Header("상태")]
@@ -25,6 +27,7 @@ public class Hero : MonoBehaviour
     void Start()
     {
         CurrentTilePosition = GetCurrentTilePosition();
+        gridHighlighter.playerTiles.Add(CurrentTilePosition);
     }
 
     void Update()

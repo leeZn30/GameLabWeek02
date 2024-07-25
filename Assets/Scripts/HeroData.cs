@@ -2,17 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HeroData : MonoBehaviour
+[System.Serializable]
+public class HeroData
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public string ID;
+    public int Hp;
+    public float Stress;
+    public float AccMod; // 명중 보정치
+    public float Dodge; // 회피
+    public float Crit; // 크리티컬
+    public int Step;
 }

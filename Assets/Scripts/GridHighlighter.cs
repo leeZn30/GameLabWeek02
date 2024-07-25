@@ -74,7 +74,7 @@ public class GridHighlighter : MonoBehaviour
                     // 현재 위치 갱신
                     NowHighlightedPosition = mousePosition;
 
-                    showAttackRange(NowHighlightedPosition, selectedHero.equippedTech.Range, selectedHero.equippedTech.isInternal);
+                    showAttackRange(NowHighlightedPosition);
                 }
             }
         }
@@ -94,7 +94,7 @@ public class GridHighlighter : MonoBehaviour
                 PrevHighlightedPosition = highlightedTilePositions.Peek();
 
 
-            showAttackRange(NowHighlightedPosition, selectedHero.equippedTech.Range, selectedHero.equippedTech.isInternal);
+            showAttackRange(NowHighlightedPosition);
         }
 
         lineRenderer.positionCount = highlightedTilePositions.Count;
@@ -312,31 +312,12 @@ public class GridHighlighter : MonoBehaviour
 
     #region AttackRange
 
-    void showAttackRange(Vector3Int target, int range, bool isInternal)
+    void showAttackRange(Vector3Int target)
     {
-        // // 일단 다 지우기 (오브젝트 풀 형식으로 변경)
-        // List<GameObject> list = GameObject.FindGameObjectsWithTag("AttackRange").ToList();
-        // foreach (GameObject go in list)
-        // {
-        //     Destroy(go);
-        // }
-
-        // Vector2Int[] dir = new Vector2Int[]
-        // {
-        //     new Vector2Int(0, 1), // 상
-        //     new Vector2Int(0, -1), // 하
-        //     new Vector2Int(-1, 0), // 좌
-        //     new Vector2Int(1, 0)  // 우
-        // };
-
-        // foreach (Vector3Int vec in dir)
-        // {
-        //     Vector3Int targetPosition = target + range * vec;
-
-        //     Instantiate(attackRange, ConvertTileToWorldPosition(targetPosition), Quaternion.identity);
-        // }
-
         RemoveAllAttackRange();
+
+        int range = selectedHero.attackRange;
+        bool isInternal = selectedHero.isAtkRangeInternal;
 
         // 범위 내의 모든 좌표를 반복합니다.
         for (int x = -range; x <= range; x++)

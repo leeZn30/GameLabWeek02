@@ -11,6 +11,8 @@ public class Hero : MonoBehaviour
     public int step => heroData.Step;
     int techIndex = 0;
     public TechData equippedTech => heroData.Techs[techIndex];
+    public int attackRange => heroData.Techs[techIndex].Range;
+    public bool isAtkRangeInternal => heroData.Techs[techIndex].isInternal;
 
 
     [Header("상태")]
@@ -65,6 +67,44 @@ public class Hero : MonoBehaviour
 
     void Attack()
     {
+        List<EnemyAI> enemies = new List<EnemyAI>();
+
+        // 범위 내의 모든 좌표를 반복합니다.
+        for (int x = -attackRange; x <= attackRange; x++)
+        {
+            for (int y = -attackRange; y <= attackRange; y++)
+            {
+                Vector3Int position = new Vector3Int((int)transform.position.x + x, (int)transform.position.y + y, (int)transform.position.z);
+
+                if (!isAtkRangeInternal)
+                {
+                    // 맨해튼 거리가 maxSteps 이하인 좌표만 고려합니다.
+                    if (Mathf.Abs(x) + Mathf.Abs(y) == attackRange)
+                    {
+                        Vector3 worldPosition = tilemap.GetCellCenterWorld(position);
+                        Collider2D collider = Physics2D.OverlapPoint(worldPosition);
+                        if (collider != null && collider.CompareTag("Enemy"))
+                            enemies.Add(collider.GetComponent<EnemyAI>());
+                    }
+                }
+                else
+                {
+                    // 맨해튼 거리가 maxSteps 이하인 좌표만 고려합니다.
+                    if (Mathf.Abs(x) + Mathf.Abs(y) <= attackRange)
+                    {
+                        Vector3 worldPosition = tilemap.GetCellCenterWorld(position);
+                        Collider2D collider = Physics2D.OverlapPoint(worldPosition);
+                        if (collider != null && collider.CompareTag("Enemy"))
+                            enemies.Add(collider.GetComponent<EnemyAI>());
+                    }
+                }
+            }
+        }
+
+        if (enemies.Count > 0)
+        {
+            enemies[0].GetComponent<SpriteRenderer>().color = Color.gray;
+        }
     }
 
     Vector3Int GetCurrentTilePosition()

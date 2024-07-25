@@ -5045,10 +5045,9 @@ MonoBehaviour:
     Step: 3
     Techs:
     - ID: 
-      Range: 0
+      Range: 1
       isInternal: 0
       Acc: 0
-  attackRange: 1
   targetPlayer: {fileID: 0}
 --- !u!212 &1682650747
 SpriteRenderer:
@@ -5226,10 +5225,9 @@ MonoBehaviour:
     Step: 3
     Techs:
     - ID: 
-      Range: 0
+      Range: 1
       isInternal: 0
       Acc: 0
-  attackRange: 1
   targetPlayer: {fileID: 0}
 --- !u!60 &1700067441
 PolygonCollider2D:
@@ -5375,10 +5373,9 @@ MonoBehaviour:
     Step: 3
     Techs:
     - ID: 
-      Range: 0
-      isInternal: 0
+      Range: 2
+      isInternal: 1
       Acc: 0
-  attackRange: 2
   targetPlayer: {fileID: 0}
 --- !u!212 &1965758509
 SpriteRenderer:

@@ -30,7 +30,8 @@ public class CombatManager : SingleTon<CombatManager>
                 }
                 else
                 {
-                    callback = rangedAtkHit(attacker.gameObject, taker.gameObject);
+                    // callback = rangedAtkHit(attacker.gameObject, taker.gameObject);
+                    callback = meleeAtkHit(taker.gameObject);
                 }
                 break;
 
@@ -41,7 +42,8 @@ public class CombatManager : SingleTon<CombatManager>
                 }
                 else
                 {
-                    callback = rangedStressHit(attacker.gameObject, taker.gameObject);
+                    // callback = rangedStressHit(attacker.gameObject, taker.gameObject);
+                    callback = meleeStressHit(taker.gameObject);
                 }
                 break;
 

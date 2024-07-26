@@ -4913,6 +4913,9 @@ MonoBehaviour:
   window: {fileID: 0}
   meleeAtk: {fileID: 814718663408882621, guid: 365b927b3df865940acbeba29a11fce6, type: 3}
   rangedAtk: {fileID: 7623111705894829251, guid: cc7344ff841322840b83c9de92349fda, type: 3}
+  meleeStress: {fileID: 814718663408882621, guid: d3655cbe414a63946aa41a62464cfdac, type: 3}
+  rangedStress: {fileID: 7623111705894829251, guid: d24ee06badbc8df498cb84cfd06644c8, type: 3}
+  heal: {fileID: 3126842929217700142, guid: a6cf83fd14ffb644db2b69751128e0d7, type: 3}
 --- !u!4 &478857985
 Transform:
   m_ObjectHideFlags: 0
@@ -5457,7 +5460,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1419318376
 Transform:
   m_ObjectHideFlags: 0
@@ -5732,7 +5735,7 @@ MonoBehaviour:
     Techs:
     - ID: 
       TechType: 0
-      TechTarget: 0
+      TechTarget: 1
       TechRange: 1
       Range: 2
       isInternal: 0
@@ -6293,9 +6296,9 @@ MonoBehaviour:
     DeathResist: 0
     Techs:
     - ID: 
-      TechType: 0
+      TechType: 1
       TechTarget: 0
-      TechRange: 0
+      TechRange: 1
       Range: 2
       isInternal: 1
       Acc: 80

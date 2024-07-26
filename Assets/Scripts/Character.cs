@@ -113,8 +113,6 @@ public class Character : MonoBehaviour
                 }
             }
         }
-
-
         return results;
     }
 

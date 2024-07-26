@@ -67,7 +67,6 @@ public class CombatManager : SingleTon<CombatManager>
                 attacker.OnStressed(-3);
 
                 UIManager.Instance.AddCombatInfo("<color=black>-3");
-
                 // 주변 2칸 이내 아군 회복
             }
 
@@ -197,24 +196,41 @@ public class CombatManager : SingleTon<CombatManager>
 
     bool isStun(TechData techData, CharacterData taker, bool isCritical)
     {
-        // 기절 수치 = 기술 기절 + 크리티컬 성공 시 20 추가 - 적 기절 저항력
-        int stunPercent = techData.Stun + (isCritical ? 20 : 0) - taker.StunResist;
+        // 애초에 스턴 기능이 있어야 함
+        if (techData.Stun > 0)
+        {
+            // 기절 수치 = 기술 기절 + 크리티컬 성공 시 20 추가 - 적 기절 저항력
+            int stunPercent = techData.Stun + (isCritical ? 20 : 0) - taker.StunResist;
 
-        return Random.Range(0, maxPercent) <= stunPercent;
+            return Random.Range(0, maxPercent) <= stunPercent;
+        }
+        else return false;
     }
     bool isBleed(TechData techData, CharacterData taker, bool isCritical)
     {
-        // 출혈 수치 = 출혈 기절 - 적 출혈 저항력
-        int bleedPercent = techData.Bleed + (isCritical ? 20 : 0) - taker.BleedResist;
-
-        return Random.Range(0, maxPercent) <= bleedPercent;
+        // 애초에 출혈 기능이 있어야 함
+        if (techData.Bleed > 0)
+        {
+            // 출혈 수치 = 출혈 기절 - 적 출혈 저항력
+            int bleedPercent = techData.Bleed + (isCritical ? 20 : 0) - taker.BleedResist;
+            return Random.Range(0, maxPercent) <= bleedPercent;
+        }
+        else return false;
     }
     bool isPoision(TechData techData, CharacterData taker, bool isCritical)
     {
-        // 기절 수치 = 기술 기절 - 적 기절 저항력
-        int poisonPercent = techData.Poison + (isCritical ? 20 : 0) - taker.PoisonResist;
+        // 애초에 중독 기능이 있어야 함
+        if (techData.Poison > 0)
+        {
+            // 기절 수치 = 기술 기절 - 적 기절 저항력
+            int poisonPercent = techData.Poison + (isCritical ? 20 : 0) - taker.PoisonResist;
 
-        return Random.Range(0, maxPercent) <= poisonPercent;
+            return Random.Range(0, maxPercent) <= poisonPercent;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     int GetDamage(TechData attack, bool isCritical)

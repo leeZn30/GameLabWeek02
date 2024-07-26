@@ -60,12 +60,15 @@ public class CombatManager : SingleTon<CombatManager>
 
             /* 크리티컬이면
             - attacker는 스트레스 3 회복
+            - attacker 주변 아군도 25% 확률로 3 회복
             */
             if (crit)
             {
                 attacker.OnStressed(-3);
 
                 UIManager.Instance.AddCombatInfo("<color=black>-3");
+
+                // 주변 2칸 이내 아군 회복
             }
 
             switch (attacker.equippedTech.TechType)
@@ -77,48 +80,6 @@ public class CombatManager : SingleTon<CombatManager>
                         UIManager.Instance.AddCombatInfo(string.Format("<color=red>치명타!\n-{0}", damage), 0);
                     else
                         UIManager.Instance.AddCombatInfo(string.Format("<color=red>-{0}", damage), 0);
-
-                    // 공격일 경우, 상태 이상 확인 -> 크리티컬이면 발동 확률 높이기
-                    // 기절
-                    if (isStun(attacker.equippedTech, taker.characterData, crit))
-                    {
-                        taker.OnStun();
-                        UIManager.Instance.AddCombatInfo("<color=yellow>기절!");
-                    }
-                    else
-                    {
-                        // 스턴 효과가 있는데 발동 안됨
-                        if (attacker.equippedTech.Stun > 0)
-                            UIManager.Instance.AddCombatInfo("<color=yellow>기절 저항");
-                    }
-
-                    // 출혈
-                    // 크리티컬이면 50% 지속 시간 증가
-                    if (isBleed(attacker.equippedTech, taker.characterData, crit))
-                    {
-                        taker.OnBleed(attacker.equippedTech.BleedDamage, attacker.equippedTech.BleedTurnCnt + (crit ? attacker.equippedTech.BleedTurnCnt / 2 : 0));
-                        UIManager.Instance.AddCombatInfo("<color=#C100A5>출혈");
-                    }
-                    else
-                    {
-                        // 출혈 효과가 있는데 발동 안됨
-                        if (attacker.equippedTech.Bleed > 0)
-                            UIManager.Instance.AddCombatInfo("<color=#C100A5>출혈 저항");
-                    }
-
-                    // 중독
-                    // 크리티컬이면 50% 지속 시간 증가
-                    if (isPoision(attacker.equippedTech, taker.characterData, crit))
-                    {
-                        taker.OnPoison(attacker.equippedTech.PoisonDamage, attacker.equippedTech.PoisonTurnCnt + (crit ? attacker.equippedTech.PoisonTurnCnt / 2 : 0));
-                        UIManager.Instance.AddCombatInfo("<color=green>중독");
-                    }
-                    else
-                    {
-                        // 중독 효과가 있는데 발동 안됨
-                        if (attacker.equippedTech.Poison > 0)
-                            UIManager.Instance.AddCombatInfo("<color=green>중독 저항");
-                    }
                     break;
 
                 case TechType.Stress:
@@ -140,6 +101,48 @@ public class CombatManager : SingleTon<CombatManager>
                     else
                         UIManager.Instance.AddCombatInfo(string.Format("<color=#9BFF00>+{0}", heal), 0);
                     break;
+            }
+
+            // 기술 별 상태 이상 확인 -> 크리티컬이면 발동 확률 높이기
+            // 기절
+            if (isStun(attacker.equippedTech, taker.characterData, crit))
+            {
+                taker.OnStun();
+                UIManager.Instance.AddCombatInfo("<color=yellow>기절!");
+            }
+            else
+            {
+                // 스턴 효과가 있는데 발동 안됨
+                if (attacker.equippedTech.Stun > 0)
+                    UIManager.Instance.AddCombatInfo("<color=yellow>기절 저항");
+            }
+
+            // 출혈
+            // 크리티컬이면 50% 지속 시간 증가
+            if (isBleed(attacker.equippedTech, taker.characterData, crit))
+            {
+                taker.OnBleed(attacker.equippedTech.BleedDamage, attacker.equippedTech.BleedTurnCnt + (crit ? attacker.equippedTech.BleedTurnCnt / 2 : 0));
+                UIManager.Instance.AddCombatInfo("<color=#C100A5>출혈");
+            }
+            else
+            {
+                // 출혈 효과가 있는데 발동 안됨
+                if (attacker.equippedTech.Bleed > 0)
+                    UIManager.Instance.AddCombatInfo("<color=#C100A5>출혈 저항");
+            }
+
+            // 중독
+            // 크리티컬이면 50% 지속 시간 증가
+            if (isPoision(attacker.equippedTech, taker.characterData, crit))
+            {
+                taker.OnPoison(attacker.equippedTech.PoisonDamage, attacker.equippedTech.PoisonTurnCnt + (crit ? attacker.equippedTech.PoisonTurnCnt / 2 : 0));
+                UIManager.Instance.AddCombatInfo("<color=green>중독");
+            }
+            else
+            {
+                // 중독 효과가 있는데 발동 안됨
+                if (attacker.equippedTech.Poison > 0)
+                    UIManager.Instance.AddCombatInfo("<color=green>중독 저항");
             }
 
             // 연출 시작

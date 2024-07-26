@@ -7,8 +7,10 @@ using UnityEngine.UIElements;
 public class UIManager : SingleTon<UIManager>
 {
     [Header("오브젝트")]
-    TextMeshProUGUI CombatInfo;
     TextMeshProUGUI GameInfo;
+
+    [Header("프리팹")]
+    public TextMeshProUGUI CombatInfo;
 
     List<string> combatInfos = new List<string>();
 

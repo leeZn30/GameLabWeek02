@@ -60,7 +60,6 @@ public class Character : MonoBehaviour
         }
     }
 
-    // 크리티컬이면 스트레스 증가
     // Hero에서만 구현되어야 함
     public virtual void OnStressed(int stress) { }
 

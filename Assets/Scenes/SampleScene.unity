@@ -179,8 +179,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uB2E8\uC77C \uACF5\uACA9\uC785\uB2C8\uB2E4.\n\uC6D0\uD558\uB294 \uC801\uC744
-    \uD074\uB9AD\uD558\uC138\uC694."
+  m_text: "\uC548\uB0B4\uC548\uB0B4\uC548\uB0B4"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 44c78fab29f7cf049bc1bc50b13fc0ad, type: 2}
   m_sharedMaterial: {fileID: 4465258924118328633, guid: 44c78fab29f7cf049bc1bc50b13fc0ad, type: 2}
@@ -4582,7 +4581,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
+  m_BackGroundColor: {r: 0.6698113, g: 0.6698113, b: 0.6698113, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -4891,7 +4890,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 0.5566038, g: 0.5566038, b: 0.5566038, a: 0.392}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -5161,7 +5160,7 @@ Transform:
   m_GameObject: {fileID: 1419318375}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.269, y: -6.943, z: 0.08462445}
+  m_LocalPosition: {x: -1.269, y: -7.940072, z: 0.08462445}
   m_LocalScale: {x: 0.9, y: 0.9, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5372,7 +5371,7 @@ SpriteRenderer:
   m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.2990833, g: 0.3979173, b: 0.4433962, a: 1}
+  m_Color: {r: 0.19223925, g: 0.67428035, b: 0.9056604, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -5391,7 +5390,7 @@ Transform:
   m_GameObject: {fileID: 1464816971}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3.234747, y: -6.882928, z: 0.08462445}
+  m_LocalPosition: {x: -3.234747, y: -7.88, z: 0.08462445}
   m_LocalScale: {x: 0.9, y: 0.9, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5429,7 +5428,7 @@ MonoBehaviour:
       TechTarget: 0
       TechRange: 1
       Range: 2
-      isInternal: 1
+      isInternal: 0
       Acc: 90
       minDamage: 5
       maxDamage: 10
@@ -6198,7 +6197,7 @@ Transform:
   m_GameObject: {fileID: 2023637148}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.7252532, y: -6.992928, z: 0.08462445}
+  m_LocalPosition: {x: 0.7252532, y: -7.9900002, z: 0.08462445}
   m_LocalScale: {x: 0.9, y: 0.9, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6412,6 +6411,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49b35afcf10450843bebadd93b845206, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CombatInfo: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

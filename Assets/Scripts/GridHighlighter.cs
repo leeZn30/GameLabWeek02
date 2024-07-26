@@ -8,6 +8,7 @@ using UnityEngine.Tilemaps;
 public class GridHighlighter : MonoBehaviour
 {
     public Hero selectedHero;
+    public EnemyAI selectedEnemy;
     public Vector3Int PrevHighlightedPosition;
     public Vector3Int NowHighlightedPosition;
 
@@ -75,7 +76,7 @@ public class GridHighlighter : MonoBehaviour
                     // 현재 위치 갱신
                     NowHighlightedPosition = mousePosition;
 
-                    showAttackRange(NowHighlightedPosition);
+                    showAttackRange(NowHighlightedPosition, selectedHero.attackRange, selectedHero.isAtkRangeInternal);
                 }
             }
         }
@@ -95,7 +96,7 @@ public class GridHighlighter : MonoBehaviour
                 PrevHighlightedPosition = highlightedTilePositions.Peek();
 
 
-            showAttackRange(NowHighlightedPosition);
+            showAttackRange(NowHighlightedPosition, selectedHero.attackRange, selectedHero.isAtkRangeInternal);
         }
 
         lineRenderer.positionCount = highlightedTilePositions.Count;
@@ -108,6 +109,7 @@ public class GridHighlighter : MonoBehaviour
         * 1. 제일 마지막 방문 위치의 4방향(상, 하, 좌, 우)에 있어야 함
         * 2. 적이나 캐릭터가 없어야함
         * 3. 한번 갔던 곳이면 안됨
+        * 4. 타일이 없는 곳이면 안됨
         */
 
         // 1번 조건
@@ -141,7 +143,10 @@ public class GridHighlighter : MonoBehaviour
         // 3번 조건
         bool isNoCameTile = !highlightedTilePositions.Contains(position);
 
-        return isLinked && isNoEnemy && isNoCameTile;
+        // 4번 조건
+        bool isHasTile = tilemap.HasTile(position);
+
+        return isLinked && isNoEnemy && isNoCameTile && isHasTile;
     }
 
     public void HighlightStartTile(Vector3Int position)
@@ -184,6 +189,8 @@ public class GridHighlighter : MonoBehaviour
             }
         }
 
+
+        showAttackRange(targetPosition, selectedEnemy.attackRange, selectedEnemy.isAtkRangeInternal);
         return targetPosition;
     }
 
@@ -309,12 +316,9 @@ public class GridHighlighter : MonoBehaviour
 
     #region AttackRange
 
-    void showAttackRange(Vector3Int target)
+    void showAttackRange(Vector3Int target, int range, bool isInternal)
     {
         RemoveAllAttackRange();
-
-        int range = selectedHero.attackRange;
-        bool isInternal = selectedHero.isAtkRangeInternal;
 
         // 범위 내의 모든 좌표를 반복합니다.
         for (int x = -range; x <= range; x++)

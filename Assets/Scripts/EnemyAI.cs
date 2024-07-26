@@ -51,6 +51,7 @@ public class EnemyAI : MonoBehaviour
         // targetPlayer는 지정하면서 사거리 기준 위치 잡아주기
         playerPosition = FindClosestPlayer();
 
+        gridHighlighter.selectedEnemy = this;
         Vector3Int targetPosition = gridHighlighter.GetEnemyRoute(enemyPosition, playerPosition, step);
 
         StartCoroutine(waitForMoving(targetPosition));
@@ -120,41 +121,14 @@ public class EnemyAI : MonoBehaviour
     {
         List<Hero> heroes = new List<Hero>();
 
-        // 범위 내의 모든 좌표를 반복합니다.
-        // for (int x = -attackRange; x <= attackRange; x++)
-        // {
-        //     for (int y = -attackRange; y <= attackRange; y++)
-        //     {
-        //         Vector3Int position = new Vector3Int((int)transform.position.x + x, (int)transform.position.y + y, (int)transform.position.z);
+        List<AttackRange> ranges = FindObjectsOfType<AttackRange>().ToList();
+        foreach (AttackRange go in ranges)
+        {
+            if (go.hero != null)
+                go.hero.GetComponent<SpriteRenderer>().color = Color.gray;
+        }
 
-        //         if (!isAtkRangeInternal)
-        //         {
-        //             // 맨해튼 거리가 maxSteps 이하인 좌표만 고려합니다.
-        //             if (Mathf.Abs(x) + Mathf.Abs(y) == attackRange)
-        //             {
-        //                 Vector3 worldPosition = tilemap.GetCellCenterWorld(position);
-        //                 Collider2D collider = Physics2D.OverlapPoint(worldPosition, 1 << LayerMask.NameToLayer("Character"));
-        //                 if (collider != null && collider.CompareTag("Player"))
-        //                     heroes.Add(collider.GetComponent<Hero>());
-        //             }
-        //         }
-        //         else
-        //         {
-        //             // 맨해튼 거리가 maxSteps 이하인 좌표만 고려합니다.
-        //             if (Mathf.Abs(x) + Mathf.Abs(y) <= attackRange)
-        //             {
-        //                 Vector3 worldPosition = tilemap.GetCellCenterWorld(position);
-        //                 Collider2D collider = Physics2D.OverlapPoint(worldPosition);
-        //                 if (collider != null && collider.CompareTag("Player"))
-        //                     heroes.Add(collider.GetComponent<Hero>());
-        //             }
-        //         }
-        //     }
-        // }
+        gridHighlighter.RemoveAllAttackRange();
 
-        // if (heroes.Count > 0)
-        // {
-        //     heroes[0].GetComponent<SpriteRenderer>().color = Color.gray;
-        // }
     }
 }

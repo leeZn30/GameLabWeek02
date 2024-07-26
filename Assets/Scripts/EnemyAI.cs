@@ -121,40 +121,40 @@ public class EnemyAI : MonoBehaviour
         List<Hero> heroes = new List<Hero>();
 
         // 범위 내의 모든 좌표를 반복합니다.
-        for (int x = -attackRange; x <= attackRange; x++)
-        {
-            for (int y = -attackRange; y <= attackRange; y++)
-            {
-                Vector3Int position = new Vector3Int((int)transform.position.x + x, (int)transform.position.y + y, (int)transform.position.z);
+        // for (int x = -attackRange; x <= attackRange; x++)
+        // {
+        //     for (int y = -attackRange; y <= attackRange; y++)
+        //     {
+        //         Vector3Int position = new Vector3Int((int)transform.position.x + x, (int)transform.position.y + y, (int)transform.position.z);
 
-                if (!isAtkRangeInternal)
-                {
-                    // 맨해튼 거리가 maxSteps 이하인 좌표만 고려합니다.
-                    if (Mathf.Abs(x) + Mathf.Abs(y) == attackRange)
-                    {
-                        Vector3 worldPosition = tilemap.GetCellCenterWorld(position);
-                        Collider2D collider = Physics2D.OverlapPoint(worldPosition, 1 << LayerMask.NameToLayer("Character"));
-                        if (collider != null && collider.CompareTag("Player"))
-                            heroes.Add(collider.GetComponent<Hero>());
-                    }
-                }
-                else
-                {
-                    // 맨해튼 거리가 maxSteps 이하인 좌표만 고려합니다.
-                    if (Mathf.Abs(x) + Mathf.Abs(y) <= attackRange)
-                    {
-                        Vector3 worldPosition = tilemap.GetCellCenterWorld(position);
-                        Collider2D collider = Physics2D.OverlapPoint(worldPosition);
-                        if (collider != null && collider.CompareTag("Player"))
-                            heroes.Add(collider.GetComponent<Hero>());
-                    }
-                }
-            }
-        }
+        //         if (!isAtkRangeInternal)
+        //         {
+        //             // 맨해튼 거리가 maxSteps 이하인 좌표만 고려합니다.
+        //             if (Mathf.Abs(x) + Mathf.Abs(y) == attackRange)
+        //             {
+        //                 Vector3 worldPosition = tilemap.GetCellCenterWorld(position);
+        //                 Collider2D collider = Physics2D.OverlapPoint(worldPosition, 1 << LayerMask.NameToLayer("Character"));
+        //                 if (collider != null && collider.CompareTag("Player"))
+        //                     heroes.Add(collider.GetComponent<Hero>());
+        //             }
+        //         }
+        //         else
+        //         {
+        //             // 맨해튼 거리가 maxSteps 이하인 좌표만 고려합니다.
+        //             if (Mathf.Abs(x) + Mathf.Abs(y) <= attackRange)
+        //             {
+        //                 Vector3 worldPosition = tilemap.GetCellCenterWorld(position);
+        //                 Collider2D collider = Physics2D.OverlapPoint(worldPosition);
+        //                 if (collider != null && collider.CompareTag("Player"))
+        //                     heroes.Add(collider.GetComponent<Hero>());
+        //             }
+        //         }
+        //     }
+        // }
 
-        if (heroes.Count > 0)
-        {
-            heroes[0].GetComponent<SpriteRenderer>().color = Color.gray;
-        }
+        // if (heroes.Count > 0)
+        // {
+        //     heroes[0].GetComponent<SpriteRenderer>().color = Color.gray;
+        // }
     }
 }

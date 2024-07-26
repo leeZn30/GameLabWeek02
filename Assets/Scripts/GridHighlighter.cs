@@ -38,10 +38,11 @@ public class GridHighlighter : MonoBehaviour
             // hero의 원래 위치가 아니고, 갈 수 있는 곳이며, 마우스가 클릭되면 해당 위치로 이동
             if (Input.GetMouseButton(0))
             {
-                Vector3Int targetPosition = tilemap.WorldToCell(Camera.main.ScreenToWorldPoint(Input.mousePosition));
-                if (highlightedTilePositions.Contains(targetPosition) && targetPosition != selectedHero.CurrentTilePosition)
+                Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                Vector3Int tilePosition = tilemap.WorldToCell(worldPosition);
+                if (highlightedTilePositions.Contains(tilePosition) && tilePosition != selectedHero.CurrentTilePosition)
                 {
-                    selectedHero.transform.position = targetPosition + new Vector3(0.5f, 0.5f, 0);
+                    selectedHero.transform.position = tilePosition + new Vector3(0.5f, 0.5f, 0);
                     selectedHero.MoveHero();
                 }
             }
@@ -105,7 +106,7 @@ public class GridHighlighter : MonoBehaviour
     {
         /*
         * 1. 제일 마지막 방문 위치의 4방향(상, 하, 좌, 우)에 있어야 함
-        * 2. 적이 없어야 함
+        * 2. 적이나 캐릭터가 없어야함
         * 3. 한번 갔던 곳이면 안됨
         */
 
@@ -135,7 +136,7 @@ public class GridHighlighter : MonoBehaviour
         Vector3 worldPosition = tilemap.GetCellCenterWorld(position);
         // AttackRange에 가려지지 않게 레이어마스크 추가해서 확인
         Collider2D collider = Physics2D.OverlapPoint(worldPosition, 1 << LayerMask.NameToLayer("Character"));
-        isNoEnemy = !(collider != null && collider.CompareTag("Enemy"));
+        isNoEnemy = collider == null;
 
         // 3번 조건
         bool isNoCameTile = !highlightedTilePositions.Contains(position);
@@ -175,9 +176,6 @@ public class GridHighlighter : MonoBehaviour
         tilemap.SetTile(targetPosition, highlightedTile);
         if (path.Count > 0)
         {
-            // targetPosition = path[Mathf.Min(step, path.Count - 1)];
-            // tilemap.SetTile(targetPosition, highlightedTile);
-
             for (int i = 0; i < Mathf.Min(step, path.Count - 1); i++)
             {
                 targetPosition = path[i];
@@ -214,13 +212,11 @@ public class GridHighlighter : MonoBehaviour
 
             foreach (Vector3Int neighbor in GetNeighbors(current))
             {
-                // 타일의 월드 좌표를 계산합니다.
+                // 해당 위치에 적이나 플레이어가 없어야 함
                 Vector3 worldPosition = tilemap.GetCellCenterWorld(neighbor);
+                Collider2D collider = Physics2D.OverlapPoint(worldPosition, 1 << LayerMask.NameToLayer("Character"));
 
-                // 해당 위치에 태그가 지정된 오브젝트가 있는지 확인합니다.
-                Collider2D collider = Physics2D.OverlapPoint(worldPosition);
-
-                if (collider != null && collider.CompareTag("Player") && neighbor != goal)
+                if (collider != null && neighbor != goal)
                     continue;
 
                 int tentativeGScore = gScore[current] + 1;
@@ -305,6 +301,7 @@ public class GridHighlighter : MonoBehaviour
             current = cameFrom[current];
             totalPath.Insert(0, current);
         }
+
         return totalPath;
     }
 

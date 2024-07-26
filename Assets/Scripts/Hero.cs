@@ -71,7 +71,6 @@ public class Hero : Character
                 if (go.enemy != null)
                 {
                     targets.Add(go.enemy);
-                    Debug.Log(go.enemy);
                 }
             }
 

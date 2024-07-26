@@ -7,7 +7,11 @@ using UnityEngine;
 public class CombatManager : SingleTon<CombatManager>
 {
     [SerializeField] GameObject window;
-    [SerializeField] GameObject shortDamageEffect;
+    [SerializeField] GameObject meleeAtk;
+    [SerializeField] GameObject rangedAtk;
+    [SerializeField] GameObject meleeStress;
+    [SerializeField] GameObject rangedStress;
+    [SerializeField] GameObject heal;
     int maxPercent = 101;
 
     // 단일 공격
@@ -26,7 +30,7 @@ public class CombatManager : SingleTon<CombatManager>
                 }
                 else
                 {
-                    callback = rangedAtkHit(taker.gameObject);
+                    callback = rangedAtkHit(attacker.gameObject, taker.gameObject);
                 }
                 break;
 
@@ -37,19 +41,12 @@ public class CombatManager : SingleTon<CombatManager>
                 }
                 else
                 {
-                    callback = rangedStressHit(taker.gameObject);
+                    callback = rangedStressHit(attacker.gameObject, taker.gameObject);
                 }
                 break;
 
             case TechType.Heal:
-                if (attacker.equippedTech.TechRange == TechRange.Melee)
-                {
-                    callback = meleeHealHit(taker.gameObject);
-                }
-                else
-                {
-                    callback = rangedHealHit(taker.gameObject);
-                }
+                callback = healHit(taker.gameObject);
                 break;
         }
 
@@ -75,9 +72,9 @@ public class CombatManager : SingleTon<CombatManager>
                     int damage = GetDamage(attacker.equippedTech, crit);
                     taker.OnDamaged(damage, crit);
                     if (crit)
-                        UIManager.Instance.AddCombatInfo(string.Format("<color=#C100A5>치명타!\n-{0}", damage), 0);
+                        UIManager.Instance.AddCombatInfo(string.Format("<color=red>치명타!\n-{0}", damage), 0);
                     else
-                        UIManager.Instance.AddCombatInfo(string.Format("<color=#C100A5>-{0}", damage), 0);
+                        UIManager.Instance.AddCombatInfo(string.Format("<color=red>-{0}", damage), 0);
 
                     // 공격일 경우, 상태 이상 확인 -> 크리티컬이면 발동 확률 높이기
                     // 기절
@@ -98,13 +95,13 @@ public class CombatManager : SingleTon<CombatManager>
                     if (isBleed(attacker.equippedTech, taker.characterData, crit))
                     {
                         taker.OnBleed(attacker.equippedTech.BleedDamage, attacker.equippedTech.BleedTurnCnt + (crit ? attacker.equippedTech.BleedTurnCnt / 2 : 0));
-                        UIManager.Instance.AddCombatInfo("<color=red>출혈");
+                        UIManager.Instance.AddCombatInfo("<color=#C100A5>출혈");
                     }
                     else
                     {
                         // 출혈 효과가 있는데 발동 안됨
                         if (attacker.equippedTech.Bleed > 0)
-                            UIManager.Instance.AddCombatInfo("<color=red>출혈 저항");
+                            UIManager.Instance.AddCombatInfo("<color=#C100A5>출혈 저항");
                     }
 
                     // 중독
@@ -308,52 +305,73 @@ public class CombatManager : SingleTon<CombatManager>
 
     IEnumerator meleeAtkHit(GameObject taker)
     {
-        GameObject go = Instantiate(shortDamageEffect, taker.transform.position, shortDamageEffect.transform.rotation);
+        GameObject go = Instantiate(meleeAtk, taker.transform.position, meleeAtk.transform.rotation);
 
         yield return new WaitForSeconds(1f);
 
         Destroy(go);
     }
 
-    IEnumerator rangedAtkHit(GameObject taker)
+    IEnumerator rangedAtkHit(GameObject attacker, GameObject taker)
     {
-        GameObject go = Instantiate(shortDamageEffect, taker.transform.position, shortDamageEffect.transform.rotation);
+        GameObject go = Instantiate(rangedAtk, attacker.transform.position, rangedAtk.transform.rotation);
 
-        yield return new WaitForSeconds(1f);
+        // 회전 및 이동을 시작
+        float elapsedTime = 0f;
+        float duration = 0.2f;
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
 
+            // 이동 보간 (Lerp)
+            go.transform.position = Vector3.Lerp(attacker.transform.position, taker.transform.position, elapsedTime / duration);
+
+            yield return null; // 다음 프레임까지 대기
+        }
+
+        yield return new WaitForSeconds(0.8f);
+
+        // 최종 위치 및 회전 설정
         Destroy(go);
     }
 
     IEnumerator meleeStressHit(GameObject taker)
     {
-        GameObject go = Instantiate(shortDamageEffect, taker.transform.position, shortDamageEffect.transform.rotation);
+        GameObject go = Instantiate(meleeStress, taker.transform.position, meleeStress.transform.rotation);
 
         yield return new WaitForSeconds(1f);
 
         Destroy(go);
     }
 
-    IEnumerator rangedStressHit(GameObject taker)
+    IEnumerator rangedStressHit(GameObject attacker, GameObject taker)
     {
-        GameObject go = Instantiate(shortDamageEffect, taker.transform.position, shortDamageEffect.transform.rotation);
 
-        yield return new WaitForSeconds(1f);
+        GameObject go = Instantiate(rangedStress, attacker.transform.position, rangedStress.transform.rotation);
 
+        // 회전 및 이동을 시작
+        float elapsedTime = 0f;
+        float duration = 0.2f;
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+
+            // 이동 보간 (Lerp)
+            go.transform.position = Vector3.Lerp(attacker.transform.position, taker.transform.position, elapsedTime / duration);
+
+            yield return null; // 다음 프레임까지 대기
+        }
+
+        yield return new WaitForSeconds(0.8f);
+
+        // 최종 위치 및 회전 설정
         Destroy(go);
+
     }
 
-    IEnumerator meleeHealHit(GameObject taker)
+    IEnumerator healHit(GameObject taker)
     {
-        GameObject go = Instantiate(shortDamageEffect, taker.transform.position, shortDamageEffect.transform.rotation);
-
-        yield return new WaitForSeconds(1f);
-
-        Destroy(go);
-    }
-
-    IEnumerator rangedHealHit(GameObject taker)
-    {
-        GameObject go = Instantiate(shortDamageEffect, taker.transform.position, shortDamageEffect.transform.rotation);
+        GameObject go = Instantiate(heal, taker.transform.position, heal.transform.rotation);
 
         yield return new WaitForSeconds(1f);
 
@@ -365,7 +383,6 @@ public class CombatManager : SingleTon<CombatManager>
         Vector3 originPose = taker.transform.position;
         Vector3 endPose = taker.transform.position + new Vector3(1.5f, 0, 0);
 
-        GameObject go = Instantiate(shortDamageEffect, originPose, shortDamageEffect.transform.rotation);
 
         float duration = 0.3f;
         float elapsedTime = 0f;
@@ -382,7 +399,6 @@ public class CombatManager : SingleTon<CombatManager>
 
         yield return new WaitForSeconds(0.7f);
 
-        Destroy(go);
         taker.transform.position = originPose;
     }
 }

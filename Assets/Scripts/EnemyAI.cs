@@ -60,6 +60,7 @@ public class EnemyAI : MonoBehaviour
     /*
     1. 가장 가까이에 있는 플레이어를 찾음
     2. 여러개라면, 현재 체력이 가장 약한 애 찾음
+    3. 현재는 단순 거리 비교 > 나중에 못가는 타일도 포함한 길찾기 알고리즘으로 수정
     */
     Vector3Int FindClosestPlayer()
     {
@@ -90,7 +91,9 @@ public class EnemyAI : MonoBehaviour
                     // 사거리 -1 만큼 가야함
                     Vector3Int targetPosition = playerPosition + (attackRange - 1) * vec;
 
-                    float distance = Vector3Int.Distance(enemyPosition, targetPosition);
+                    // 맨해튼 거리 계산
+                    int distance = Mathf.Abs(enemyPosition.x - targetPosition.x) + Mathf.Abs(enemyPosition.y - targetPosition.y);
+
 
                     if (distance < minDistance || (distance == minDistance && playerHealth < lowestHealth))
                     {

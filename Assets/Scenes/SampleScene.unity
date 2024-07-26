@@ -4805,7 +4805,7 @@ GameObject:
   - component: {fileID: 1464816972}
   - component: {fileID: 1464816974}
   - component: {fileID: 1464816975}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -4964,7 +4964,7 @@ GameObject:
   - component: {fileID: 1682650747}
   - component: {fileID: 1682650746}
   - component: {fileID: 1682650745}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Enemy (1)
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -5128,7 +5128,7 @@ GameObject:
   - component: {fileID: 1700067438}
   - component: {fileID: 1700067440}
   - component: {fileID: 1700067441}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -5292,7 +5292,7 @@ GameObject:
   - component: {fileID: 1965758509}
   - component: {fileID: 1965758508}
   - component: {fileID: 1965758507}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Enemy (2)
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -5502,7 +5502,7 @@ GameObject:
   - component: {fileID: 2023637149}
   - component: {fileID: 2023637151}
   - component: {fileID: 2023637152}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: PlayerT
   m_TagString: Player
   m_Icon: {fileID: 0}

@@ -131,10 +131,10 @@ public class GridHighlighter : MonoBehaviour
 
         // 2번 조건
         bool isNoEnemy;
-        // 타일의 월드 좌표를 계산합니다.
+        // 타일 좌표 월드로 계산
         Vector3 worldPosition = tilemap.GetCellCenterWorld(position);
-        // 해당 위치에 태그가 지정된 오브젝트가 있는지 확인합니다.
-        Collider2D collider = Physics2D.OverlapPoint(worldPosition);
+        // AttackRange에 가려지지 않게 레이어마스크 추가해서 확인
+        Collider2D collider = Physics2D.OverlapPoint(worldPosition, 1 << LayerMask.NameToLayer("Character"));
         isNoEnemy = !(collider != null && collider.CompareTag("Enemy"));
 
         // 3번 조건

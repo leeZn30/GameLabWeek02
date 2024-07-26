@@ -133,7 +133,7 @@ public class EnemyAI : MonoBehaviour
                     if (Mathf.Abs(x) + Mathf.Abs(y) == attackRange)
                     {
                         Vector3 worldPosition = tilemap.GetCellCenterWorld(position);
-                        Collider2D collider = Physics2D.OverlapPoint(worldPosition);
+                        Collider2D collider = Physics2D.OverlapPoint(worldPosition, 1 << LayerMask.NameToLayer("Character"));
                         if (collider != null && collider.CompareTag("Player"))
                             heroes.Add(collider.GetComponent<Hero>());
                     }

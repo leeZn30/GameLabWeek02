@@ -69,13 +69,15 @@ public class Hero : MonoBehaviour
 
     void Attack()
     {
-        List<EnemyAI> enemies = new List<EnemyAI>();
+        // List<EnemyAI> enemies = new List<EnemyAI>();
 
         List<AttackRange> ranges = FindObjectsOfType<AttackRange>().ToList();
         foreach (AttackRange go in ranges)
         {
             if (go.enemy != null)
-                go.enemy.GetComponent<SpriteRenderer>().color = Color.gray;
+            {
+                // CombatManager.Instance.CalculateAttack(heroData, go.enemy.enemyData, equippedTech);
+            }
         }
 
         gridHighlighter.RemoveAllAttackRange();

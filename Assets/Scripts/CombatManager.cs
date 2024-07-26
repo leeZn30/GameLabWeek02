@@ -66,7 +66,7 @@ public class CombatManager : SingleTon<CombatManager>
             {
                 attacker.OnStressed(-3);
 
-                UIManager.Instance.AddCombatInfo("스트레스\n-3");
+                UIManager.Instance.AddCombatInfo("<color=black>-3");
             }
 
             switch (attacker.equippedTech.TechType)
@@ -75,22 +75,22 @@ public class CombatManager : SingleTon<CombatManager>
                     int damage = GetDamage(attacker.equippedTech, crit);
                     taker.OnDamaged(damage, crit);
                     if (crit)
-                        UIManager.Instance.AddCombatInfo(string.Format("치명타!\n{0}", damage), 0);
+                        UIManager.Instance.AddCombatInfo(string.Format("<color=#C100A5>치명타!\n-{0}", damage), 0);
                     else
-                        UIManager.Instance.AddCombatInfo(string.Format("{0}", damage), 0);
+                        UIManager.Instance.AddCombatInfo(string.Format("<color=#C100A5>-{0}", damage), 0);
 
                     // 공격일 경우, 상태 이상 확인 -> 크리티컬이면 발동 확률 높이기
                     // 기절
                     if (isStun(attacker.equippedTech, taker.characterData, crit))
                     {
                         taker.OnStun();
-                        UIManager.Instance.AddCombatInfo("기절!");
+                        UIManager.Instance.AddCombatInfo("<color=yellow>기절!");
                     }
                     else
                     {
                         // 스턴 효과가 있는데 발동 안됨
                         if (attacker.equippedTech.Stun > 0)
-                            UIManager.Instance.AddCombatInfo("기절 저항");
+                            UIManager.Instance.AddCombatInfo("<color=yellow>기절 저항");
                     }
 
                     // 출혈
@@ -98,13 +98,13 @@ public class CombatManager : SingleTon<CombatManager>
                     if (isBleed(attacker.equippedTech, taker.characterData, crit))
                     {
                         taker.OnBleed(attacker.equippedTech.BleedDamage, attacker.equippedTech.BleedTurnCnt + (crit ? attacker.equippedTech.BleedTurnCnt / 2 : 0));
-                        UIManager.Instance.AddCombatInfo("출혈");
+                        UIManager.Instance.AddCombatInfo("<color=red>출혈");
                     }
                     else
                     {
                         // 출혈 효과가 있는데 발동 안됨
                         if (attacker.equippedTech.Bleed > 0)
-                            UIManager.Instance.AddCombatInfo("출혈 저항");
+                            UIManager.Instance.AddCombatInfo("<color=red>출혈 저항");
                     }
 
                     // 중독
@@ -112,13 +112,13 @@ public class CombatManager : SingleTon<CombatManager>
                     if (isPoision(attacker.equippedTech, taker.characterData, crit))
                     {
                         taker.OnPoison(attacker.equippedTech.PoisonDamage, attacker.equippedTech.PoisonTurnCnt + (crit ? attacker.equippedTech.PoisonTurnCnt / 2 : 0));
-                        UIManager.Instance.AddCombatInfo("중독");
+                        UIManager.Instance.AddCombatInfo("<color=green>중독");
                     }
                     else
                     {
                         // 중독 효과가 있는데 발동 안됨
                         if (attacker.equippedTech.Poison > 0)
-                            UIManager.Instance.AddCombatInfo("중독 저항");
+                            UIManager.Instance.AddCombatInfo("<color=green>중독 저항");
                     }
                     break;
 
@@ -127,9 +127,9 @@ public class CombatManager : SingleTon<CombatManager>
                     taker.OnStressed(stress);
 
                     if (crit)
-                        UIManager.Instance.AddCombatInfo(string.Format("치명타!\n{0}", stress), 0);
+                        UIManager.Instance.AddCombatInfo(string.Format("<color=black>치명타!\n+{0}", stress), 0);
                     else
-                        UIManager.Instance.AddCombatInfo(string.Format("{0}", stress), 0);
+                        UIManager.Instance.AddCombatInfo(string.Format("<color=black>+{0}", stress), 0);
                     break;
 
                 case TechType.Heal:
@@ -137,9 +137,9 @@ public class CombatManager : SingleTon<CombatManager>
                     taker.OnHealed(heal);
 
                     if (crit)
-                        UIManager.Instance.AddCombatInfo(string.Format("치명타!\n{0}", heal), 0);
+                        UIManager.Instance.AddCombatInfo(string.Format("<color=#9BFF00>치명타!\n+{0}", heal), 0);
                     else
-                        UIManager.Instance.AddCombatInfo(string.Format("{0}", heal), 0);
+                        UIManager.Instance.AddCombatInfo(string.Format("<color=#9BFF00>+{0}", heal), 0);
                     break;
             }
 

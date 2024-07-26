@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
 
 public class Character : MonoBehaviour
 {
@@ -30,6 +31,9 @@ public class Character : MonoBehaviour
         hp = characterData.MaxHp;
 
         tilemap = GridHighlighter.Instance.tilemap;
+
+        // 대충 놔도 스냅되도록
+        transform.position = GridHighlighter.Instance.ConvertTileToWorldPosition(tilemap.WorldToCell(transform.position));
     }
 
     // 크리티컬이면 스트레스 10 증가

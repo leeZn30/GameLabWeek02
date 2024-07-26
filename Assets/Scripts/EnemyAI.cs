@@ -113,16 +113,85 @@ public class EnemyAI : Character
 
     void Attack()
     {
-        // List<Hero> heroes = new List<Hero>();
-
+        List<Character> targets = new List<Character>();
         List<AttackRange> ranges = FindObjectsOfType<AttackRange>().ToList();
-        foreach (AttackRange go in ranges)
+
+        // 힐이 아니라면 공격으로 간주 -> 히어로 파악
+        if (equippedTech.TechType != TechType.Heal)
         {
-            if (go.hero != null)
-                CombatManager.Instance.Combat(this, go.hero);
+            foreach (AttackRange go in ranges)
+            {
+                if (go.hero != null)
+                {
+                    targets.Add(go.hero);
+                }
+            }
+
+            // 적 하나 이상 발견
+            if (targets.Count > 1)
+            {
+                // 단일 공격이라면 하나 선택
+                if (equippedTech.TechTarget == TechTarget.Single)
+                {
+                    ChooseCharacter();
+                }
+                // 다중 공격이라면 모두에게 적용
+                else
+                {
+                    CombatManager.Instance.Combat(this, targets);
+                }
+            }
+            // 적 하나 발견
+            else
+            {
+                if (targets.Count > 0)
+                {
+                    CombatManager.Instance.Combat(this, targets[0]);
+                }
+            }
+        }
+        // 힐이면 -> 에너미 파악
+        // 일단 적군은 힐러 없을 예정
+        // 그래도 코드는 남겨놔
+        else
+        {
+            foreach (AttackRange go in ranges)
+            {
+                if (go.enemy != null && go.enemy != this)
+                {
+                    targets.Add(go.enemy);
+                }
+            }
+
+            // 플레이어 하나 이상 발견
+            if (targets.Count > 1)
+            {
+                // 단일 힐이라면 하나 선택
+                if (equippedTech.TechTarget == TechTarget.Single)
+                {
+                    ChooseCharacter();
+                }
+                // 다중 힐이라면 모두에게 적용
+                else
+                {
+                    CombatManager.Instance.Combat(this, targets);
+                }
+            }
+            // 플레이어 하나 발견
+            else
+            {
+                if (targets.Count > 0)
+                {
+                    CombatManager.Instance.Combat(this, targets[0]);
+                }
+            }
         }
 
         gridHighlighter.RemoveAllAttackRange();
+    }
+
+    void ChooseCharacter()
+    {
 
     }
 }

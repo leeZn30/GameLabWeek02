@@ -71,6 +71,7 @@ public class Hero : Character
                 if (go.enemy != null)
                 {
                     targets.Add(go.enemy);
+                    Debug.Log(go.enemy);
                 }
             }
 
@@ -102,9 +103,10 @@ public class Hero : Character
         {
             foreach (AttackRange go in ranges)
             {
-                if (go.hero != null)
+                if (go.hero != null && go.hero != this)
                 {
                     targets.Add(go.hero);
+                    Debug.Log(go.hero);
                 }
             }
 

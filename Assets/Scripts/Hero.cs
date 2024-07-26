@@ -9,6 +9,7 @@ public class Hero : Character
     [Header("상태")]
     [SerializeField] bool isSelected;
     public Vector3Int CurrentTilePosition;
+    bool isChoosing;
 
     GridHighlighter gridHighlighter;
 
@@ -35,6 +36,22 @@ public class Hero : Character
             gridHighlighter.selectedHero = null;
             gridHighlighter.UnHighlightAllTile();
             gridHighlighter.RemoveAllAttackRange();
+        }
+
+        if (isChoosing && Input.GetMouseButton(0))
+        {
+            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            RaycastHit2D hit = Physics2D.Raycast(mousePosition, Vector2.down, 1f, 1 << LayerMask.NameToLayer("Character"));
+
+            if (hit.collider != null && hit.collider.CompareTag("Enemy"))
+            {
+                CombatManager.Instance.Combat(this, hit.collider.GetComponent<EnemyAI>());
+                gridHighlighter.RemoveAllAttackRange();
+
+                isChoosing = false;
+
+                UIManager.Instance.HideGameInfo();
+            }
         }
     }
 
@@ -80,12 +97,13 @@ public class Hero : Character
                 // 단일 공격이라면 하나 선택
                 if (equippedTech.TechTarget == TechTarget.Single)
                 {
-                    ChooseCharacter();
+                    ReadyToChooseEnemy();
                 }
                 // 다중 공격이라면 모두에게 적용
                 else
                 {
                     CombatManager.Instance.Combat(this, targets);
+                    gridHighlighter.RemoveAllAttackRange();
                 }
             }
             // 적 하나 발견
@@ -94,6 +112,7 @@ public class Hero : Character
                 if (targets.Count > 0)
                 {
                     CombatManager.Instance.Combat(this, targets[0]);
+                    gridHighlighter.RemoveAllAttackRange();
                 }
             }
         }
@@ -115,12 +134,13 @@ public class Hero : Character
                 // 단일 힐이라면 하나 선택
                 if (equippedTech.TechTarget == TechTarget.Single)
                 {
-                    ChooseCharacter();
+                    ReadyToChooseEnemy();
                 }
                 // 다중 힐이라면 모두에게 적용
                 else
                 {
                     CombatManager.Instance.Combat(this, targets);
+                    gridHighlighter.RemoveAllAttackRange();
                 }
             }
             // 플레이어 하나 발견
@@ -129,11 +149,14 @@ public class Hero : Character
                 if (targets.Count > 0)
                 {
                     CombatManager.Instance.Combat(this, targets[0]);
+                    gridHighlighter.RemoveAllAttackRange();
                 }
             }
         }
 
-        gridHighlighter.RemoveAllAttackRange();
+        // 이동만 한 것
+        if (targets.Count == 0)
+            gridHighlighter.RemoveAllAttackRange();
     }
 
     public override void OnStressed(int stress)
@@ -168,9 +191,14 @@ public class Hero : Character
         }
     }
 
-    void ChooseCharacter()
+    void ReadyToChooseEnemy()
     {
-        gridHighlighter.RemoveAllAttackRange();
+        if (!isChoosing)
+            isChoosing = true;
+
+        // UI 뜨게
+        string text = "단일 공격입니다.\n공격하고 싶은 적을 클릭하세요.";
+        UIManager.Instance.ShowGameInfo(text);
     }
 
     Vector3Int GetCurrentTilePosition()

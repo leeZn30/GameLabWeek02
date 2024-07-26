@@ -8,13 +8,16 @@ public class UIManager : SingleTon<UIManager>
 {
     [Header("오브젝트")]
     TextMeshProUGUI CombatInfo;
+    TextMeshProUGUI GameInfo;
 
     List<string> combatInfos = new List<string>();
 
     void Awake()
     {
         CombatInfo = GameObject.Find("CombatInfo").GetComponent<TextMeshProUGUI>();
+        GameInfo = GameObject.Find("GameInfo").GetComponentInChildren<TextMeshProUGUI>();
         CombatInfo.gameObject.SetActive(false);
+        GameInfo.transform.parent.gameObject.SetActive(false);
     }
 
     public void AddCombatInfo(string text)
@@ -48,5 +51,16 @@ public class UIManager : SingleTon<UIManager>
 
         // 카메라 줌아웃
         CombatManager.Instance.CallZoomOutCamera();
+    }
+
+    public void ShowGameInfo(string text)
+    {
+        GameInfo.SetText(text);
+        GameInfo.transform.parent.gameObject.SetActive(true);
+    }
+
+    public void HideGameInfo()
+    {
+        GameInfo.transform.parent.gameObject.SetActive(false);
     }
 }

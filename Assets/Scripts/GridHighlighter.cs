@@ -330,7 +330,7 @@ public class GridHighlighter : SingleTon<GridHighlighter>
                 if (!isInternal)
                 {
                     // 맨해튼 거리가 maxSteps 이하인 좌표만 고려합니다.
-                    if (Mathf.Abs(x) + Mathf.Abs(y) == range)
+                    if (Mathf.Abs(x) + Mathf.Abs(y) == range && tilemap.HasTile(position))
                     {
                         Instantiate(attackRange, ConvertTileToWorldPosition(position), Quaternion.identity);
                     }
@@ -338,7 +338,7 @@ public class GridHighlighter : SingleTon<GridHighlighter>
                 else
                 {
                     // 맨해튼 거리가 maxSteps 이하인 좌표만 고려합니다.
-                    if (Mathf.Abs(x) + Mathf.Abs(y) <= range)
+                    if (Mathf.Abs(x) + Mathf.Abs(y) <= range && tilemap.HasTile(position))
                     {
                         Instantiate(attackRange, ConvertTileToWorldPosition(position), Quaternion.identity);
                     }

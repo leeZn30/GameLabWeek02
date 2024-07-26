@@ -122,90 +122,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &274428893
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 274428895}
-  - component: {fileID: 274428894}
-  m_Layer: 0
-  m_Name: DamageEffect
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!212 &274428894
-SpriteRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 274428893}
-  m_Enabled: 1
-  m_CastShadows: 0
-  m_ReceiveShadows: 0
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 0
-  m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 0
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 821027709
-  m_SortingLayer: 3
-  m_SortingOrder: 0
-  m_Sprite: {fileID: 3625043607559282579, guid: 19fb86013d8c24d6cb8410c0aadf30fa, type: 3}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
-  m_FlipX: 0
-  m_FlipY: 0
-  m_DrawMode: 0
-  m_Size: {x: 1, y: 0.5}
-  m_AdaptiveModeThreshold: 0.5
-  m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
---- !u!4 &274428895
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 274428893}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: 0.42942604, w: 0.90310204}
-  m_LocalPosition: {x: 0.85, y: -24.01, z: 0}
-  m_LocalScale: {x: 1.5, y: 0.3, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 50.862}
 --- !u!1 &380649134
 GameObject:
   m_ObjectHideFlags: 0
@@ -4862,18 +4778,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60e3bb4cab4386f469765578dd2a966f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heroData:
+  characterData:
     ID: 
     Speed: 0
-    Hp: 20
+    Hp: 0
     Stress: 0
     AccMod: 0
-    Dodge: 100
+    Dodge: 0
     Crit: 0
-    Step: 5
+    Step: 0
     Techs:
     - ID: 
-      Range: 2
+      Range: 0
       isInternal: 0
       Acc: 0
   isSelected: 0
@@ -4975,7 +4891,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   window: {fileID: 734173143}
-  shortDamageEffect: {fileID: 0}
+  shortDamageEffect: {fileID: 814718663408882621, guid: 365b927b3df865940acbeba29a11fce6, type: 3}
 --- !u!4 &478857985
 Transform:
   m_ObjectHideFlags: 0
@@ -5027,7 +4943,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -5241,17 +5157,17 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Hit!
+  m_text: "\uD68C\uD53C!"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 44c78fab29f7cf049bc1bc50b13fc0ad, type: 2}
+  m_sharedMaterial: {fileID: 4465258924118328633, guid: 44c78fab29f7cf049bc1bc50b13fc0ad, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4278226687
+  m_fontColor: {r: 1, g: 0.5581796, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -5268,8 +5184,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 50
+  m_fontSizeBase: 50
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -5486,6 +5402,39 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1257303187
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1257303188}
+  m_Layer: 0
+  m_Name: Players
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1257303188
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1257303187}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.7647468, y: 0.45292813, z: -0.08462445}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1464816973}
+  - {fileID: 2023637150}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1373326085
 GameObject:
   m_ObjectHideFlags: 0
@@ -5568,20 +5517,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f31dc856bc75f0b41bacb037c2ed93f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyData:
+  characterData:
     ID: 
     Speed: 0
     Hp: 0
     Stress: 0
-    AccMod: 5
+    AccMod: 0
     Dodge: 0
     Crit: 0
-    Step: 3
+    Step: 0
     Techs:
     - ID: 
-      Range: 1
+      Range: 0
       isInternal: 0
-      Acc: 90
+      Acc: 0
   targetPlayer: {fileID: 0}
 --- !u!212 &1373326088
 SpriteRenderer:
@@ -5663,7 +5612,7 @@ GameObject:
   - component: {fileID: 1464816974}
   - component: {fileID: 1464816975}
   m_Layer: 6
-  m_Name: Player
+  m_Name: PlayerB
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5729,12 +5678,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1464816971}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.47, y: -6.43, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -3.234747, y: -6.882928, z: 0.08462445}
   m_LocalScale: {x: 0.9, y: 0.9, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1257303188}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1464816974
 MonoBehaviour:
@@ -5748,20 +5697,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60e3bb4cab4386f469765578dd2a966f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heroData:
+  characterData:
     ID: 
     Speed: 0
-    Hp: 20
+    Hp: 50
     Stress: 0
     AccMod: 0
-    Dodge: 100
+    Dodge: 10
     Crit: 0
-    Step: 5
+    Step: 4
     Techs:
     - ID: 
       Range: 2
       isInternal: 0
-      Acc: 0
+      Acc: 90
   isSelected: 0
   CurrentTilePosition: {x: 0, y: 0, z: 0}
 --- !u!61 &1464816975
@@ -5809,6 +5758,40 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!1 &1469792959
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1469792960}
+  m_Layer: 0
+  m_Name: Enemies
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1469792960
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1469792959}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.7647468, y: 0.45292813, z: -0.08462445}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1700067439}
+  - {fileID: 1682650748}
+  - {fileID: 1965758510}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1682650744
 GameObject:
   m_ObjectHideFlags: 0
@@ -5822,7 +5805,7 @@ GameObject:
   - component: {fileID: 1682650746}
   - component: {fileID: 1682650745}
   m_Layer: 6
-  m_Name: Enemy (1)
+  m_Name: EnemyA (1)
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5891,15 +5874,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f31dc856bc75f0b41bacb037c2ed93f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyData:
+  characterData:
     ID: 
     Speed: 0
-    Hp: 0
+    Hp: 15
     Stress: 0
-    AccMod: 5
-    Dodge: 0
+    AccMod: 0
+    Dodge: 5
     Crit: 0
-    Step: 3
+    Step: 4
     Techs:
     - ID: 
       Range: 1
@@ -5966,12 +5949,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1682650744}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.53, y: 5.53, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1.7652532, y: 5.077072, z: 0.08462445}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1469792960}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1700067437
 GameObject:
@@ -5986,7 +5969,7 @@ GameObject:
   - component: {fileID: 1700067440}
   - component: {fileID: 1700067441}
   m_Layer: 6
-  m_Name: Enemy
+  m_Name: EnemyA
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6052,12 +6035,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1700067437}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.53, y: 5.46, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -4.294747, y: 5.007072, z: 0.08462445}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1469792960}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1700067440
 MonoBehaviour:
@@ -6071,15 +6054,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f31dc856bc75f0b41bacb037c2ed93f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyData:
+  characterData:
     ID: 
     Speed: 0
-    Hp: 0
+    Hp: 15
     Stress: 0
-    AccMod: 5
-    Dodge: 0
+    AccMod: 0
+    Dodge: 5
     Crit: 0
-    Step: 3
+    Step: 4
     Techs:
     - ID: 
       Range: 1
@@ -6150,7 +6133,7 @@ GameObject:
   - component: {fileID: 1965758508}
   - component: {fileID: 1965758507}
   m_Layer: 6
-  m_Name: Enemy (2)
+  m_Name: EnemyB
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6219,15 +6202,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f31dc856bc75f0b41bacb037c2ed93f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyData:
+  characterData:
     ID: 
     Speed: 0
-    Hp: 0
+    Hp: 20
     Stress: 0
-    AccMod: 0
-    Dodge: 0
+    AccMod: 5
+    Dodge: 20
     Crit: 0
-    Step: 3
+    Step: 6
     Techs:
     - ID: 
       Range: 2
@@ -6294,12 +6277,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1965758506}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.63, y: 6.49, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -1.3947468, y: 6.0370717, z: 0.08462445}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1469792960}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1972369581
 GameObject:
@@ -6360,7 +6343,7 @@ GameObject:
   - component: {fileID: 2023637152}
   - component: {fileID: 2023637153}
   m_Layer: 6
-  m_Name: PlayerT
+  m_Name: PlayerY
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6426,12 +6409,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2023637148}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.49, y: -6.54, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.7252532, y: -6.992928, z: 0.08462445}
   m_LocalScale: {x: 0.9, y: 0.9, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1257303188}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2023637152
 MonoBehaviour:
@@ -6445,20 +6428,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60e3bb4cab4386f469765578dd2a966f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heroData:
+  characterData:
     ID: 
     Speed: 0
-    Hp: 15
+    Hp: 25
     Stress: 0
-    AccMod: 0
-    Dodge: 0
+    AccMod: 5
+    Dodge: 100
     Crit: 0
-    Step: 4
+    Step: 5
     Techs:
     - ID: 
       Range: 1
       isInternal: 0
-      Acc: 0
+      Acc: 90
   isSelected: 0
   CurrentTilePosition: {x: 0, y: 0, z: 0}
 --- !u!61 &2023637153
@@ -6615,14 +6598,10 @@ SceneRoots:
   - {fileID: 519420032}
   - {fileID: 2037810198}
   - {fileID: 1972369583}
-  - {fileID: 1464816973}
-  - {fileID: 2023637150}
-  - {fileID: 1700067439}
-  - {fileID: 1682650748}
-  - {fileID: 1965758510}
   - {fileID: 562946930}
   - {fileID: 478857985}
   - {fileID: 734173144}
   - {fileID: 409387909}
   - {fileID: 1373326089}
-  - {fileID: 274428895}
+  - {fileID: 1257303188}
+  - {fileID: 1469792960}

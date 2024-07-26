@@ -1,22 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class EnemyAI : MonoBehaviour
+public class EnemyAI : Character
 {
-    [Header("정보")]
-    public CharacterData enemyData;
-    public int hp => enemyData.Hp;
-    public int step => enemyData.Step;
-    int techIndex = 0;
-    public TechData equippedTech => enemyData.Techs[techIndex];
-
-    // attackRange > 0 무조건!!
-    public int attackRange => enemyData.Techs[techIndex].Range;
-    public bool isAtkRangeInternal => enemyData.Techs[techIndex].isInternal;
-
     GridHighlighter gridHighlighter;
     Tilemap tilemap;
 
@@ -127,8 +117,8 @@ public class EnemyAI : MonoBehaviour
         List<AttackRange> ranges = FindObjectsOfType<AttackRange>().ToList();
         foreach (AttackRange go in ranges)
         {
-            // if (go.hero != null)
-            //     CombatManager.Instance.CalculateAttack(enemyData, go.hero.heroData, equippedTech);
+            if (go.hero != null)
+                CombatManager.Instance.Combat(this, go.hero);
         }
 
         gridHighlighter.RemoveAllAttackRange();

@@ -4,18 +4,8 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class Hero : MonoBehaviour
+public class Hero : Character
 {
-    [Header("정보")]
-    public CharacterData heroData;
-    public int hp => heroData.Hp;
-    public int step => heroData.Step;
-    int techIndex = 0;
-    public TechData equippedTech => heroData.Techs[techIndex];
-    public int attackRange => heroData.Techs[techIndex].Range;
-    public bool isAtkRangeInternal => heroData.Techs[techIndex].isInternal;
-
-
     [Header("상태")]
     [SerializeField] bool isSelected;
     public Vector3Int CurrentTilePosition;
@@ -76,7 +66,7 @@ public class Hero : MonoBehaviour
         {
             if (go.enemy != null)
             {
-                // CombatManager.Instance.CalculateAttack(heroData, go.enemy.enemyData, equippedTech);
+                CombatManager.Instance.Combat(this, go.enemy);
             }
         }
 

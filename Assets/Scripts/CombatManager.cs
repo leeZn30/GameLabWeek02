@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -7,66 +8,245 @@ public class CombatManager : SingleTon<CombatManager>
 {
     [SerializeField] GameObject window;
     [SerializeField] GameObject shortDamageEffect;
-    TextMeshProUGUI combatInfo;
+    int maxPercent = 101;
 
-    void Awake()
-    {
-        combatInfo = GameObject.Find("CombatInfo").GetComponent<TextMeshProUGUI>();
-        combatInfo.gameObject.SetActive(false);
-    }
-
-    public void ShowWindow()
-    {
-        Camera.main.transform.position = new Vector3(window.transform.position.x, window.transform.position.y, Camera.main.transform.position.z);
-    }
-
+    // 단일 공격
     public void Combat(Character attacker, Character taker)
     {
+        // 공격 방식 + 범위에 따른 연출
+        IEnumerator callback = null;
+
+        // 연출 추가
+        switch (attacker.equippedTech.TechType)
+        {
+            case TechType.Attack:
+                if (attacker.equippedTech.TechRange == TechRange.Melee)
+                {
+                    callback = meleeAtkHit(taker.gameObject);
+                }
+                else
+                {
+                    callback = rangedAtkHit(taker.gameObject);
+                }
+                break;
+
+            case TechType.Stress:
+                if (attacker.equippedTech.TechRange == TechRange.Melee)
+                {
+                    callback = meleeStressHit(taker.gameObject);
+                }
+                else
+                {
+                    callback = rangedStressHit(taker.gameObject);
+                }
+                break;
+
+            case TechType.Heal:
+                if (attacker.equippedTech.TechRange == TechRange.Melee)
+                {
+                    callback = meleeHealHit(taker.gameObject);
+                }
+                else
+                {
+                    callback = rangedHealHit(taker.gameObject);
+                }
+                break;
+        }
+
+        // 명중
         if (isHit(attacker.characterData, taker.characterData, attacker.equippedTech))
         {
-            StartCoroutine(ZoomInCamera(taker.gameObject, shortHit(taker.gameObject), "히트"));
-            // StartCoroutine(showText(taker.gameObject, "Hit"));
-            // StartCoroutine(shortHit(taker.gameObject));
+            // 크리티컬 여부
+            bool crit = isCritical(attacker);
+
+            /* 크리티컬이면
+            - attacker는 스트레스 3 회복
+            */
+            if (crit)
+            {
+                attacker.OnStressed(-3);
+
+                UIManager.Instance.AddCombatInfo("스트레스\n-3");
+            }
+
+            switch (attacker.equippedTech.TechType)
+            {
+                case TechType.Attack:
+                    int damage = GetDamage(attacker.equippedTech, crit);
+                    taker.OnDamaged(damage, crit);
+                    if (crit)
+                        UIManager.Instance.AddCombatInfo(string.Format("치명타!\n{0}", damage), 0);
+                    else
+                        UIManager.Instance.AddCombatInfo(string.Format("{0}", damage), 0);
+
+                    // 공격일 경우, 상태 이상 확인 -> 크리티컬이면 발동 확률 높이기
+                    // 기절
+                    if (isStun(attacker.equippedTech, taker.characterData, crit))
+                    {
+                        taker.OnStun();
+                        UIManager.Instance.AddCombatInfo("기절!");
+                    }
+                    else
+                    {
+                        // 스턴 효과가 있는데 발동 안됨
+                        if (attacker.equippedTech.Stun > 0)
+                            UIManager.Instance.AddCombatInfo("기절 저항");
+                    }
+
+                    // 출혈
+                    // 크리티컬이면 50% 지속 시간 증가
+                    if (isBleed(attacker.equippedTech, taker.characterData, crit))
+                    {
+                        taker.OnBleed(attacker.equippedTech.BleedDamage, attacker.equippedTech.BleedTurnCnt + (crit ? attacker.equippedTech.BleedTurnCnt / 2 : 0));
+                        UIManager.Instance.AddCombatInfo("출혈");
+                    }
+                    else
+                    {
+                        // 출혈 효과가 있는데 발동 안됨
+                        if (attacker.equippedTech.Bleed > 0)
+                            UIManager.Instance.AddCombatInfo("출혈 저항");
+                    }
+
+                    // 중독
+                    // 크리티컬이면 50% 지속 시간 증가
+                    if (isPoision(attacker.equippedTech, taker.characterData, crit))
+                    {
+                        taker.OnPoison(attacker.equippedTech.PoisonDamage, attacker.equippedTech.PoisonTurnCnt + (crit ? attacker.equippedTech.PoisonTurnCnt / 2 : 0));
+                        UIManager.Instance.AddCombatInfo("중독");
+                    }
+                    else
+                    {
+                        // 중독 효과가 있는데 발동 안됨
+                        if (attacker.equippedTech.Poison > 0)
+                            UIManager.Instance.AddCombatInfo("중독 저항");
+                    }
+                    break;
+
+                case TechType.Stress:
+                    int stress = GetDamage(attacker.equippedTech, crit);
+                    taker.OnStressed(stress);
+
+                    if (crit)
+                        UIManager.Instance.AddCombatInfo(string.Format("치명타!\n{0}", stress), 0);
+                    else
+                        UIManager.Instance.AddCombatInfo(string.Format("{0}", stress), 0);
+                    break;
+
+                case TechType.Heal:
+                    int heal = GetHeal(attacker.equippedTech, crit);
+                    taker.OnHealed(heal);
+
+                    if (crit)
+                        UIManager.Instance.AddCombatInfo(string.Format("치명타!\n{0}", heal), 0);
+                    else
+                        UIManager.Instance.AddCombatInfo(string.Format("{0}", heal), 0);
+                    break;
+            }
+
+            // 연출 시작
+            StartCoroutine(ZoomInCamera(taker.gameObject, callback));
         }
+        // 회피
         else
         {
-            StartCoroutine(ZoomInCamera(taker.gameObject, dodge(taker.gameObject), "회피!"));
-            // StartCoroutine(showText(taker.gameObject, "Dodge!"));
-            // StartCoroutine(dodge(taker.gameObject));
+            UIManager.Instance.AddCombatInfo("회피!");
+            StartCoroutine(ZoomInCamera(taker.gameObject, callback, dodge(taker.gameObject)));
         }
     }
 
-    public void Combat(Character attaker, List<Character> taker)
+    // 다중 공격
+    public void Combat(Character attaker, List<Character> takers)
     {
-
+        foreach (Character c in takers)
+        {
+            Combat(attaker, c);
+        }
     }
 
-    // 다중 히트
-    void CalculateAttack(CharacterData attacker, List<CharacterData> takers, TechData attack)
-    {
-    }
-
-    // 히트
     bool isHit(CharacterData attacker, CharacterData taker, TechData attack)
     {
-        // ShowWindow();
-
-        // 명중률 = 기술 명중 + 캐릭터 명중 보정치 - 적 회피
-        float accuracy = attack.Acc + attacker.AccMod - taker.Dodge;
-
-        if (Random.Range(0.0f, 1f) < accuracy)
+        if (attack.TechType != TechType.Heal)
         {
-            // 명중
+            // 명중률 = 기술 명중 + 캐릭터 명중 보정치 - 적 회피
+            float accuracy = attack.Acc + attacker.AccMod - taker.Dodge;
+
+            if (Random.Range(0.0f, 1f) <= accuracy)
+            {
+                // 명중
+                return true;
+            }
+            else
+            {
+                // 회피
+                return false;
+            }
+        }
+        else
             return true;
+
+    }
+
+    bool isCritical(Character attacker)
+    {
+        if (Random.Range(0, 101) <= attacker.crit)
+            return true;
+        else return false;
+    }
+
+    bool isStun(TechData techData, CharacterData taker, bool isCritical)
+    {
+        // 기절 수치 = 기술 기절 + 크리티컬 성공 시 20 추가 - 적 기절 저항력
+        int stunPercent = techData.Stun + (isCritical ? 20 : 0) - taker.StunResist;
+
+        return Random.Range(0, maxPercent) <= stunPercent;
+    }
+    bool isBleed(TechData techData, CharacterData taker, bool isCritical)
+    {
+        // 출혈 수치 = 출혈 기절 - 적 출혈 저항력
+        int bleedPercent = techData.Bleed + (isCritical ? 20 : 0) - taker.BleedResist;
+
+        return Random.Range(0, maxPercent) <= bleedPercent;
+    }
+    bool isPoision(TechData techData, CharacterData taker, bool isCritical)
+    {
+        // 기절 수치 = 기술 기절 - 적 기절 저항력
+        int poisonPercent = techData.Poison + (isCritical ? 20 : 0) - taker.PoisonResist;
+
+        return Random.Range(0, maxPercent) <= poisonPercent;
+    }
+
+    int GetDamage(TechData attack, bool isCritical)
+    {
+        // max는 포함 아니기 때문에 1 추가
+        // 일반 공격은 최대 데미지 * 1.5 소수점 반올림
+        if (isCritical)
+        {
+            return Mathf.RoundToInt(attack.maxDamage * 1.5f);
         }
         else
         {
-            // 회피
-            return false;
+
+            return Random.Range(attack.minDamage, attack.maxDamage + 1);
         }
     }
 
-    IEnumerator ZoomInCamera(GameObject taker, IEnumerator callback, string text)
+    int GetHeal(TechData attack, bool isCritical)
+    {
+        // 힐은 결과값에 1.5배 반올림
+        int heal = Random.Range(attack.minDamage, attack.maxDamage + 1);
+
+        if (isCritical)
+        {
+            return Mathf.RoundToInt(heal * 1.5f);
+        }
+        else
+        {
+
+            return heal;
+        }
+    }
+
+    IEnumerator ZoomInCamera(GameObject taker, IEnumerator callback, IEnumerator dodge = null)
     {
         Vector3 initialCameraPosition = Camera.main.transform.position;
         Vector3 targetCameraPosition = new Vector3(taker.transform.position.x, taker.transform.position.y, Camera.main.transform.position.z);
@@ -91,8 +271,12 @@ public class CombatManager : SingleTon<CombatManager>
         Camera.main.orthographicSize = targetOrthographicSize;
 
         StartCoroutine(callback);
-        StartCoroutine(showText(taker, text));
+        if (dodge != null)
+            StartCoroutine(dodge);
+
+        UIManager.Instance.ShowCombatInfos(taker.transform.position + new Vector3(0, taker.transform.localScale.y));
     }
+
     IEnumerator ZoomOutCamera()
     {
         Vector3 initialCameraPosition = Camera.main.transform.position;
@@ -117,27 +301,63 @@ public class CombatManager : SingleTon<CombatManager>
         Camera.main.orthographicSize = targetOrthographicSize;
     }
 
-    IEnumerator showText(GameObject taker, string text)
+    public void CallZoomOutCamera()
     {
-        combatInfo.SetText(text);
-        combatInfo.transform.position = taker.transform.position + new Vector3(0, taker.transform.localScale.y);
-        combatInfo.gameObject.SetActive(true);
-
-        yield return new WaitForSeconds(1f);
-
-        combatInfo.gameObject.SetActive(false);
-
+        StartCoroutine(ZoomOutCamera());
     }
 
-    IEnumerator shortHit(GameObject taker)
+    IEnumerator meleeAtkHit(GameObject taker)
     {
         GameObject go = Instantiate(shortDamageEffect, taker.transform.position, shortDamageEffect.transform.rotation);
 
         yield return new WaitForSeconds(1f);
 
         Destroy(go);
+    }
 
-        StartCoroutine(ZoomOutCamera());
+    IEnumerator rangedAtkHit(GameObject taker)
+    {
+        GameObject go = Instantiate(shortDamageEffect, taker.transform.position, shortDamageEffect.transform.rotation);
+
+        yield return new WaitForSeconds(1f);
+
+        Destroy(go);
+    }
+
+    IEnumerator meleeStressHit(GameObject taker)
+    {
+        GameObject go = Instantiate(shortDamageEffect, taker.transform.position, shortDamageEffect.transform.rotation);
+
+        yield return new WaitForSeconds(1f);
+
+        Destroy(go);
+    }
+
+    IEnumerator rangedStressHit(GameObject taker)
+    {
+        GameObject go = Instantiate(shortDamageEffect, taker.transform.position, shortDamageEffect.transform.rotation);
+
+        yield return new WaitForSeconds(1f);
+
+        Destroy(go);
+    }
+
+    IEnumerator meleeHealHit(GameObject taker)
+    {
+        GameObject go = Instantiate(shortDamageEffect, taker.transform.position, shortDamageEffect.transform.rotation);
+
+        yield return new WaitForSeconds(1f);
+
+        Destroy(go);
+    }
+
+    IEnumerator rangedHealHit(GameObject taker)
+    {
+        GameObject go = Instantiate(shortDamageEffect, taker.transform.position, shortDamageEffect.transform.rotation);
+
+        yield return new WaitForSeconds(1f);
+
+        Destroy(go);
     }
 
     IEnumerator dodge(GameObject taker)
@@ -162,9 +382,7 @@ public class CombatManager : SingleTon<CombatManager>
 
         yield return new WaitForSeconds(0.7f);
 
-        taker.transform.position = originPose;
         Destroy(go);
-
-        StartCoroutine(ZoomOutCamera());
+        taker.transform.position = originPose;
     }
 }

@@ -5,14 +5,14 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class GridHighlighter : MonoBehaviour
+public class GridHighlighter : SingleTon<GridHighlighter>
 {
     public Hero selectedHero;
     public EnemyAI selectedEnemy;
     public Vector3Int PrevHighlightedPosition;
     public Vector3Int NowHighlightedPosition;
 
-    Tilemap tilemap;
+    public Tilemap tilemap;
     LineRenderer lineRenderer;
 
     [Header("표시된 타일 정보")]
@@ -379,7 +379,7 @@ public class GridHighlighter : MonoBehaviour
         return list;
     }
 
-    Vector3 ConvertTileToWorldPosition(Vector3Int pos)
+    public Vector3 ConvertTileToWorldPosition(Vector3Int pos)
     {
         return new Vector3(pos.x + 0.5f, pos.y + 0.5f, pos.z);
     }

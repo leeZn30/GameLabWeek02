@@ -8,7 +8,6 @@ using UnityEngine.Tilemaps;
 public class EnemyAI : Character
 {
     GridHighlighter gridHighlighter;
-    Tilemap tilemap;
 
     List<Hero> heroes = new List<Hero>();
 
@@ -17,8 +16,10 @@ public class EnemyAI : Character
     private Vector3Int playerPosition;
     public Hero targetPlayer;
 
-    void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+
         gridHighlighter = FindObjectOfType<GridHighlighter>();
         tilemap = gridHighlighter.GetComponent<Tilemap>();
 

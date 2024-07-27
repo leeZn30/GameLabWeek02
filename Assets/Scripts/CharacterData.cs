@@ -10,7 +10,7 @@ public class CharacterData
     public string ID;
     public int Speed; // 턴 순서를 결정할 속도
     public int MaxHp;
-    public float Stress = 0;
+    public int Stress = 0;
     public float AccMod; // 명중 보정치
     public float Dodge; // 회피
     public int Crit; // 크리티컬

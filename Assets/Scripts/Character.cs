@@ -33,13 +33,13 @@ public class Character : MonoBehaviour
 
     [Header("현재 상태")]
     public int hp;
+    public int stress;
     // 0: default 1: Awakening 2: Collapse
     public int StressState = 0;
     bool isStun;
-    List<StatusAbnormal> bleedStatus;
-    List<StatusAbnormal> poisonStatus;
+    List<StatusAbnormal> bleedStatus = new List<StatusAbnormal>();
+    List<StatusAbnormal> poisonStatus = new List<StatusAbnormal>();
     bool myTurn = false;
-
 
     [Header("타일맵")]
     protected Tilemap tilemap;
@@ -55,13 +55,14 @@ public class Character : MonoBehaviour
 
     [Header("Effect")]
     [SerializeField] GameObject atk;
-    [SerializeField] GameObject stress;
+    [SerializeField] GameObject sts;
     [SerializeField] GameObject heal;
     [SerializeField] GameObject stressheal;
 
     protected virtual void Awake()
     {
         hp = characterData.MaxHp;
+        stress = characterData.Stress;
 
         tilemap = GridHighlighter.Instance.tilemap;
 
@@ -84,6 +85,10 @@ public class Character : MonoBehaviour
         {
             CombatManager.Instance.CallZoomOutCamera();
         }
+    }
+
+    void OnMouseOver()
+    {
     }
 
     public virtual void StartTurn()
@@ -191,22 +196,6 @@ public class Character : MonoBehaviour
     // Hero에서만 구현되어야 함
     public virtual void OnStressHealed(int heal, bool isCritical, bool isEffect = false)
     {
-        int sumBleed = 0;
-        for (int i = 0; i < bleedStatus.Count; i++)
-        {
-            sumBleed += bleedStatus[i].damage;
-            bleedStatus[i].turns--;
-
-            if (bleedStatus[i].turns == 0)
-            {
-                bleedStatus.RemoveAt(i);
-            }
-        }
-
-        TextMeshProUGUI desc = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
-        desc.SetText("<color=#C100A5>출혈 상태");
-
-        OnDamaged(sumBleed, false, false);
     }
 
     public void OnStun(bool isStun, bool isStunEnable)
@@ -353,7 +342,7 @@ public class Character : MonoBehaviour
 
     protected IEnumerator stressed()
     {
-        GameObject go = Instantiate(stress, transform.position, stress.transform.rotation);
+        GameObject go = Instantiate(sts, transform.position, sts.transform.rotation);
 
         yield return new WaitForSeconds(2f);
 

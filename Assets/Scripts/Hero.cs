@@ -15,7 +15,7 @@ public class Hero : Character
 
     [Header("UI")]
     HeroUI HeroUI;
-
+    [SerializeField] StateUI stateUI;
 
     GridHighlighter gridHighlighter;
 
@@ -25,6 +25,8 @@ public class Hero : Character
 
         gridHighlighter = FindObjectOfType<GridHighlighter>();
         tilemap = gridHighlighter.GetComponent<Tilemap>();
+
+        stateUI = FindObjectOfType<StateUI>();
     }
 
     void Start()
@@ -38,6 +40,8 @@ public class Hero : Character
     protected override void Update()
     {
         base.Update();
+
+        HeroUI.transform.position = transform.position + CharacterUIPositionOffset;
 
         // 임시
         if (Input.GetKeyDown(KeyCode.Escape) && isSelected)
@@ -64,6 +68,15 @@ public class Hero : Character
                 UIManager.Instance.HideGameInfo();
             }
         }
+    }
+
+    void OnMouseOver()
+    {
+        stateUI.ShowStat(this);
+    }
+    void OnMouseExit()
+    {
+        stateUI.hideStat();
     }
 
     void OnMouseDown()
@@ -227,7 +240,7 @@ public class Hero : Character
         if (isEffect)
             StartCoroutine(stressed());
 
-        characterData.Stress += stress;
+        this.stress += stress;
 
         ChangeStressState();
     }
@@ -262,9 +275,7 @@ public class Hero : Character
             desc.SetText(string.Format("<color=white>{0}", heal));
         StartCoroutine(stresshealed());
 
-        characterData.Stress += heal;
-
-        ChangeStressState();
+        stress -= heal;
     }
 
     public override void OnDidCritical()
@@ -284,11 +295,18 @@ public class Hero : Character
 
     void ChangeStressState()
     {
+        StartCoroutine(StressChange());
+    }
+
+    IEnumerator StressChange()
+    {
         string text = string.Format("{0}의 의지가 시험받고 있습니다...", characterData.ID);
         UIManager.Instance.ShowGameInfo(text);
 
+        yield return new WaitForSeconds(2f);
+
         // 각성/붕괴 결정
-        if (characterData.Stress >= 100 && StressState == 0)
+        if (stress >= 100 && StressState == 0)
         {
             if (Random.Range(0, 101) < characterData.WillPower)
             {
@@ -296,6 +314,12 @@ public class Hero : Character
                 StressState = 1;
                 text = "각성!";
                 UIManager.Instance.ShowGameInfo(text);
+
+                yield return new WaitForSeconds(2f);
+
+                UIManager.Instance.HideGameInfo();
+
+
             }
             else
             {
@@ -303,6 +327,10 @@ public class Hero : Character
                 StressState = 2;
                 text = "붕괴!";
                 UIManager.Instance.ShowGameInfo(text);
+
+                yield return new WaitForSeconds(2f);
+
+                UIManager.Instance.HideGameInfo();
             }
         }
         // 사망

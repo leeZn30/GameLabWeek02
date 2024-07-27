@@ -20,6 +20,8 @@ public class EnemyAI : Character
     private Vector3Int playerPosition;
     public Hero targetPlayer;
 
+    [SerializeField] StateUI stateUI;
+
     protected override void Awake()
     {
         base.Awake();
@@ -28,6 +30,8 @@ public class EnemyAI : Character
         tilemap = gridHighlighter.GetComponent<Tilemap>();
 
         heroes = FindObjectsOfType<Hero>().ToList();
+
+        stateUI = FindObjectOfType<StateUI>();
     }
 
     void Start()
@@ -41,6 +45,8 @@ public class EnemyAI : Character
     protected override void Update()
     {
         base.Update();
+
+        EnemyUI.transform.position = transform.position + CharacterUIPositionOffset;
     }
 
     void OnMouseDown()
@@ -54,6 +60,16 @@ public class EnemyAI : Character
         Vector3Int targetPosition = gridHighlighter.GetEnemyRoute(enemyPosition, playerPosition, step);
 
         StartCoroutine(waitForMoving(targetPosition));
+    }
+
+    void OnMouseOver()
+    {
+        stateUI.ShowStat(this);
+    }
+
+    void OnMouseExit()
+    {
+        stateUI.hideStat();
     }
 
     /*

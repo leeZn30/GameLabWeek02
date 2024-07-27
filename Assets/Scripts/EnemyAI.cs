@@ -31,8 +31,9 @@ public class EnemyAI : Character
         enemyPosition = tilemap.WorldToCell(transform.position);
     }
 
-    void Update()
+    protected override void Update()
     {
+        base.Update();
     }
 
     void OnMouseDown()

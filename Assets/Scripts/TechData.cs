@@ -42,6 +42,9 @@ public class TechData
     public int Stun; // 기절
     public int Bleed; // 출혈
     public int Poison; // 중독
+    public bool isStunEnable => Stun > 0;
+    public bool isBleedEnable => Bleed > 0;
+    public bool isPoisonEnable => Poison > 0;
 
     [Header("상태 이상 데미지")]
     public int BleedDamage;

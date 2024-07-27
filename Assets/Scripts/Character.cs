@@ -25,6 +25,19 @@ public class Character : MonoBehaviour
     [Header("타일맵")]
     protected Tilemap tilemap;
 
+    [Header("UI")]
+    [SerializeField] protected GameObject DescUIGridPfb;
+    [SerializeField] protected GameObject DescUIPfb;
+    protected GameObject DescGrid;
+    // float DescGridYOffset = transform.localScale.y / 2 + DescUIGridPfb.transform.localScale.y / 2;
+    Vector3 DescGridPositionOffset;
+
+    [Header("Effect")]
+    [SerializeField] GameObject atk;
+    [SerializeField] GameObject stress;
+    [SerializeField] GameObject heal;
+    [SerializeField] GameObject stressheal;
+
     protected virtual void Awake()
     {
         hp = characterData.MaxHp;
@@ -33,38 +46,54 @@ public class Character : MonoBehaviour
 
         // 대충 놔도 스냅되도록
         transform.position = GridHighlighter.Instance.ConvertTileToWorldPosition(tilemap.WorldToCell(transform.position));
+        DescGridPositionOffset = new Vector3(0, transform.localScale.y / 2, 0);
+        DescGrid = Instantiate(DescUIGridPfb, transform.position + DescGridPositionOffset, Quaternion.identity, GameObject.Find("Canvas").transform);
     }
 
-    // 크리티컬이면 스트레스 10 증가
-    public void OnDamaged(int damage, bool isCritical)
+    protected virtual void Update()
     {
-        hp -= damage;
+        // DescGrid 계속 따라다니게 하기
+        DescGrid.transform.position = transform.position + DescGridPositionOffset;
 
-        if (hp < 0)
+        // 모든 descUI가 없으면 끝난 것 > 카메라 줌 아웃
+        if (FindObjectsOfType<CharacterDescUI>().Length == 0 && Camera.main.orthographicSize != 8)
         {
-            Debug.Log("죽음의 문턱");
+            CombatManager.Instance.CallZoomOutCamera();
         }
+    }
 
+    public virtual void OnDamaged(int damage, bool isCritical)
+    {
+        TextMeshProUGUI desc = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
         if (isCritical)
         {
-            OnStressed(10);
-
-            // 주변 2칸 아군(플레이어) 50% 확률로 스트레스
-            foreach (Hero hero in GetNearHeroes<Hero>(2))
-            {
-                if (Random.Range(0, 101) <= 50)
-                {
-                    hero.OnStressed(5);
-                }
-            }
+            desc.SetText(string.Format("<color=red>치명타! {0}", damage));
         }
+        else
+        {
+            desc.SetText(string.Format("<color=red>{0}", damage));
+        }
+        StartCoroutine(damaged());
+
+        hp -= damage;
     }
 
     // Hero에서만 구현되어야 함
-    public virtual void OnStressed(int stress) { }
+    public virtual void OnStressed(int stress, bool isCritical, bool isEffect = true) { }
 
-    public void OnHealed(int heal)
+    // Hero에서만 구현되어야 함
+    public virtual void OnDidCritical() { }
+
+    public void OnHealed(int heal, bool isCritical)
     {
+        TextMeshProUGUI desc = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
+        if (isCritical)
+            desc.SetText(string.Format("<color=#9BFF00>치명타! {0}", heal));
+        else
+            desc.SetText(string.Format("<color=#9BFF00>{0}", heal));
+
+        StartCoroutine(healed());
+
         hp += heal;
 
         if (hp > characterData.MaxHp)
@@ -73,22 +102,82 @@ public class Character : MonoBehaviour
         }
     }
 
-    public void OnStun()
+    // Hero에서만 구현되어야 함
+    public virtual void OnStressHealed(int heal, bool isCritical, bool isEffect = false)
     {
 
     }
 
-    public void OnBleed(int damage, int turnCnt)
+    public void OnStun(bool isStun, bool isStunEnable)
     {
+        if (isStunEnable)
+        {
+            TextMeshProUGUI desc = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
 
+            if (isStun)
+            {
+                desc.SetText("<color=yellow>기절");
+            }
+            else
+            {
+                desc.SetText("<color=yellow>기절 저항");
+            }
+        }
     }
 
-    public void OnPoison(int damage, int turnCnt)
+    public void OnBleed(bool isBleed, bool isBleedEnable, int damage = 0, int turnCnt = 0)
     {
+        if (isBleedEnable)
+        {
+            TextMeshProUGUI desc = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
 
+            if (isBleed)
+            {
+                desc.SetText("<color=#C100A5>출혈");
+            }
+            else
+            {
+                desc.SetText("<color=#C100A5>출혈 저항");
+            }
+        }
     }
 
-    List<T> GetNearHeroes<T>(int blockCnt)
+    public void OnPoison(bool isPoison, bool isPoisonEnable, int damage = 0, int turnCnt = 0)
+    {
+        if (isPoisonEnable)
+        {
+            TextMeshProUGUI desc = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
+
+            if (isPoison)
+            {
+                desc.SetText("<color=green>중독");
+            }
+            else
+            {
+                desc.SetText("<color=green>중독 저항");
+            }
+        }
+    }
+
+    public void OnDodged(TechType techType)
+    {
+        TextMeshProUGUI desc = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
+        desc.SetText("회피!");
+        switch (techType)
+        {
+            case TechType.Attack:
+                StartCoroutine(damaged());
+                break;
+
+            case TechType.Stress:
+                StartCoroutine(stressed());
+                break;
+        }
+
+        StartCoroutine(dodged());
+    }
+
+    protected List<T> GetNearHeroes<T>(int blockCnt)
     {
         List<T> results = new List<T>();
 
@@ -106,7 +195,7 @@ public class Character : MonoBehaviour
                 {
                     Vector3 worldPosition = tilemap.GetCellCenterWorld(position);
                     Collider2D coll = Physics2D.OverlapPoint(worldPosition, 1 << LayerMask.NameToLayer("Character"));
-                    if (coll != null && coll.GetComponent<T>() != null)
+                    if (coll != null && coll.GetComponent<T>() != null && coll.gameObject != gameObject)
                     {
                         results.Add(coll.GetComponent<T>());
                     }
@@ -114,6 +203,67 @@ public class Character : MonoBehaviour
             }
         }
         return results;
+    }
+
+
+    IEnumerator damaged()
+    {
+        GameObject go = Instantiate(atk, transform.position, atk.transform.rotation);
+
+        yield return new WaitForSeconds(2f);
+
+        Destroy(go);
+    }
+
+    protected IEnumerator stressed()
+    {
+        GameObject go = Instantiate(stress, transform.position, stress.transform.rotation);
+
+        yield return new WaitForSeconds(2f);
+
+        Destroy(go);
+    }
+
+    IEnumerator healed()
+    {
+        GameObject go = Instantiate(heal, transform.position, heal.transform.rotation);
+
+        yield return new WaitForSeconds(2f);
+
+        Destroy(go);
+    }
+
+    protected IEnumerator stresshealed()
+    {
+        GameObject go = Instantiate(stressheal, transform.position, stressheal.transform.rotation);
+
+        yield return new WaitForSeconds(2f);
+
+        Destroy(go);
+    }
+
+    IEnumerator dodged()
+    {
+        Vector3 originPose = transform.position;
+        Vector3 endPose = transform.position + new Vector3(1.5f, 0, 0);
+
+
+        float duration = 0.3f;
+        float elapsedTime = 0f;
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+
+            float t = Mathf.Clamp01(elapsedTime / duration);
+
+            // 위치 보간 (Lerp를 사용하여 대각선으로 자연스럽게 이동)
+            transform.position = Vector3.Lerp(originPose, endPose, t);
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(1.7f);
+
+        transform.position = originPose;
     }
 
 }

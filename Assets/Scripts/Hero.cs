@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -26,8 +27,10 @@ public class Hero : Character
         CurrentTilePosition = GetCurrentTilePosition();
     }
 
-    void Update()
+    protected override void Update()
     {
+        base.Update();
+
         // 임시
         if (Input.GetKeyDown(KeyCode.Escape) && isSelected)
         {
@@ -124,7 +127,6 @@ public class Hero : Character
                 if (go.hero != null && go.hero != this)
                 {
                     targets.Add(go.hero);
-                    Debug.Log(go.hero);
                 }
             }
 
@@ -159,11 +161,74 @@ public class Hero : Character
             gridHighlighter.RemoveAllAttackRange();
     }
 
-    public override void OnStressed(int stress)
+    public override void OnDamaged(int damage, bool isCritical)
     {
+        base.OnDamaged(damage, isCritical);
+
+        // Hero에서 필요
+        if (hp < 0)
+        {
+            Debug.Log("죽음의 문턱");
+        }
+
+        if (isCritical)
+        {
+            OnStressed(10, false, false);
+
+            // 주변 2칸 아군(플레이어) 50% 확률로 스트레스
+            foreach (Hero hero in GetNearHeroes<Hero>(2))
+            {
+                if (Random.Range(0, 101) <= 50)
+                {
+                    hero.OnStressed(5, false, false);
+                }
+            }
+        }
+    }
+
+    public override void OnStressed(int stress, bool isCritical, bool isEffect = true)
+    {
+        TextMeshProUGUI desc = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
+        if (isCritical)
+            desc.SetText(string.Format("<color=black>치명타!\n{0}", stress));
+        else
+            desc.SetText(string.Format("<color=black>{0}", stress));
+
+        if (isEffect)
+            StartCoroutine(stressed());
+
         characterData.Stress += stress;
 
         ChangeStressState();
+    }
+
+    public override void OnStressHealed(int heal, bool isCritical, bool isEffect = true)
+    {
+        TextMeshProUGUI desc = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
+        if (isCritical)
+            desc.SetText(string.Format("<color=white>치명타!\n{0}", heal));
+        else
+            desc.SetText(string.Format("<color=white>{0}", heal));
+        StartCoroutine(stresshealed());
+
+        characterData.Stress += heal;
+
+        ChangeStressState();
+    }
+
+    public override void OnDidCritical()
+    {
+        // attacker는 스트레스 3 회복
+        OnStressHealed(3, false);
+
+        // 주변 2칸 이내 아군 25% 확률로 스트레스 회복
+        foreach (Hero h in GetNearHeroes<Hero>(2))
+        {
+            if (Random.Range(0, 101) <= 25)
+            {
+                h.OnStressHealed(3, false, false);
+            }
+        }
     }
 
     void ChangeStressState()

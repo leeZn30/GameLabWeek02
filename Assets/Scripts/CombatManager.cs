@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class CombatManager : SingleTon<CombatManager>
 {
-    [SerializeField] GameObject window;
     [SerializeField] GameObject meleeAtk;
     [SerializeField] GameObject rangedAtk;
     [SerializeField] GameObject meleeStress;
@@ -17,40 +16,7 @@ public class CombatManager : SingleTon<CombatManager>
     // 단일 공격
     public void Combat(Character attacker, Character taker)
     {
-        // 공격 방식 + 범위에 따른 연출
-        IEnumerator callback = null;
-
-        // 연출 추가
-        switch (attacker.equippedTech.TechType)
-        {
-            case TechType.Attack:
-                if (attacker.equippedTech.TechRange == TechRange.Melee)
-                {
-                    callback = meleeAtkHit(taker.gameObject);
-                }
-                else
-                {
-                    // callback = rangedAtkHit(attacker.gameObject, taker.gameObject);
-                    callback = meleeAtkHit(taker.gameObject);
-                }
-                break;
-
-            case TechType.Stress:
-                if (attacker.equippedTech.TechRange == TechRange.Melee)
-                {
-                    callback = meleeStressHit(taker.gameObject);
-                }
-                else
-                {
-                    // callback = rangedStressHit(attacker.gameObject, taker.gameObject);
-                    callback = meleeStressHit(taker.gameObject);
-                }
-                break;
-
-            case TechType.Heal:
-                callback = healHit(taker.gameObject);
-                break;
-        }
+        StartCoroutine(ZoomInCamera(attacker.gameObject));
 
         // 명중
         if (isHit(attacker.characterData, taker.characterData, attacker.equippedTech))
@@ -58,16 +24,9 @@ public class CombatManager : SingleTon<CombatManager>
             // 크리티컬 여부
             bool crit = isCritical(attacker);
 
-            /* 크리티컬이면
-            - attacker는 스트레스 3 회복
-            - attacker 주변 아군도 25% 확률로 3 회복
-            */
             if (crit)
             {
-                attacker.OnStressed(-3);
-
-                UIManager.Instance.AddCombatInfo("<color=black>-3");
-                // 주변 2칸 이내 아군 회복
+                attacker.OnDidCritical();
             }
 
             switch (attacker.equippedTech.TechType)
@@ -75,30 +34,16 @@ public class CombatManager : SingleTon<CombatManager>
                 case TechType.Attack:
                     int damage = GetDamage(attacker.equippedTech, crit);
                     taker.OnDamaged(damage, crit);
-                    if (crit)
-                        UIManager.Instance.AddCombatInfo(string.Format("<color=red>치명타!\n-{0}", damage), 0);
-                    else
-                        UIManager.Instance.AddCombatInfo(string.Format("<color=red>-{0}", damage), 0);
                     break;
 
                 case TechType.Stress:
                     int stress = GetDamage(attacker.equippedTech, crit);
-                    taker.OnStressed(stress);
-
-                    if (crit)
-                        UIManager.Instance.AddCombatInfo(string.Format("<color=black>치명타!\n+{0}", stress), 0);
-                    else
-                        UIManager.Instance.AddCombatInfo(string.Format("<color=black>+{0}", stress), 0);
+                    taker.OnStressed(stress, crit);
                     break;
 
                 case TechType.Heal:
                     int heal = GetHeal(attacker.equippedTech, crit);
-                    taker.OnHealed(heal);
-
-                    if (crit)
-                        UIManager.Instance.AddCombatInfo(string.Format("<color=#9BFF00>치명타!\n+{0}", heal), 0);
-                    else
-                        UIManager.Instance.AddCombatInfo(string.Format("<color=#9BFF00>+{0}", heal), 0);
+                    taker.OnHealed(heal, crit);
                     break;
             }
 
@@ -106,52 +51,46 @@ public class CombatManager : SingleTon<CombatManager>
             // 기절
             if (isStun(attacker.equippedTech, taker.characterData, crit))
             {
-                taker.OnStun();
-                UIManager.Instance.AddCombatInfo("<color=yellow>기절!");
+                taker.OnStun(true, true);
             }
             else
             {
                 // 스턴 효과가 있는데 발동 안됨
-                if (attacker.equippedTech.Stun > 0)
-                    UIManager.Instance.AddCombatInfo("<color=yellow>기절 저항");
+                if (attacker.equippedTech.isStunEnable)
+                    taker.OnStun(false, true);
             }
 
             // 출혈
             // 크리티컬이면 50% 지속 시간 증가
             if (isBleed(attacker.equippedTech, taker.characterData, crit))
             {
-                taker.OnBleed(attacker.equippedTech.BleedDamage, attacker.equippedTech.BleedTurnCnt + (crit ? attacker.equippedTech.BleedTurnCnt / 2 : 0));
-                UIManager.Instance.AddCombatInfo("<color=#C100A5>출혈");
+                taker.OnBleed(true, true, attacker.equippedTech.BleedDamage, attacker.equippedTech.BleedTurnCnt + (crit ? attacker.equippedTech.BleedTurnCnt / 2 : 0));
             }
             else
             {
                 // 출혈 효과가 있는데 발동 안됨
-                if (attacker.equippedTech.Bleed > 0)
-                    UIManager.Instance.AddCombatInfo("<color=#C100A5>출혈 저항");
+                if (attacker.equippedTech.isBleedEnable)
+                    taker.OnBleed(false, true);
             }
 
             // 중독
             // 크리티컬이면 50% 지속 시간 증가
             if (isPoision(attacker.equippedTech, taker.characterData, crit))
             {
-                taker.OnPoison(attacker.equippedTech.PoisonDamage, attacker.equippedTech.PoisonTurnCnt + (crit ? attacker.equippedTech.PoisonTurnCnt / 2 : 0));
-                UIManager.Instance.AddCombatInfo("<color=green>중독");
+                taker.OnPoison(true, true, attacker.equippedTech.PoisonDamage, attacker.equippedTech.PoisonTurnCnt + (crit ? attacker.equippedTech.PoisonTurnCnt / 2 : 0));
             }
             else
             {
                 // 중독 효과가 있는데 발동 안됨
-                if (attacker.equippedTech.Poison > 0)
-                    UIManager.Instance.AddCombatInfo("<color=green>중독 저항");
+                if (attacker.equippedTech.isPoisonEnable)
+                    taker.OnPoison(false, true);
             }
-
-            // 연출 시작
-            StartCoroutine(ZoomInCamera(taker.gameObject, callback));
         }
         // 회피
         else
         {
-            UIManager.Instance.AddCombatInfo("회피!");
-            StartCoroutine(ZoomInCamera(taker.gameObject, callback, dodge(taker.gameObject)));
+            StartCoroutine(ZoomInCamera(attacker.gameObject));
+            taker.OnDodged(attacker.equippedTech.TechType);
         }
     }
 
@@ -163,6 +102,7 @@ public class CombatManager : SingleTon<CombatManager>
             Combat(attaker, c);
         }
     }
+
 
     bool isHit(CharacterData attacker, CharacterData taker, TechData attack)
     {
@@ -197,7 +137,7 @@ public class CombatManager : SingleTon<CombatManager>
     bool isStun(TechData techData, CharacterData taker, bool isCritical)
     {
         // 애초에 스턴 기능이 있어야 함
-        if (techData.Stun > 0)
+        if (techData.isStunEnable)
         {
             // 기절 수치 = 기술 기절 + 크리티컬 성공 시 20 추가 - 적 기절 저항력
             int stunPercent = techData.Stun + (isCritical ? 20 : 0) - taker.StunResist;
@@ -264,10 +204,10 @@ public class CombatManager : SingleTon<CombatManager>
         }
     }
 
-    IEnumerator ZoomInCamera(GameObject taker, IEnumerator callback, IEnumerator dodge = null)
+    IEnumerator ZoomInCamera(GameObject attacker)
     {
         Vector3 initialCameraPosition = Camera.main.transform.position;
-        Vector3 targetCameraPosition = new Vector3(taker.transform.position.x, taker.transform.position.y, Camera.main.transform.position.z);
+        Vector3 targetCameraPosition = new Vector3(attacker.transform.position.x, attacker.transform.position.y, Camera.main.transform.position.z);
         float initialOrthographicSize = Camera.main.orthographicSize;
         float targetOrthographicSize = 4f;
         float zoomInDuration = 0.5f;
@@ -287,12 +227,6 @@ public class CombatManager : SingleTon<CombatManager>
 
         Camera.main.transform.position = targetCameraPosition;
         Camera.main.orthographicSize = targetOrthographicSize;
-
-        StartCoroutine(callback);
-        if (dodge != null)
-            StartCoroutine(dodge);
-
-        UIManager.Instance.ShowCombatInfos(taker.transform.position + new Vector3(0, taker.transform.localScale.y));
     }
 
     IEnumerator ZoomOutCamera()
@@ -322,104 +256,5 @@ public class CombatManager : SingleTon<CombatManager>
     public void CallZoomOutCamera()
     {
         StartCoroutine(ZoomOutCamera());
-    }
-
-    IEnumerator meleeAtkHit(GameObject taker)
-    {
-        GameObject go = Instantiate(meleeAtk, taker.transform.position, meleeAtk.transform.rotation);
-
-        yield return new WaitForSeconds(1f);
-
-        Destroy(go);
-    }
-
-    IEnumerator rangedAtkHit(GameObject attacker, GameObject taker)
-    {
-        GameObject go = Instantiate(rangedAtk, attacker.transform.position, rangedAtk.transform.rotation);
-
-        // 회전 및 이동을 시작
-        float elapsedTime = 0f;
-        float duration = 0.2f;
-        while (elapsedTime < duration)
-        {
-            elapsedTime += Time.deltaTime;
-
-            // 이동 보간 (Lerp)
-            go.transform.position = Vector3.Lerp(attacker.transform.position, taker.transform.position, elapsedTime / duration);
-
-            yield return null; // 다음 프레임까지 대기
-        }
-
-        yield return new WaitForSeconds(0.8f);
-
-        // 최종 위치 및 회전 설정
-        Destroy(go);
-    }
-
-    IEnumerator meleeStressHit(GameObject taker)
-    {
-        GameObject go = Instantiate(meleeStress, taker.transform.position, meleeStress.transform.rotation);
-
-        yield return new WaitForSeconds(1f);
-
-        Destroy(go);
-    }
-
-    IEnumerator rangedStressHit(GameObject attacker, GameObject taker)
-    {
-
-        GameObject go = Instantiate(rangedStress, attacker.transform.position, rangedStress.transform.rotation);
-
-        // 회전 및 이동을 시작
-        float elapsedTime = 0f;
-        float duration = 0.2f;
-        while (elapsedTime < duration)
-        {
-            elapsedTime += Time.deltaTime;
-
-            // 이동 보간 (Lerp)
-            go.transform.position = Vector3.Lerp(attacker.transform.position, taker.transform.position, elapsedTime / duration);
-
-            yield return null; // 다음 프레임까지 대기
-        }
-
-        yield return new WaitForSeconds(0.8f);
-
-        // 최종 위치 및 회전 설정
-        Destroy(go);
-
-    }
-
-    IEnumerator healHit(GameObject taker)
-    {
-        GameObject go = Instantiate(heal, taker.transform.position, heal.transform.rotation);
-
-        yield return new WaitForSeconds(1f);
-
-        Destroy(go);
-    }
-
-    IEnumerator dodge(GameObject taker)
-    {
-        Vector3 originPose = taker.transform.position;
-        Vector3 endPose = taker.transform.position + new Vector3(1.5f, 0, 0);
-
-
-        float duration = 0.3f;
-        float elapsedTime = 0f;
-        while (elapsedTime < duration)
-        {
-            elapsedTime += Time.deltaTime;
-
-            float t = Mathf.Clamp01(elapsedTime / duration);
-
-            // 위치 보간 (Lerp를 사용하여 대각선으로 자연스럽게 이동)
-            taker.transform.position = Vector3.Lerp(originPose, endPose, t);
-            yield return null;
-        }
-
-        yield return new WaitForSeconds(0.7f);
-
-        taker.transform.position = originPose;
     }
 }

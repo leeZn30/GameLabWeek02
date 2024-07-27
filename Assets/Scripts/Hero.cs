@@ -84,7 +84,7 @@ public class Hero : Character
         List<AttackRange> ranges = FindObjectsOfType<AttackRange>().ToList();
 
         // 힐이 아니라면 공격으로 간주 -> 에너미 파악
-        if (equippedTech.TechType != TechType.Heal)
+        if (equippedTech.TechType != TechType.Heal && equippedTech.TechType != TechType.StressHeal)
         {
             foreach (AttackRange go in ranges)
             {

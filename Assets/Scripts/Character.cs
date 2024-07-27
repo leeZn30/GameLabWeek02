@@ -105,7 +105,6 @@ public class Character : MonoBehaviour
     // Hero에서만 구현되어야 함
     public virtual void OnStressHealed(int heal, bool isCritical, bool isEffect = false)
     {
-
     }
 
     public void OnStun(bool isStun, bool isStunEnable)

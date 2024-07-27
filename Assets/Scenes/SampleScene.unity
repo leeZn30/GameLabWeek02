@@ -4346,11 +4346,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b56d18d696545940ad512bf4087b91f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  meleeAtk: {fileID: 814718663408882621, guid: 365b927b3df865940acbeba29a11fce6, type: 3}
-  rangedAtk: {fileID: 7623111705894829251, guid: cc7344ff841322840b83c9de92349fda, type: 3}
-  meleeStress: {fileID: 814718663408882621, guid: d3655cbe414a63946aa41a62464cfdac, type: 3}
-  rangedStress: {fileID: 7623111705894829251, guid: d24ee06badbc8df498cb84cfd06644c8, type: 3}
-  heal: {fileID: 3126842929217700142, guid: a6cf83fd14ffb644db2b69751128e0d7, type: 3}
 --- !u!4 &478857985
 Transform:
   m_ObjectHideFlags: 0
@@ -4743,7 +4738,7 @@ MonoBehaviour:
     DeathResist: 0
     Techs:
     - ID: 
-      TechType: 2
+      TechType: 3
       TechTarget: 0
       TechRange: 0
       Range: 1
@@ -5123,7 +5118,7 @@ Transform:
   m_GameObject: {fileID: 1700067437}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -4.26, y: -6.93, z: 0.08462445}
+  m_LocalPosition: {x: -2.28, y: 5.14, z: 0.08462445}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5415,7 +5410,7 @@ Transform:
   m_GameObject: {fileID: 1965758506}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.16, y: -6.83, z: 0.08462445}
+  m_LocalPosition: {x: -0.2799996, y: 5.114, z: 0.08462445}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

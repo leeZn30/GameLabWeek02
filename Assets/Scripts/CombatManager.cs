@@ -6,17 +6,19 @@ using UnityEngine;
 
 public class CombatManager : SingleTon<CombatManager>
 {
-    [SerializeField] GameObject meleeAtk;
-    [SerializeField] GameObject rangedAtk;
-    [SerializeField] GameObject meleeStress;
-    [SerializeField] GameObject rangedStress;
-    [SerializeField] GameObject heal;
+    Coroutine CameraCorouine;
     int maxPercent = 101;
 
     // 단일 공격
     public void Combat(Character attacker, Character taker)
     {
-        StartCoroutine(ZoomInCamera(attacker.gameObject));
+        if (CameraCorouine == null)
+            CameraCorouine = StartCoroutine(ZoomInCamera(attacker.gameObject));
+        else
+        {
+            StopCoroutine(CameraCorouine);
+            CameraCorouine = StartCoroutine(ZoomInCamera(attacker.gameObject));
+        }
 
         // 명중
         if (isHit(attacker.characterData, taker.characterData, attacker.equippedTech))
@@ -44,6 +46,11 @@ public class CombatManager : SingleTon<CombatManager>
                 case TechType.Heal:
                     int heal = GetHeal(attacker.equippedTech, crit);
                     taker.OnHealed(heal, crit);
+                    break;
+
+                case TechType.StressHeal:
+                    int stressheal = GetHeal(attacker.equippedTech, crit);
+                    taker.OnStressHealed(stressheal, crit);
                     break;
             }
 
@@ -89,7 +96,13 @@ public class CombatManager : SingleTon<CombatManager>
         // 회피
         else
         {
-            StartCoroutine(ZoomInCamera(attacker.gameObject));
+            if (CameraCorouine == null)
+                CameraCorouine = StartCoroutine(ZoomInCamera(attacker.gameObject));
+            else
+            {
+                StopCoroutine(CameraCorouine);
+                CameraCorouine = StartCoroutine(ZoomInCamera(attacker.gameObject));
+            }
             taker.OnDodged(attacker.equippedTech.TechType);
         }
     }
@@ -106,7 +119,7 @@ public class CombatManager : SingleTon<CombatManager>
 
     bool isHit(CharacterData attacker, CharacterData taker, TechData attack)
     {
-        if (attack.TechType != TechType.Heal)
+        if (attack.TechType != TechType.Heal && attack.TechType != TechType.StressHeal)
         {
             // 명중률 = 기술 명중 + 캐릭터 명중 보정치 - 적 회피
             float accuracy = attack.Acc + attacker.AccMod - taker.Dodge;
@@ -199,7 +212,6 @@ public class CombatManager : SingleTon<CombatManager>
         }
         else
         {
-
             return heal;
         }
     }
@@ -255,6 +267,12 @@ public class CombatManager : SingleTon<CombatManager>
 
     public void CallZoomOutCamera()
     {
-        StartCoroutine(ZoomOutCamera());
+        if (CameraCorouine == null)
+            CameraCorouine = StartCoroutine(ZoomOutCamera());
+        else
+        {
+            StopCoroutine(CameraCorouine);
+            CameraCorouine = StartCoroutine(ZoomOutCamera());
+        }
     }
 }

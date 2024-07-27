@@ -17,8 +17,8 @@ public enum TechRange
 
 public enum TechType
 {
-    // 공격, 스트레스, 힐
-    Attack, Stress, Heal
+    // 공격, 스트레스, 힐, 스트레스 힐
+    Attack, Stress, Heal, StressHeal
 }
 
 [System.Serializable]

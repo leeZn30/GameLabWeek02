@@ -217,5 +217,6 @@ public class EnemyAI : Character
 
         CombatManager.Instance.Combat(this, hero);
 
+        gridHighlighter.UnHighlightAllTile();
     }
 }

@@ -7,6 +7,10 @@ using UnityEngine.Tilemaps;
 
 public class EnemyAI : Character
 {
+
+    [Header("UI")]
+    EnemyUI EnemyUI;
+
     GridHighlighter gridHighlighter;
 
     List<Hero> heroes = new List<Hero>();
@@ -29,6 +33,9 @@ public class EnemyAI : Character
     void Start()
     {
         enemyPosition = tilemap.WorldToCell(transform.position);
+
+        EnemyUI = Instantiate(CharacterUIPfb, transform.position + CharacterUIPositionOffset, Quaternion.identity, GameObject.Find("CharacterUIs").transform).GetComponent<EnemyUI>();
+        EnemyUI.Init(this);
     }
 
     protected override void Update()

@@ -1,8 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
 
 public class StatusAbnormal
 {
@@ -43,6 +45,9 @@ public class Character : MonoBehaviour
     protected Tilemap tilemap;
 
     [Header("UI")]
+    [SerializeField] protected GameObject CharacterUIPfb;
+    protected GameObject CharacterUI;
+    protected Vector3 CharacterUIPositionOffset;
     [SerializeField] protected GameObject DescUIGridPfb;
     [SerializeField] protected GameObject DescUIPfb;
     protected GameObject DescGrid;
@@ -62,7 +67,10 @@ public class Character : MonoBehaviour
 
         // 대충 놔도 스냅되도록
         transform.position = GridHighlighter.Instance.ConvertTileToWorldPosition(tilemap.WorldToCell(transform.position));
-        DescGridPositionOffset = new Vector3(0, transform.localScale.y / 2, 0);
+
+        CharacterUIPositionOffset = new Vector3(0, transform.localScale.y / 2, 0);
+
+        DescGridPositionOffset = new Vector3(0, transform.localScale.y / 2 + CharacterUIPfb.transform.localScale.y / 2, 0);
         DescGrid = Instantiate(DescUIGridPfb, transform.position + DescGridPositionOffset, Quaternion.identity, GameObject.Find("Canvas").transform);
     }
 
@@ -183,6 +191,22 @@ public class Character : MonoBehaviour
     // Hero에서만 구현되어야 함
     public virtual void OnStressHealed(int heal, bool isCritical, bool isEffect = false)
     {
+        int sumBleed = 0;
+        for (int i = 0; i < bleedStatus.Count; i++)
+        {
+            sumBleed += bleedStatus[i].damage;
+            bleedStatus[i].turns--;
+
+            if (bleedStatus[i].turns == 0)
+            {
+                bleedStatus.RemoveAt(i);
+            }
+        }
+
+        TextMeshProUGUI desc = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
+        desc.SetText("<color=#C100A5>출혈 상태");
+
+        OnDamaged(sumBleed, false, false);
     }
 
     public void OnStun(bool isStun, bool isStunEnable)
@@ -254,6 +278,39 @@ public class Character : MonoBehaviour
         }
 
         StartCoroutine(dodged());
+    }
+
+    public Tuple<int, int> GetBleedState()
+    {
+        int sumBleed = 0;
+        int maxTurn = -1;
+        for (int i = 0; i < bleedStatus.Count; i++)
+        {
+            sumBleed += bleedStatus[i].damage;
+            if (bleedStatus[i].turns > maxTurn)
+            {
+                maxTurn = bleedStatus[i].turns;
+            }
+
+        }
+
+        return new Tuple<int, int>(sumBleed, maxTurn);
+    }
+
+    public Tuple<int, int> GetPoisonState()
+    {
+        int sumPoison = 0;
+        int maxTurn = -1;
+        for (int i = 0; i < poisonStatus.Count; i++)
+        {
+            sumPoison += poisonStatus[i].damage;
+            if (poisonStatus[i].turns > maxTurn)
+            {
+                maxTurn = poisonStatus[i].turns;
+            }
+        }
+
+        return new Tuple<int, int>(sumPoison, maxTurn);
     }
 
     protected List<T> GetNearHeroes<T>(int blockCnt)

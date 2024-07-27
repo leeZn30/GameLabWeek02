@@ -13,6 +13,10 @@ public class Hero : Character
     bool isChoosing;
     bool isDeathDoor;
 
+    [Header("UI")]
+    HeroUI HeroUI;
+
+
     GridHighlighter gridHighlighter;
 
     protected override void Awake()
@@ -26,6 +30,9 @@ public class Hero : Character
     void Start()
     {
         CurrentTilePosition = GetCurrentTilePosition();
+
+        HeroUI = Instantiate(CharacterUIPfb, transform.position + CharacterUIPositionOffset, Quaternion.identity, GameObject.Find("CharacterUIs").transform).GetComponent<HeroUI>();
+        HeroUI.Init(this);
     }
 
     protected override void Update()

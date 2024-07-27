@@ -11,7 +11,6 @@ public class EnemyAI : Character
     [Header("UI")]
     EnemyUI EnemyUI;
 
-    GridHighlighter gridHighlighter;
 
     List<Hero> heroes = new List<Hero>();
 
@@ -26,9 +25,6 @@ public class EnemyAI : Character
     {
         base.Awake();
 
-        gridHighlighter = FindObjectOfType<GridHighlighter>();
-        tilemap = gridHighlighter.GetComponent<Tilemap>();
-
         heroes = FindObjectsOfType<Hero>().ToList();
 
         stateUI = FindObjectOfType<StateUI>();
@@ -36,6 +32,12 @@ public class EnemyAI : Character
 
     void Start()
     {
+        tilemap = GridHighlighter.Instance.tilemap;
+        transform.position = GridHighlighter.Instance.ConvertTileToWorldPosition(tilemap.WorldToCell(transform.position));
+
+        // 대충 놔도 스냅되도록
+        transform.position = GridHighlighter.Instance.ConvertTileToWorldPosition(tilemap.WorldToCell(transform.position));
+
         enemyPosition = tilemap.WorldToCell(transform.position);
 
         EnemyUI = Instantiate(CharacterUIPfb, transform.position + CharacterUIPositionOffset, Quaternion.identity, GameObject.Find("CharacterUIs").transform).GetComponent<EnemyUI>();
@@ -56,8 +58,8 @@ public class EnemyAI : Character
         // targetPlayer는 지정하면서 사거리 기준 위치 잡아주기
         playerPosition = FindClosestPlayer();
 
-        gridHighlighter.selectedEnemy = this;
-        Vector3Int targetPosition = gridHighlighter.GetEnemyRoute(enemyPosition, playerPosition, step);
+        GridHighlighter.Instance.selectedEnemy = this;
+        Vector3Int targetPosition = GridHighlighter.Instance.GetEnemyRoute(enemyPosition, playerPosition, step);
 
         StartCoroutine(waitForMoving(targetPosition));
     }
@@ -131,7 +133,7 @@ public class EnemyAI : Character
         yield return new WaitForSeconds(1f);
 
         transform.position = position + new Vector3(0.5f, 0.5f, 0);
-        gridHighlighter.UnHighlightAllTile();
+        GridHighlighter.Instance.UnHighlightAllTile();
         Attack();
     }
 
@@ -211,7 +213,7 @@ public class EnemyAI : Character
             }
         }
 
-        gridHighlighter.RemoveAllAttackRange();
+        GridHighlighter.Instance.RemoveAllAttackRange();
     }
 
     void ChooseCharacter(List<Character> characters)
@@ -240,6 +242,6 @@ public class EnemyAI : Character
 
         CombatManager.Instance.Combat(this, hero);
 
-        gridHighlighter.UnHighlightAllTile();
+        GridHighlighter.Instance.UnHighlightAllTile();
     }
 }

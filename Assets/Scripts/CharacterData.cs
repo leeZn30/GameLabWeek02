@@ -21,7 +21,7 @@ public class CharacterData
     public int StunResist;
     public int BleedResist;
     public int PoisonResist;
-    public int DeathResist;
+    public int DeathResist = 67;
 
     public List<TechData> Techs = new List<TechData>
     {

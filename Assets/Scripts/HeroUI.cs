@@ -19,10 +19,6 @@ public class HeroUI : MonoBehaviour
     private RectTransform hoverRectTransform;
     private RectTransform canvasRectTransform;
 
-    void Awake()
-    {
-    }
-
     public void Init(Hero hero)
     {
         this.hero = hero;
@@ -98,7 +94,6 @@ public class HeroUI : MonoBehaviour
     {
         if (UIManager.Instance.MiniStatue.transform.parent.gameObject.activeSelf)
             UIManager.Instance.MiniStatue.transform.parent.gameObject.SetActive(false);
-
     }
 
     private void PositionHoverObject(Vector3 mousePosition)

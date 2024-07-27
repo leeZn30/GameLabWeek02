@@ -114,7 +114,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 0}
   m_FillRect: {fileID: 6131115918368625206}
   m_HandleRect: {fileID: 0}
@@ -312,7 +312,6 @@ MonoBehaviour:
   bleedUI: {fileID: 5063923362593903786}
   poisonUI: {fileID: 8906357558384682670}
   hpGauge: {fileID: 4675275051815760633}
-  stressGauge: {fileID: 0}
 --- !u!1 &5063923362593903786
 GameObject:
   m_ObjectHideFlags: 0

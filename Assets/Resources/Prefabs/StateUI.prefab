@@ -286,8 +286,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -381,7 +381,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 0, y: 10}
-  m_SizeDelta: {x: 380, y: 200}
+  m_SizeDelta: {x: 380, y: 230}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &8535554138991575971
 CanvasRenderer:
@@ -411,7 +411,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uB370\uBBF8\uC9C0 \uBC94\uC704: \n\uD0C0\uAE43: \uB2E8\uC77C\n\uAE30\uC808:\n\uCD9C\uD608:\n\uC911\uB3C5:"
+  m_text: "\uB370\uBBF8\uC9C0 \uD0C0\uC785:\n\uB370\uBBF8\uC9C0 \uBC94\uC704: \n\uD0C0\uAE43:
+    \uB2E8\uC77C\n\uAE30\uC808:\n\uCD9C\uD608:\n\uC911\uB3C5:"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 44c78fab29f7cf049bc1bc50b13fc0ad, type: 2}
   m_sharedMaterial: {fileID: 4465258924118328633, guid: 44c78fab29f7cf049bc1bc50b13fc0ad, type: 2}
@@ -731,7 +732,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.392}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.8156863}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

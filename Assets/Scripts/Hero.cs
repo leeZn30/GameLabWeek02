@@ -17,20 +17,19 @@ public class Hero : Character
     HeroUI HeroUI;
     [SerializeField] StateUI stateUI;
 
-    GridHighlighter gridHighlighter;
-
     protected override void Awake()
     {
         base.Awake();
-
-        gridHighlighter = FindObjectOfType<GridHighlighter>();
-        tilemap = gridHighlighter.GetComponent<Tilemap>();
 
         stateUI = FindObjectOfType<StateUI>();
     }
 
     void Start()
     {
+        // 대충 놔도 스냅되도록
+        tilemap = GridHighlighter.Instance.tilemap;
+        transform.position = GridHighlighter.Instance.ConvertTileToWorldPosition(tilemap.WorldToCell(transform.position));
+
         CurrentTilePosition = GetCurrentTilePosition();
 
         HeroUI = Instantiate(CharacterUIPfb, transform.position + CharacterUIPositionOffset, Quaternion.identity, GameObject.Find("CharacterUIs").transform).GetComponent<HeroUI>();
@@ -48,9 +47,9 @@ public class Hero : Character
         {
             isSelected = false;
 
-            gridHighlighter.selectedHero = null;
-            gridHighlighter.UnHighlightAllTile();
-            gridHighlighter.RemoveAllAttackRange();
+            GridHighlighter.Instance.selectedHero = null;
+            GridHighlighter.Instance.UnHighlightAllTile();
+            GridHighlighter.Instance.RemoveAllAttackRange();
         }
 
         if (isChoosing && Input.GetMouseButton(0))
@@ -61,7 +60,7 @@ public class Hero : Character
             if (hit.collider != null && hit.collider.CompareTag("Enemy"))
             {
                 CombatManager.Instance.Combat(this, hit.collider.GetComponent<EnemyAI>());
-                gridHighlighter.RemoveAllAttackRange();
+                GridHighlighter.Instance.RemoveAllAttackRange();
 
                 isChoosing = false;
 
@@ -85,16 +84,16 @@ public class Hero : Character
         {
             isSelected = true;
 
-            gridHighlighter.selectedHero = this;
-            gridHighlighter.HighlightStartTile(CurrentTilePosition);
+            GridHighlighter.Instance.selectedHero = this;
+            GridHighlighter.Instance.HighlightStartTile(CurrentTilePosition);
         }
         else
         {
             isSelected = false;
 
-            gridHighlighter.selectedHero = null;
-            gridHighlighter.UnHighlightAllTile();
-            gridHighlighter.RemoveAllAttackRange();
+            GridHighlighter.Instance.selectedHero = null;
+            GridHighlighter.Instance.UnHighlightAllTile();
+            GridHighlighter.Instance.RemoveAllAttackRange();
         }
 
     }
@@ -127,7 +126,7 @@ public class Hero : Character
                 else
                 {
                     CombatManager.Instance.Combat(this, targets);
-                    gridHighlighter.RemoveAllAttackRange();
+                    GridHighlighter.Instance.RemoveAllAttackRange();
                 }
             }
             // 적 하나 발견
@@ -136,7 +135,7 @@ public class Hero : Character
                 if (targets.Count > 0)
                 {
                     CombatManager.Instance.Combat(this, targets[0]);
-                    gridHighlighter.RemoveAllAttackRange();
+                    GridHighlighter.Instance.RemoveAllAttackRange();
                 }
             }
         }
@@ -163,7 +162,7 @@ public class Hero : Character
                 else
                 {
                     CombatManager.Instance.Combat(this, targets);
-                    gridHighlighter.RemoveAllAttackRange();
+                    GridHighlighter.Instance.RemoveAllAttackRange();
                 }
             }
             // 플레이어 하나 발견
@@ -172,14 +171,14 @@ public class Hero : Character
                 if (targets.Count > 0)
                 {
                     CombatManager.Instance.Combat(this, targets[0]);
-                    gridHighlighter.RemoveAllAttackRange();
+                    GridHighlighter.Instance.RemoveAllAttackRange();
                 }
             }
         }
 
         // 이동만 한 것
         if (targets.Count == 0)
-            gridHighlighter.RemoveAllAttackRange();
+            GridHighlighter.Instance.RemoveAllAttackRange();
     }
 
     public override void OnDamaged(int damage, bool isCritical, bool isEffect = true)
@@ -364,8 +363,8 @@ public class Hero : Character
 
         isSelected = false;
 
-        gridHighlighter.selectedHero = null;
-        gridHighlighter.UnHighlightAllTile();
+        GridHighlighter.Instance.selectedHero = null;
+        GridHighlighter.Instance.UnHighlightAllTile();
 
         Attack();
     }

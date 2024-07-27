@@ -64,13 +64,7 @@ public class Character : MonoBehaviour
         hp = characterData.MaxHp;
         stress = characterData.Stress;
 
-        tilemap = GridHighlighter.Instance.tilemap;
-
-        // 대충 놔도 스냅되도록
-        transform.position = GridHighlighter.Instance.ConvertTileToWorldPosition(tilemap.WorldToCell(transform.position));
-
         CharacterUIPositionOffset = new Vector3(0, transform.localScale.y / 2, 0);
-
         DescGridPositionOffset = new Vector3(0, transform.localScale.y / 2 + CharacterUIPfb.transform.localScale.y / 2, 0);
         DescGrid = Instantiate(DescUIGridPfb, transform.position + DescGridPositionOffset, Quaternion.identity, GameObject.Find("Canvas").transform);
     }
@@ -85,10 +79,6 @@ public class Character : MonoBehaviour
         {
             CombatManager.Instance.CallZoomOutCamera();
         }
-    }
-
-    void OnMouseOver()
-    {
     }
 
     public virtual void StartTurn()

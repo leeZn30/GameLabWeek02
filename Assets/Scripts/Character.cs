@@ -4,6 +4,18 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
+public class StatusAbnormal
+{
+    public int damage;
+    public int turns;
+
+    public StatusAbnormal(int dmg, int turns)
+    {
+        this.damage = dmg;
+        this.turns = turns;
+    }
+}
+
 public class Character : MonoBehaviour
 {
     [Header("능력치")]
@@ -21,6 +33,11 @@ public class Character : MonoBehaviour
     public int hp;
     // 0: default 1: Awakening 2: Collapse
     public int StressState = 0;
+    bool isStun;
+    List<StatusAbnormal> bleedStatus;
+    List<StatusAbnormal> poisonStatus;
+    bool myTurn = false;
+
 
     [Header("타일맵")]
     protected Tilemap tilemap;
@@ -29,7 +46,6 @@ public class Character : MonoBehaviour
     [SerializeField] protected GameObject DescUIGridPfb;
     [SerializeField] protected GameObject DescUIPfb;
     protected GameObject DescGrid;
-    // float DescGridYOffset = transform.localScale.y / 2 + DescUIGridPfb.transform.localScale.y / 2;
     Vector3 DescGridPositionOffset;
 
     [Header("Effect")]
@@ -62,7 +78,82 @@ public class Character : MonoBehaviour
         }
     }
 
-    public virtual void OnDamaged(int damage, bool isCritical)
+    public virtual void StartTurn()
+    {
+        // 상태 이상 공격 데미지
+        if (bleedStatus.Count > 0)
+        {
+            int sumBleed = 0;
+            for (int i = 0; i < bleedStatus.Count; i++)
+            {
+                sumBleed += bleedStatus[i].damage;
+                bleedStatus[i].turns--;
+
+                if (bleedStatus[i].turns == 0)
+                {
+                    bleedStatus.RemoveAt(i);
+                }
+            }
+
+            TextMeshProUGUI desc = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
+            desc.SetText("<color=#C100A5>출혈 상태");
+
+            OnDamaged(sumBleed, false, false);
+        }
+
+        if (poisonStatus.Count > 0)
+        {
+            int sumPoison = 0;
+            for (int i = 0; i < bleedStatus.Count; i++)
+            {
+                sumPoison += poisonStatus[i].damage;
+                bleedStatus[i].turns--;
+
+                if (bleedStatus[i].turns == 0)
+                {
+                    bleedStatus.RemoveAt(i);
+                }
+            }
+
+            TextMeshProUGUI desc = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
+            desc.SetText("<color=green>중독 상태");
+
+            OnDamaged(sumPoison, false, false);
+        }
+
+        // 기절이 아니라면 각성/붕괴에 따른 효과 후, 이동 및 공격 시작
+        if (!isStun)
+        {
+            // 각성
+            if (StressState == 1)
+            {
+                DoAwakening();
+            }
+            // 붕괴
+            else if (StressState == 2)
+            {
+                DoCollapse();
+            }
+
+            // 이동 및 공격 시작
+
+        }
+        // 기절 깨우기
+        else
+        {
+            TextMeshProUGUI desc = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
+            desc.SetText("<color=yellow> 기절 회복");
+            isStun = false;
+        }
+
+    }
+
+    // Hero에서 구현
+    public virtual void DoAwakening() { }
+    // Hero에서 구현
+    public virtual void DoCollapse() { }
+
+    public virtual void OnDamaged(int damage, bool isCritical, bool isEffect = true)
     {
         TextMeshProUGUI desc = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
         if (isCritical)
@@ -73,7 +164,9 @@ public class Character : MonoBehaviour
         {
             desc.SetText(string.Format("<color=red>{0}", damage));
         }
-        StartCoroutine(damaged());
+
+        if (isEffect)
+            StartCoroutine(damaged());
 
         hp -= damage;
     }
@@ -84,23 +177,8 @@ public class Character : MonoBehaviour
     // Hero에서만 구현되어야 함
     public virtual void OnDidCritical() { }
 
-    public void OnHealed(int heal, bool isCritical)
-    {
-        TextMeshProUGUI desc = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
-        if (isCritical)
-            desc.SetText(string.Format("<color=#9BFF00>치명타! {0}", heal));
-        else
-            desc.SetText(string.Format("<color=#9BFF00>{0}", heal));
-
-        StartCoroutine(healed());
-
-        hp += heal;
-
-        if (hp > characterData.MaxHp)
-        {
-            hp = characterData.MaxHp;
-        }
-    }
+    // hero에서만 구현되어야 함
+    public virtual void OnHealed(int heal, bool isCritical) { }
 
     // Hero에서만 구현되어야 함
     public virtual void OnStressHealed(int heal, bool isCritical, bool isEffect = false)
@@ -133,6 +211,7 @@ public class Character : MonoBehaviour
             if (isBleed)
             {
                 desc.SetText("<color=#C100A5>출혈");
+                bleedStatus.Add(new StatusAbnormal(damage, turnCnt));
             }
             else
             {
@@ -150,6 +229,7 @@ public class Character : MonoBehaviour
             if (isPoison)
             {
                 desc.SetText("<color=green>중독");
+                poisonStatus.Add(new StatusAbnormal(damage, turnCnt));
             }
             else
             {
@@ -223,7 +303,7 @@ public class Character : MonoBehaviour
         Destroy(go);
     }
 
-    IEnumerator healed()
+    protected IEnumerator healed()
     {
         GameObject go = Instantiate(heal, transform.position, heal.transform.rotation);
 

@@ -11,6 +11,7 @@ public class Hero : Character
     [SerializeField] bool isSelected;
     public Vector3Int CurrentTilePosition;
     bool isChoosing;
+    bool isDeathDoor;
 
     GridHighlighter gridHighlighter;
 
@@ -161,14 +162,36 @@ public class Hero : Character
             gridHighlighter.RemoveAllAttackRange();
     }
 
-    public override void OnDamaged(int damage, bool isCritical)
+    public override void OnDamaged(int damage, bool isCritical, bool isEffect = true)
     {
         base.OnDamaged(damage, isCritical);
 
         // Hero에서 필요
         if (hp < 0)
         {
-            Debug.Log("죽음의 문턱");
+            if (!isDeathDoor)
+            {
+                // 죽음의 문턱
+                hp = 0;
+                isDeathDoor = true;
+                UIManager.Instance.ShowGameInfo(string.Format("{0}이 죽음의 문턱에 섰습니다.\n회복 없이 이후 공격 받은면, 바로 죽을 수도 있습니다."));
+            }
+            else
+            {
+                if (Random.Range(0, 101) <= characterData.DeathResist)
+                {
+                    hp = 0;
+                    TextMeshProUGUI desc = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
+                    desc.SetText("<color=#721420>죽음 저항");
+                }
+                else
+                {
+                    TextMeshProUGUI desc = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
+                    desc.SetText("<color=#721420>사망");
+                    Destroy(gameObject);
+                }
+
+            }
         }
 
         if (isCritical)
@@ -202,6 +225,27 @@ public class Hero : Character
         ChangeStressState();
     }
 
+    public override void OnHealed(int heal, bool isCritical)
+    {
+        TextMeshProUGUI desc = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
+        if (isCritical)
+            desc.SetText(string.Format("<color=#9BFF00>치명타! {0}", heal));
+        else
+            desc.SetText(string.Format("<color=#9BFF00>{0}", heal));
+
+        StartCoroutine(healed());
+
+        hp += heal;
+
+        if (isDeathDoor)
+            isDeathDoor = false;
+
+        if (hp > characterData.MaxHp)
+        {
+            hp = characterData.MaxHp;
+        }
+    }
+
     public override void OnStressHealed(int heal, bool isCritical, bool isEffect = true)
     {
         TextMeshProUGUI desc = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
@@ -233,6 +277,9 @@ public class Hero : Character
 
     void ChangeStressState()
     {
+        string text = string.Format("{0}의 의지가 시험받고 있습니다...", characterData.ID);
+        UIManager.Instance.ShowGameInfo(text);
+
         // 각성/붕괴 결정
         if (characterData.Stress >= 100 && StressState == 0)
         {
@@ -240,19 +287,24 @@ public class Hero : Character
             {
                 // 각성
                 StressState = 1;
-                Debug.Log("각성!");
+                text = "각성!";
+                UIManager.Instance.ShowGameInfo(text);
             }
             else
             {
                 // 붕괴
                 StressState = 2;
-                Debug.Log("붕괴!");
+                text = "붕괴!";
+                UIManager.Instance.ShowGameInfo(text);
             }
         }
         // 사망
         else if (characterData.Stress >= 200)
         {
-            Debug.Log("심장마비!");
+            text = string.Format("{0} 심장마비", characterData.ID);
+            UIManager.Instance.ShowGameInfo(text);
+
+            Destroy(gameObject);
         }
     }
 
@@ -281,5 +333,75 @@ public class Hero : Character
         gridHighlighter.UnHighlightAllTile();
 
         Attack();
+    }
+
+
+    // Hero에서 구현
+    public override void DoAwakening()
+    {
+        int index = Random.Range(0, 3);
+        TextMeshProUGUI text = null;
+
+        switch (index)
+        {
+            case 0: // 스트레스 회복 전파
+                text = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
+                text.SetText("<color=white>아직 모두 할 수 있어");
+
+                OnStressHealed(10, false);
+
+                foreach (Hero h in GetNearHeroes<Hero>(2))
+                {
+                    h.OnStressHealed(5, false);
+                }
+                break;
+
+            case 1: // 자힐
+                text = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
+                text.SetText("<color=#9BFF00>저에게 힘을 주소서.");
+
+                OnHealed(5, false);
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    // Hero에서 구현
+    public override void DoCollapse()
+    {
+        int index = Random.Range(0, 4);
+        TextMeshProUGUI text = null;
+
+        switch (index)
+        {
+            case 0: // 스트레스 전파
+                text = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
+                text.SetText("<color=black>이 판은 망했어.");
+
+                OnStressed(10, false, false);
+
+                foreach (Hero h in GetNearHeroes<Hero>(2))
+                {
+                    h.OnStressed(5, false, false);
+                }
+                break;
+
+            case 1: // 자해
+                text = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
+                text.SetText("<color=red>그냥 죽는 게 낫지");
+
+                OnDamaged(5, false);
+                break;
+
+            case 2: // 턴 넘기기
+                text = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
+                text.SetText("아무것도 하고 싶지 않아.");
+                break;
+
+            default:
+                break;
+        }
     }
 }

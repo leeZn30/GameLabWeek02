@@ -12,8 +12,6 @@ public class UIManager : SingleTon<UIManager>
     [Header("프리팹")]
     public TextMeshProUGUI CombatInfo;
 
-    List<string> combatInfos = new List<string>();
-
     void Awake()
     {
         GameInfo = GameObject.Find("GameInfo").GetComponentInChildren<TextMeshProUGUI>();

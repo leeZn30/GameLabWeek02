@@ -26,7 +26,7 @@ public class Character : MonoBehaviour
     public float crit => characterData.Crit;
 
     [Header("기술")]
-    int techIndex = 0;
+    protected int techIndex = 0;
     public TechData equippedTech => characterData.Techs[techIndex];
     public int attackRange => characterData.Techs[techIndex].Range;
     public bool isAtkRangeInternal => characterData.Techs[techIndex].isInternal;
@@ -39,7 +39,7 @@ public class Character : MonoBehaviour
     bool isStun;
     List<StatusAbnormal> bleedStatus = new List<StatusAbnormal>();
     List<StatusAbnormal> poisonStatus = new List<StatusAbnormal>();
-    bool myTurn = false;
+    protected bool myTurn = false;
 
     [Header("타일맵")]
     protected Tilemap tilemap;

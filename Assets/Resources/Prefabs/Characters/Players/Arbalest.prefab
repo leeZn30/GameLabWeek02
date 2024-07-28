@@ -203,10 +203,13 @@ MonoBehaviour:
     Speed: 3
     MaxHp: 27
     Stress: 0
-    AccMod: 0
+    AccMod: 10
     Dodge: 0
-    Crit: 20
+    Crit: 6
     Step: 3
+    minDamage: 4
+    maxDamage: 8
+    defense: 10
     WillPower: 25
     StunResist: 40
     BleedResist: 30
@@ -216,12 +219,18 @@ MonoBehaviour:
     - ID: "\uC800\uACA9"
       TechType: 0
       TechTarget: 0
+      Acc: 95
       TechRange: 1
       Range: 3
       isInternal: 0
-      Acc: 95
-      minDamage: 4
-      maxDamage: 8
+      isFixedDamage: 0
+      dMGMod: 0
+      DamageMod: 0
+      FixedMinDamage: 0
+      FixedMaxDamage: 0
+      isFixedCritical: 0
+      CriticalMod: 5
+      FixedCritical: 0
       Stun: 0
       Bleed: 0
       Poison: 0
@@ -231,13 +240,19 @@ MonoBehaviour:
       PoisonTurnCnt: 0
     - ID: "\uC81C\uC555 \uC0AC\uACA9"
       TechType: 0
-      TechTarget: 0
+      TechTarget: 1
+      Acc: 95
       TechRange: 1
       Range: 2
       isInternal: 1
-      Acc: 95
-      minDamage: 3
-      maxDamage: 6
+      isFixedDamage: 0
+      dMGMod: 1
+      DamageMod: 0.3
+      FixedMinDamage: 0
+      FixedMaxDamage: 0
+      isFixedCritical: 0
+      CriticalMod: 0
+      FixedCritical: 0
       Stun: 0
       Bleed: 0
       Poison: 0

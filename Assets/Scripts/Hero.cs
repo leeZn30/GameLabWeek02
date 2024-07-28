@@ -52,6 +52,10 @@ public class Hero : Character
             GridHighlighter.Instance.RemoveAllAttackRange();
         }
 
+        // 전투 기술 바꾸기
+        ReEquipSkill();
+
+        // 단일 타겟 기술 캐릭터 고르기
         if (isChoosing && Input.GetMouseButton(0))
         {
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -455,6 +459,19 @@ public class Hero : Character
 
             default:
                 break;
+        }
+    }
+
+    void ReEquipSkill()
+    {
+        // if (myTurn)
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            techIndex = 0;
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            techIndex = 1;
         }
     }
 }

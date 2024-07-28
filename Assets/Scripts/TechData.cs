@@ -21,22 +21,37 @@ public enum TechType
     Attack, Stress, Heal, StressHeal
 }
 
+public enum Mod
+{
+    positive, negative
+}
+
 [System.Serializable]
 public class TechData
 {
     public string ID;
     public TechType TechType;
     public TechTarget TechTarget;
+    public float Acc; // 명중
 
     [Header("사거리 관련")]
     public TechRange TechRange;
     public int Range;
     public bool isInternal;
 
-    [Header("기본 능력치")]
-    public float Acc; // 명중
-    public int minDamage; // 최소 데미지(힐, 스트레스)
-    public int maxDamage; // 최대 데미지(힐, 스트레스)
+    [Header("데미지(힐) 능력치")]
+    public bool isFixedDamage = false;
+    // 가변 데미지라면
+    public Mod dMGMod;
+    public float DamageMod;
+    // 고정 데미지라면
+    public int FixedMinDamage;
+    public int FixedMaxDamage;
+
+    [Header("크리티컬 능력치")]
+    public bool isFixedCritical = false;
+    public int CriticalMod;
+    public int FixedCritical;
 
     [Header("추가 능력치")]
     public int Stun; // 기절

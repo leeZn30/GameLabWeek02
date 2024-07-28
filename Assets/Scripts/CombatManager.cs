@@ -34,22 +34,22 @@ public class CombatManager : SingleTon<CombatManager>
             switch (attacker.equippedTech.TechType)
             {
                 case TechType.Attack:
-                    int damage = GetDamage(attacker.equippedTech, crit);
+                    int damage = GetDamage(attacker, taker.characterData, crit);
                     taker.OnDamaged(damage, crit);
                     break;
 
                 case TechType.Stress:
-                    int stress = GetDamage(attacker.equippedTech, crit);
+                    int stress = GetDamage(attacker, taker.characterData, crit);
                     taker.OnStressed(stress, crit);
                     break;
 
                 case TechType.Heal:
-                    int heal = GetHeal(attacker.equippedTech, crit);
+                    int heal = GetHeal(attacker, crit);
                     taker.OnHealed(heal, crit);
                     break;
 
                 case TechType.StressHeal:
-                    int stressheal = GetHeal(attacker.equippedTech, crit);
+                    int stressheal = GetHeal(attacker, crit);
                     taker.OnStressHealed(stressheal, crit);
                     break;
             }
@@ -142,9 +142,19 @@ public class CombatManager : SingleTon<CombatManager>
 
     bool isCritical(Character attacker)
     {
-        if (Random.Range(0, 101) <= attacker.crit)
-            return true;
-        else return false;
+        CharacterData attackerData = attacker.characterData;
+        TechData attack = attacker.equippedTech;
+
+        // 캐릭터 크리티컬 + 기술별 크리티컬 보정치
+        if (attack.isFixedCritical)
+        {
+            return Random.Range(0, maxPercent) <= attack.FixedCritical;
+        }
+        else
+        {
+            return Random.Range(0, maxPercent) <= attackerData.Crit + attack.CriticalMod;
+        }
+
     }
 
     bool isStun(TechData techData, CharacterData taker, bool isCritical)
@@ -186,33 +196,62 @@ public class CombatManager : SingleTon<CombatManager>
         }
     }
 
-    int GetDamage(TechData attack, bool isCritical)
+    int GetDamage(Character attacker, CharacterData taker, bool isCritical)
     {
-        // max는 포함 아니기 때문에 1 추가
-        // 일반 공격은 최대 데미지 * 1.5 소수점 반올림
+        CharacterData attackerData = attacker.characterData;
+        TechData attack = attacker.equippedTech;
+        int defaultDmg;
+
+        // 공격 데미지 = 캐릭터 데미지 * 기술별 데미지 보정치
+        // 최종 데미지 = 공격 데미지 - ((100 - 방어력)/100)
+
+        // 크리티컬: 최대 데미지 * 1.5 소수점 반올림
         if (isCritical)
         {
-            return Mathf.RoundToInt(attack.maxDamage * 1.5f);
+            if (!attack.isFixedDamage)
+                defaultDmg = Mathf.RoundToInt(attackerData.maxDamage * (attack.dMGMod == Mod.positive ? (1 + attack.DamageMod) : (1 - attack.DamageMod)) * 1.5f);
+            else
+                defaultDmg = Mathf.RoundToInt(attack.FixedMaxDamage * (attack.dMGMod == Mod.positive ? (1 + attack.DamageMod) : (1 - attack.DamageMod)) * 1.5f);
+
+            return defaultDmg * ((100 - taker.defense) / 100);
         }
         else
         {
+            // max는 포함 아니기 때문에 1 추가
 
-            return Random.Range(attack.minDamage, attack.maxDamage + 1);
+            if (!attack.isFixedDamage)
+                defaultDmg
+                = Mathf.RoundToInt(Random.Range(attackerData.minDamage, attackerData.maxDamage + 1) * (attack.dMGMod == Mod.positive ? (1 + attack.DamageMod) : (1 - attack.DamageMod)));
+            else
+                defaultDmg
+                = Mathf.RoundToInt(Random.Range(attack.FixedMinDamage, attack.FixedMaxDamage + 1) * (attack.dMGMod == Mod.positive ? (1 + attack.DamageMod) : (1 - attack.DamageMod)) * 1.5f);
+
+            return defaultDmg * ((100 - taker.defense) / 100);
         }
     }
 
-    int GetHeal(TechData attack, bool isCritical)
+    int GetHeal(Character attacker, bool isCritical)
     {
+        CharacterData attackerData = attacker.characterData;
+        TechData attack = attacker.equippedTech;
+        int defaultHeal;
         // 힐은 결과값에 1.5배 반올림
-        int heal = Random.Range(attack.minDamage, attack.maxDamage + 1);
-
-        if (isCritical)
+        if (!attack.isFixedDamage)
         {
-            return Mathf.RoundToInt(heal * 1.5f);
+            defaultHeal = Random.Range(attackerData.minDamage, attackerData.maxDamage + 1);
         }
         else
         {
-            return heal;
+            defaultHeal = Random.Range(attack.FixedMinDamage, attack.FixedMaxDamage + 1);
+        }
+
+        if (isCritical)
+        {
+            return Mathf.RoundToInt(defaultHeal * 1.5f);
+        }
+        else
+        {
+            return defaultHeal;
         }
     }
 

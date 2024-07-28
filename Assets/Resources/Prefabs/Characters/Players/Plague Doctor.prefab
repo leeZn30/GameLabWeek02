@@ -198,6 +198,9 @@ MonoBehaviour:
     Dodge: 5
     Crit: 2
     Step: 3
+    minDamage: 4
+    maxDamage: 7
+    defense: 0
     WillPower: 25
     StunResist: 20
     BleedResist: 20
@@ -207,12 +210,18 @@ MonoBehaviour:
     - ID: "\uC5ED\uBCD1 \uC218\uB958\uD0C4"
       TechType: 0
       TechTarget: 1
+      Acc: 95
       TechRange: 1
       Range: 2
       isInternal: 1
-      Acc: 95
-      minDamage: 1
-      maxDamage: 1
+      isFixedDamage: 0
+      dMGMod: 1
+      DamageMod: 0.9
+      FixedMinDamage: 0
+      FixedMaxDamage: 0
+      isFixedCritical: 0
+      CriticalMod: 0
+      FixedCritical: 0
       Stun: 0
       Bleed: 0
       Poison: 100
@@ -223,12 +232,18 @@ MonoBehaviour:
     - ID: "\uC808\uAC1C"
       TechType: 0
       TechTarget: 0
+      Acc: 85
       TechRange: 0
       Range: 1
       isInternal: 0
-      Acc: 35
-      minDamage: 4
-      maxDamage: 7
+      isFixedDamage: 0
+      dMGMod: 0
+      DamageMod: 0
+      FixedMinDamage: 0
+      FixedMaxDamage: 0
+      isFixedCritical: 0
+      CriticalMod: 5
+      FixedCritical: 0
       Stun: 0
       Bleed: 100
       Poison: 0

@@ -117,23 +117,32 @@ MonoBehaviour:
     Stress: 0
     AccMod: 0
     Dodge: 0
-    Crit: 10
+    Crit: 1
     Step: 3
+    minDamage: 4
+    maxDamage: 9
+    defense: 0
     WillPower: 25
     StunResist: 30
     BleedResist: 40
     PoisonResist: 30
     DeathResist: 67
     Techs:
-    - ID: "\uC2E0\uC131\uD55C \uC704\uBB34"
+    - ID: "\uC2E0\uC131\uD55C \uC740\uCD1D"
       TechType: 2
-      TechTarget: 1
-      TechRange: 1
+      TechTarget: 0
+      Acc: 0
+      TechRange: 0
       Range: 1
       isInternal: 0
-      Acc: 0
-      minDamage: 1
-      maxDamage: 3
+      isFixedDamage: 1
+      dMGMod: 0
+      DamageMod: 0
+      FixedMinDamage: 4
+      FixedMaxDamage: 5
+      isFixedCritical: 1
+      CriticalMod: 0
+      FixedCritical: 12
       Stun: 0
       Bleed: 0
       Poison: 0
@@ -141,15 +150,21 @@ MonoBehaviour:
       BleedTurnCnt: 0
       PoisonDamage: 0
       PoisonTurnCnt: 0
-    - ID: "\uC2E0\uC131\uD55C \uC740\uCD1D"
+    - ID: "\uC2E0\uC131\uD55C \uC704\uBB34"
       TechType: 2
-      TechTarget: 0
-      TechRange: 0
+      TechTarget: 1
+      Acc: 0
+      TechRange: 1
       Range: 1
       isInternal: 0
-      Acc: 0
-      minDamage: 4
-      maxDamage: 5
+      isFixedDamage: 1
+      dMGMod: 0
+      DamageMod: 0
+      FixedMinDamage: 1
+      FixedMaxDamage: 3
+      isFixedCritical: 1
+      CriticalMod: 0
+      FixedCritical: 5
       Stun: 0
       Bleed: 0
       Poison: 0

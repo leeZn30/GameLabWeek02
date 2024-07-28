@@ -226,7 +226,7 @@ public class Hero : Character
                 // 죽음의 문턱
                 hp = 0;
                 isDeathDoor = true;
-                UIManager.Instance.ShowGameInfo(string.Format("{0}이 죽음의 문턱에 섰습니다.\n회복 없이 이후 공격 받은면, 바로 죽을 수도 있습니다."));
+                UIManager.Instance.ShowGameInfo(string.Format("{0}이 죽음의 문턱에 섰습니다.\n회복 없이 이후 공격 받은면, 바로 죽을 수도 있습니다.", characterData.ID));
             }
             else
             {
@@ -340,34 +340,45 @@ public class Hero : Character
 
             yield return new WaitForSeconds(2f);
 
-            if (Random.Range(0, 101) < characterData.WillPower)
-            {
-                // 각성
-                StressState = 1;
-                text = "각성!";
-                UIManager.Instance.ShowGameInfo(text);
+            // 붕괴
+            StressState = 2;
+            text = "붕괴!";
+            UIManager.Instance.ShowGameInfo(text);
 
-                yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(2f);
 
-                UIManager.Instance.HideGameInfo();
-            }
-            else
-            {
-                // 붕괴
-                StressState = 2;
-                text = "붕괴!";
-                UIManager.Instance.ShowGameInfo(text);
+            UIManager.Instance.HideGameInfo();
 
-                yield return new WaitForSeconds(2f);
+            // if (Random.Range(0, 101) < characterData.WillPower)
+            // {
+            //     // 각성
+            //     StressState = 1;
+            //     text = "각성!";
+            //     UIManager.Instance.ShowGameInfo(text);
 
-                UIManager.Instance.HideGameInfo();
-            }
+            //     yield return new WaitForSeconds(2f);
+
+            //     UIManager.Instance.HideGameInfo();
+            // }
+            // else
+            // {
+            //     // 붕괴
+            //     StressState = 2;
+            //     text = "붕괴!";
+            //     UIManager.Instance.ShowGameInfo(text);
+
+            //     yield return new WaitForSeconds(2f);
+
+            //     UIManager.Instance.HideGameInfo();
+            // }
         }
         // 사망
-        else if (characterData.Stress >= 200)
+        else if (stress >= 200)
         {
             string text = string.Format("{0} 심장마비", characterData.ID);
-            UIManager.Instance.ShowGameInfo(text);
+            // UIManager.Instance.ShowGameInfo(text);
+            TextMeshProUGUI txt = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
+            txt.SetText(text);
 
             Destroy(gameObject);
         }
@@ -432,14 +443,15 @@ public class Hero : Character
     // Hero에서 구현
     public override void DoCollapse()
     {
-        int index = Random.Range(0, 4);
+        // int index = Random.Range(0, 4);
+        int index = 2;
         TextMeshProUGUI text = null;
 
         switch (index)
         {
             case 0: // 스트레스 전파
                 text = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
-                text.SetText("<color=black>이 판은 망했어.");
+                text.SetText("<color=black>이 판은 망했어.\n(스트레스 증가 및 전파)");
 
                 OnStressed(10, false, false);
 
@@ -451,14 +463,15 @@ public class Hero : Character
 
             case 1: // 자해
                 text = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
-                text.SetText("<color=red>그냥 죽는 게 낫지");
+                text.SetText("<color=red>그냥 죽는 게 낫지.\n(자해)");
 
                 OnDamaged(5, false);
                 break;
 
             case 2: // 턴 넘기기
                 text = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
-                text.SetText("아무것도 하고 싶지 않아.");
+                text.SetText("아무것도 하고 싶지 않아.\n(턴 넘기기)");
+                isSkipTurn = true;
                 break;
 
             default:

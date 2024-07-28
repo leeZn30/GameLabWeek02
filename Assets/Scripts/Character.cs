@@ -43,6 +43,7 @@ public class Character : MonoBehaviour
     List<StatusAbnormal> poisonStatus = new List<StatusAbnormal>();
     public bool isPoisoning => poisonStatus.Count > 0;
     public bool myTurn = false;
+    protected bool isSkipTurn;
 
     [Header("타일맵")]
     protected Tilemap tilemap;
@@ -57,6 +58,7 @@ public class Character : MonoBehaviour
     Vector3 DescGridPositionOffset;
 
     [Header("Effect")]
+    GameObject nowEffect;
     [SerializeField] GameObject atk;
     [SerializeField] GameObject sts;
     [SerializeField] GameObject heal;
@@ -102,13 +104,12 @@ public class Character : MonoBehaviour
 
     void OnDestroy()
     {
-        if (myTurn)
+        if (TurnManager.Instance != null)
         {
-            GoToNextTurn();
+            TurnManager.Instance.removeCharacterFromQueue(this);
         }
 
-        if (TurnManager.Instance != null)
-            TurnManager.Instance.removeCharacterFromQueue(this);
+        Destroy(nowEffect);
     }
 
     IEnumerator turnProcedure()
@@ -176,8 +177,16 @@ public class Character : MonoBehaviour
 
             myTurn = true;
 
-            // 이동 및 공격 시작
-            OperateCharacter();
+            if (!isSkipTurn)
+            {
+                // 이동 및 공격 시작
+                OperateCharacter();
+            }
+            else
+            {
+                isSkipTurn = true;
+                TurnManager.Instance.StartNextTurn();
+            }
         }
         // 기절 깨우기
         else
@@ -196,7 +205,8 @@ public class Character : MonoBehaviour
 
     protected void GoToNextTurn()
     {
-        TurnManager.Instance.StartNextTurn();
+        if (TurnManager.Instance != null)
+            TurnManager.Instance.StartNextTurn();
     }
 
     // Hero에서 구현
@@ -372,38 +382,38 @@ public class Character : MonoBehaviour
 
     IEnumerator damaged()
     {
-        GameObject go = Instantiate(atk, transform.position, atk.transform.rotation);
+        nowEffect = Instantiate(atk, transform.position, atk.transform.rotation);
 
         yield return new WaitForSeconds(2f);
 
-        Destroy(go);
+        Destroy(nowEffect);
     }
 
     protected IEnumerator stressed()
     {
-        GameObject go = Instantiate(sts, transform.position, sts.transform.rotation);
+        nowEffect = Instantiate(sts, transform.position, sts.transform.rotation);
 
         yield return new WaitForSeconds(2f);
 
-        Destroy(go);
+        Destroy(nowEffect);
     }
 
     protected IEnumerator healed()
     {
-        GameObject go = Instantiate(heal, transform.position, heal.transform.rotation);
+        nowEffect = Instantiate(heal, transform.position, heal.transform.rotation);
 
         yield return new WaitForSeconds(2f);
 
-        Destroy(go);
+        Destroy(nowEffect);
     }
 
     protected IEnumerator stresshealed()
     {
-        GameObject go = Instantiate(stressheal, transform.position, stressheal.transform.rotation);
+        nowEffect = Instantiate(stressheal, transform.position, stressheal.transform.rotation);
 
         yield return new WaitForSeconds(2f);
 
-        Destroy(go);
+        Destroy(nowEffect);
     }
 
     IEnumerator dodged()

@@ -215,7 +215,10 @@ public class CombatManager : SingleTon<CombatManager>
             else
                 defaultDmg = Mathf.RoundToInt(attack.FixedMaxDamage * (attack.dMGMod == Mod.positive ? (1 + attack.DamageMod) : (1 - attack.DamageMod)) * 1.5f);
 
-            return Mathf.RoundToInt(defaultDmg * ((100 - taker.defense) / 100));
+            if (attack.TechType == TechType.Attack)
+                return Mathf.RoundToInt(defaultDmg * ((100 - taker.defense) / 100));
+            else
+                return defaultDmg;
         }
         else
         {
@@ -228,7 +231,10 @@ public class CombatManager : SingleTon<CombatManager>
                 defaultDmg
                 = Mathf.RoundToInt(Random.Range(attack.FixedMinDamage, attack.FixedMaxDamage + 1) * (attack.dMGMod == Mod.positive ? (1 + attack.DamageMod) : (1 - attack.DamageMod)));
 
-            return Mathf.RoundToInt(defaultDmg * ((100 - taker.defense) / 100));
+            if (attack.TechType == TechType.Attack)
+                return Mathf.RoundToInt(defaultDmg * ((100 - taker.defense) / 100));
+            else
+                return defaultDmg;
         }
     }
 
@@ -259,6 +265,16 @@ public class CombatManager : SingleTon<CombatManager>
 
     IEnumerator ZoomInCamera(GameObject attacker)
     {
+        // if (CharacterUIs.activeSelf)
+        // {
+        //     MiniStatue.transform.parent.gameObject.SetActive(false);
+        //     CharacterUIs.SetActive(false);
+        // }
+        // else
+        // {
+        //     CharacterUIs.SetActive(true);
+        // }
+
         Vector3 initialCameraPosition = Camera.main.transform.position;
         Vector3 targetCameraPosition = new Vector3(attacker.transform.position.x, attacker.transform.position.y, Camera.main.transform.position.z);
         float initialOrthographicSize = Camera.main.orthographicSize;

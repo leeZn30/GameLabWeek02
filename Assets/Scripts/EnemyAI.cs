@@ -51,13 +51,14 @@ public class EnemyAI : Character
         EnemyUI.transform.position = transform.position + CharacterUIPositionOffset;
     }
 
-    void OnMouseDown()
-    {
-    }
-
     void OnMouseOver()
     {
         stateUI.ShowStat(this);
+
+        if (TurnManager.Instance.nowTurnCharacter is Hero)
+        {
+            UIManager.Instance.ShowAccDmgInfo(TurnManager.Instance.nowTurnCharacter as Hero, this);
+        }
     }
 
     void OnMouseExit()

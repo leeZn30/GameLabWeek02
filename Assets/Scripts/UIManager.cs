@@ -10,7 +10,9 @@ public class UIManager : SingleTon<UIManager>
     TextMeshProUGUI GameInfo;
     public TextMeshProUGUI MiniStatue;
     public GameObject Statue;
-    public TextMeshProUGUI Accuracy;
+    public GameObject AccDamageUI;
+    TextMeshProUGUI accText;
+    TextMeshProUGUI dmgText;
     GameObject CharacterUIs;
 
     [Header("프리팹")]
@@ -27,8 +29,10 @@ public class UIManager : SingleTon<UIManager>
         Statue = GameObject.Find("StateUI");
         Statue.SetActive(false);
 
-        Accuracy = GameObject.Find("AccuracyUI").GetComponentInChildren<TextMeshProUGUI>();
-        Accuracy.transform.parent.gameObject.SetActive(false);
+        AccDamageUI = GameObject.Find("AccDamageUI");
+        accText = AccDamageUI.transform.GetChild(0).GetComponentInChildren<TextMeshProUGUI>();
+        dmgText = AccDamageUI.transform.GetChild(1).GetComponentInChildren<TextMeshProUGUI>();
+        AccDamageUI.SetActive(false);
 
         CharacterUIs = GameObject.Find("CharacterUIs");
     }
@@ -61,16 +65,35 @@ public class UIManager : SingleTon<UIManager>
         GameInfo.transform.parent.gameObject.SetActive(false);
     }
 
-    public void ShowAccInfo(Hero hero, EnemyAI enemy)
+    // 기술 장착 바꿀 때도 확인
+    public void ShowAccDmgInfo(Hero hero, EnemyAI enemy)
     {
-        float acc = hero.equippedTech.Acc + hero.characterData.AccMod - enemy.characterData.Dodge;
-        Accuracy.SetText(string.Format("명중률: {0}%", acc));
-
-        if (!Accuracy.transform.parent.gameObject.activeSelf)
+        if (hero.equippedTech.TechType != TechType.Heal && hero.equippedTech.TechType != TechType.StressHeal)
         {
-            Accuracy.transform.parent.gameObject.SetActive(true);
-        }
+            float acc = hero.equippedTech.Acc + hero.characterData.AccMod - enemy.characterData.Dodge;
+            accText.SetText(string.Format("명중률: {0}%", acc));
 
-        Accuracy.transform.parent.position = enemy.transform.position + new Vector3(0, 3, 0);
+            float minDamage;
+            float maxDamage;
+
+            if (!hero.equippedTech.isFixedDamage)
+            {
+                minDamage
+                = Mathf.RoundToInt(hero.characterData.minDamage * (hero.equippedTech.dMGMod == Mod.positive ? (1 + hero.equippedTech.DamageMod) : (1 - hero.equippedTech.DamageMod)));
+                minDamage = minDamage * ((100 - enemy.characterData.defense) / 100);
+                maxDamage
+                = Mathf.RoundToInt(hero.characterData.maxDamage * (hero.equippedTech.dMGMod == Mod.positive ? (1 + hero.equippedTech.DamageMod) : (1 - hero.equippedTech.DamageMod)));
+                maxDamage = maxDamage * ((100 - enemy.characterData.defense) / 100);
+            }
+            else
+            {
+                minDamage = hero.equippedTech.FixedMinDamage * ((100 - enemy.characterData.defense) / 100);
+                maxDamage = hero.equippedTech.FixedMaxDamage * ((100 - enemy.characterData.defense) / 100);
+            }
+            dmgText.SetText(string.Format("데미지 범위: {0}~{1}", minDamage, maxDamage));
+
+            AccDamageUI.SetActive(true);
+            AccDamageUI.transform.position = enemy.transform.position + new Vector3(-4, 0, 0);
+        }
     }
 }

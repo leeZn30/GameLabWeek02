@@ -7,7 +7,6 @@ using UnityEngine;
 public class Hero : Character
 {
     [Header("상태")]
-    public bool isSelected;
     public Vector3Int CurrentTilePosition;
     bool isChoosing;
     int choosingType;
@@ -39,16 +38,6 @@ public class Hero : Character
         base.Update();
 
         HeroUI.transform.position = transform.position + CharacterUIPositionOffset;
-
-        // 임시
-        // if (Input.GetKeyDown(KeyCode.Escape) && isSelected)
-        // {
-        //     isSelected = false;
-
-        //     GridHighlighter.Instance.selectedHero = null;
-        //     GridHighlighter.Instance.UnHighlightAllTile();
-        //     GridHighlighter.Instance.RemoveAllAttackRange();
-        // }
 
         // 전투 기술 바꾸기
         ReEquipSkill();
@@ -416,8 +405,6 @@ public class Hero : Character
     public void MoveHero()
     {
         CurrentTilePosition = GridHighlighter.Instance.GetCurrentTilePosition(transform);
-
-        isSelected = false;
 
         GridHighlighter.Instance.selectedHero = null;
         GridHighlighter.Instance.UnHighlightAllTile();

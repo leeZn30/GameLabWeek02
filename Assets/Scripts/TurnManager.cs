@@ -88,19 +88,7 @@ public class TurnManager : SingleTon<TurnManager>
 
     IEnumerator passTurn()
     {
-        if (nowTurnCharacter is Hero)
-        {
-            nowTurnCharacter.myTurn = false;
-            nowTurnCharacter.GetComponent<Hero>().isSelected = false;
-        }
-        else if (nowTurnCharacter is EnemyAI)
-        {
-            nowTurnCharacter.myTurn = false;
-        }
-        else
-        {
-            Debug.Log("이상한 친구 등장");
-        }
+        nowTurnCharacter.myTurn = false;
 
         if (priorityQueue.Count == 0)
         {

@@ -6,18 +6,20 @@ using UnityEngine;
 
 public class CombatManager : SingleTon<CombatManager>
 {
-    Coroutine CameraCorouine;
+    // Coroutine CameraCorouine;
+    Coroutine ZoomIn;
+    Coroutine ZoomOut;
     int maxPercent = 101;
 
     // 단일 공격
     public void Combat(Character attacker, Character taker)
     {
-        if (CameraCorouine == null)
-            CameraCorouine = StartCoroutine(ZoomInCamera(attacker.gameObject));
+        if (ZoomIn == null)
+            ZoomIn = StartCoroutine(ZoomInCamera(attacker.gameObject));
         else
         {
-            StopCoroutine(CameraCorouine);
-            CameraCorouine = StartCoroutine(ZoomInCamera(attacker.gameObject));
+            StopCoroutine(ZoomIn);
+            ZoomIn = StartCoroutine(ZoomInCamera(attacker.gameObject));
         }
 
         // 명중
@@ -96,12 +98,12 @@ public class CombatManager : SingleTon<CombatManager>
         // 회피
         else
         {
-            if (CameraCorouine == null)
-                CameraCorouine = StartCoroutine(ZoomInCamera(attacker.gameObject));
+            if (ZoomIn == null)
+                ZoomIn = StartCoroutine(ZoomInCamera(attacker.gameObject));
             else
             {
-                StopCoroutine(CameraCorouine);
-                CameraCorouine = StartCoroutine(ZoomInCamera(attacker.gameObject));
+                StopCoroutine(ZoomIn);
+                ZoomIn = StartCoroutine(ZoomInCamera(attacker.gameObject));
             }
             taker.OnDodged(attacker.equippedTech.TechType);
         }
@@ -261,7 +263,7 @@ public class CombatManager : SingleTon<CombatManager>
         Vector3 targetCameraPosition = new Vector3(attacker.transform.position.x, attacker.transform.position.y, Camera.main.transform.position.z);
         float initialOrthographicSize = Camera.main.orthographicSize;
         float targetOrthographicSize = 4f;
-        float zoomInDuration = 0.5f;
+        float zoomInDuration = 0.2f;
         float elapsedTime = 0f;
         while (elapsedTime < zoomInDuration)
         {
@@ -285,7 +287,7 @@ public class CombatManager : SingleTon<CombatManager>
         Vector3 initialCameraPosition = Camera.main.transform.position;
         float initialOrthographicSize = Camera.main.orthographicSize;
         float targetOrthographicSize = 8f;
-        float zoomInDuration = 0.5f;
+        float zoomInDuration = 0.2f;
         float elapsedTime = 0f;
         while (elapsedTime < zoomInDuration)
         {
@@ -308,16 +310,14 @@ public class CombatManager : SingleTon<CombatManager>
 
     public void CallZoomOutCamera()
     {
-        if (CameraCorouine == null)
+        if (ZoomOut == null)
         {
-            Debug.Log("카메라 코루틴 없고 줌아웃 시작함");
-            CameraCorouine = StartCoroutine(ZoomOutCamera());
+            ZoomOut = StartCoroutine(ZoomOutCamera());
         }
         else
         {
-            Debug.Log("카메라 코루틴 있고 줌아웃 시작함");
-            // StopCoroutine(CameraCorouine);
-            CameraCorouine = StartCoroutine(ZoomOutCamera());
+            StopCoroutine(ZoomOut);
+            ZoomOut = StartCoroutine(ZoomOutCamera());
         }
     }
 }

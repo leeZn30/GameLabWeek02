@@ -31,13 +31,11 @@ public class TurnManager : SingleTon<TurnManager>
 
     void Start()
     {
-        orderCharacter();
+        StartCoroutine(orderCharacter());
     }
 
-    void orderCharacter()
+    IEnumerator orderCharacter()
     {
-        Debug.Log("==================Start Order!=========================");
-
         // 1. 화면에 있는 모든 Character 타입의 오브젝트를 찾는다.
         Character[] characters = FindObjectsOfType<Character>();
 
@@ -65,6 +63,9 @@ public class TurnManager : SingleTon<TurnManager>
 
         // 첫번째 시작
         nowTurnCharacter = priorityQueue.First();
+
+        yield return StartCoroutine(pointNowTurnCharacter());
+
         priorityQueue.First().StartTurn();
         priorityQueue.Remove(priorityQueue.First());
     }
@@ -101,19 +102,16 @@ public class TurnManager : SingleTon<TurnManager>
             Debug.Log("이상한 친구 등장");
         }
 
-        yield return new WaitForSeconds(2f);
-
         if (priorityQueue.Count == 0)
         {
             orderCharacter();
             yield break;
         }
 
+
         if (priorityQueue.First() != null)
         {
             nowTurnCharacter = priorityQueue.First();
-            priorityQueue.First().StartTurn();
-            priorityQueue.Remove(priorityQueue.First());
         }
         else
         {
@@ -123,8 +121,23 @@ public class TurnManager : SingleTon<TurnManager>
             }
 
             nowTurnCharacter = priorityQueue.First();
-            priorityQueue.First().StartTurn();
         }
 
+        yield return StartCoroutine(pointNowTurnCharacter());
+
+        nowTurnCharacter.StartTurn();
+        priorityQueue.Remove(nowTurnCharacter);
+    }
+
+    IEnumerator pointNowTurnCharacter()
+    {
+        nowTurnCharacter.Light.gameObject.SetActive(true);
+        for (float t = 0; t < 2; t += Time.deltaTime)
+        {
+            float alpha = Mathf.PingPong(t * 10f, 1f);
+            nowTurnCharacter.Light.color = new Color(nowTurnCharacter.Light.color.r, nowTurnCharacter.Light.color.g, nowTurnCharacter.Light.color.b, alpha);
+            yield return null;
+        }
+        nowTurnCharacter.Light.gameObject.SetActive(false);
     }
 }

@@ -316,7 +316,7 @@ public class CombatManager : SingleTon<CombatManager>
         else
         {
             Debug.Log("카메라 코루틴 있고 줌아웃 시작함");
-            StopCoroutine(CameraCorouine);
+            // StopCoroutine(CameraCorouine);
             CameraCorouine = StartCoroutine(ZoomOutCamera());
         }
     }

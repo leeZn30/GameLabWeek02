@@ -16,7 +16,7 @@ public class GridHighlighter : SingleTon<GridHighlighter>
     LineRenderer lineRenderer;
 
     [Header("표시된 타일 정보")]
-    Stack<Vector3Int> highlightedTilePositions = new Stack<Vector3Int>();
+    public Stack<Vector3Int> highlightedTilePositions = new Stack<Vector3Int>();
 
     [Header("사용 오브젝트")]
     [SerializeField] Tile highlightedTile;
@@ -316,7 +316,7 @@ public class GridHighlighter : SingleTon<GridHighlighter>
 
     #region AttackRange
 
-    void showAttackRange(Vector3Int target, int range, bool isInternal)
+    public void showAttackRange(Vector3Int target, int range, bool isInternal)
     {
         RemoveAllAttackRange();
 

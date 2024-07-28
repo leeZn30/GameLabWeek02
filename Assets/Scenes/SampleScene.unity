@@ -546,50 +546,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Nun
       objectReference: {fileID: 0}
-    - target: {fileID: 1275688165424266246, guid: f087bc6d8a85b934a8222cbac80f21e9, type: 3}
-      propertyPath: characterData.Speed
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 1275688165424266246, guid: f087bc6d8a85b934a8222cbac80f21e9, type: 3}
-      propertyPath: characterData.Techs.Array.data[0].ID
-      value: "\uC2E0\uC131\uD55C \uC740\uCD1D"
-      objectReference: {fileID: 0}
-    - target: {fileID: 1275688165424266246, guid: f087bc6d8a85b934a8222cbac80f21e9, type: 3}
-      propertyPath: characterData.Techs.Array.data[1].ID
-      value: "\uC2E0\uC131\uD55C \uC704\uBB34"
-      objectReference: {fileID: 0}
-    - target: {fileID: 1275688165424266246, guid: f087bc6d8a85b934a8222cbac80f21e9, type: 3}
-      propertyPath: characterData.Techs.Array.data[0].TechRange
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1275688165424266246, guid: f087bc6d8a85b934a8222cbac80f21e9, type: 3}
-      propertyPath: characterData.Techs.Array.data[0].maxDamage
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1275688165424266246, guid: f087bc6d8a85b934a8222cbac80f21e9, type: 3}
-      propertyPath: characterData.Techs.Array.data[0].minDamage
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 1275688165424266246, guid: f087bc6d8a85b934a8222cbac80f21e9, type: 3}
-      propertyPath: characterData.Techs.Array.data[1].TechRange
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1275688165424266246, guid: f087bc6d8a85b934a8222cbac80f21e9, type: 3}
-      propertyPath: characterData.Techs.Array.data[1].maxDamage
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 1275688165424266246, guid: f087bc6d8a85b934a8222cbac80f21e9, type: 3}
-      propertyPath: characterData.Techs.Array.data[1].minDamage
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1275688165424266246, guid: f087bc6d8a85b934a8222cbac80f21e9, type: 3}
-      propertyPath: characterData.Techs.Array.data[0].TechTarget
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1275688165424266246, guid: f087bc6d8a85b934a8222cbac80f21e9, type: 3}
-      propertyPath: characterData.Techs.Array.data[1].TechTarget
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 2123092325564513420, guid: f087bc6d8a85b934a8222cbac80f21e9, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.21
@@ -4927,10 +4883,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Paladin
       objectReference: {fileID: 0}
-    - target: {fileID: 1275688165424266246, guid: 1add3d2f7992d114181746d8e06dc006, type: 3}
-      propertyPath: characterData.Speed
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 2123092325564513420, guid: 1add3d2f7992d114181746d8e06dc006, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.24
@@ -5272,10 +5224,6 @@ PrefabInstance:
     - target: {fileID: 3507430274678082146, guid: e0fdb32627391fc428f876fe06463e81, type: 3}
       propertyPath: m_Name
       value: NormalEnemy
-      objectReference: {fileID: 0}
-    - target: {fileID: 4535183846514982587, guid: e0fdb32627391fc428f876fe06463e81, type: 3}
-      propertyPath: m_Enabled
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6447,6 +6395,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a7aace17da546e4e809c42a738bdf04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  nowTurnCharacter: {fileID: 0}
 --- !u!1 &1972369581
 GameObject:
   m_ObjectHideFlags: 0

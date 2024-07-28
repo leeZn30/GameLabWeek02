@@ -62,6 +62,9 @@ public class Character : MonoBehaviour
     [SerializeField] GameObject heal;
     [SerializeField] GameObject stressheal;
 
+    [Header("오브젝트")]
+    public SpriteRenderer Light;
+
     protected virtual void Awake()
     {
         hp = characterData.MaxHp;
@@ -70,6 +73,8 @@ public class Character : MonoBehaviour
         CharacterUIPositionOffset = new Vector3(0, transform.localScale.y / 2, 0);
         DescGridPositionOffset = new Vector3(0, transform.localScale.y / 2 + CharacterUIPfb.transform.localScale.y / 2, 0);
         DescGrid = Instantiate(DescUIGridPfb, transform.position + DescGridPositionOffset, Quaternion.identity, GameObject.Find("Canvas").transform);
+
+        Light.gameObject.SetActive(false);
     }
 
     protected virtual void Update()

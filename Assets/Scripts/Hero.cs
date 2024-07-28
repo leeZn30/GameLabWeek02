@@ -86,6 +86,14 @@ public class Hero : Character
         }
     }
 
+    void OnMouseDown()
+    {
+        if (myTurn)
+        {
+
+        }
+    }
+
     void OnMouseOver()
     {
         stateUI.ShowStat(this);
@@ -493,11 +501,32 @@ public class Hero : Character
         {
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
+                TextMeshProUGUI text = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
+                text.SetText("장착 기술 변경 1");
+
                 techIndex = 0;
+
+                GridHighlighter.Instance.showAttackRange
+                (
+                    GridHighlighter.Instance.NowHighlightedPosition,
+                    equippedTech.Range,
+                    equippedTech.isInternal
+                );
+
             }
             else if (Input.GetKeyDown(KeyCode.Alpha2))
             {
+                TextMeshProUGUI text = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
+                text.SetText("장착 기술 변경 2");
                 techIndex = 1;
+
+                GridHighlighter.Instance.showAttackRange
+                (
+                    GridHighlighter.Instance.NowHighlightedPosition,
+                    equippedTech.Range,
+                    equippedTech.isInternal
+                );
+
             }
         }
     }

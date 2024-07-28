@@ -23,6 +23,7 @@ public class StateUI : MonoBehaviour
     [SerializeField] TextMeshProUGUI skillNameText;
     [SerializeField] TextMeshProUGUI skillTypeText;
     [SerializeField] TextMeshProUGUI skillTargetText;
+    [SerializeField] TextMeshProUGUI skillCriticalText;
     [SerializeField] TextMeshProUGUI stunText;
     [SerializeField] TextMeshProUGUI bleedText;
     [SerializeField] TextMeshProUGUI bleedDescText;
@@ -84,6 +85,17 @@ public class StateUI : MonoBehaviour
                 skillTargetText.SetText("다중");
                 break;
         }
+        int crit;
+        // 캐릭터 크리티컬 + 기술별 크리티컬 보정치
+        if (character.equippedTech.isFixedCritical)
+        {
+            crit = character.equippedTech.FixedCritical;
+        }
+        else
+        {
+            crit = character.characterData.Crit + character.equippedTech.CriticalMod;
+        }
+        skillCriticalText.SetText(crit.ToString());
         stunText.SetText(character.equippedTech.Stun.ToString());
         bleedText.SetText(character.equippedTech.Bleed.ToString());
         bleedDescText.SetText(string.Format("{0} 턴당 {1} 데미지", character.equippedTech.BleedTurnCnt, character.equippedTech.BleedDamage));

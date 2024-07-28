@@ -96,4 +96,9 @@ public class UIManager : SingleTon<UIManager>
             AccDamageUI.transform.position = enemy.transform.position + new Vector3(-4, 0, 0);
         }
     }
+
+    public void HideAccDmgInfo()
+    {
+        AccDamageUI.SetActive(false);
+    }
 }

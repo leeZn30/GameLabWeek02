@@ -64,6 +64,11 @@ public class EnemyAI : Character
     void OnMouseExit()
     {
         stateUI.hideStat();
+
+        if (TurnManager.Instance.nowTurnCharacter is Hero)
+        {
+            UIManager.Instance.HideAccDmgInfo();
+        }
     }
 
     protected override void OperateCharacter()

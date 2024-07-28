@@ -7,7 +7,7 @@ using UnityEngine;
 public class Hero : Character
 {
     [Header("상태")]
-    [SerializeField] bool isSelected;
+    public bool isSelected;
     public Vector3Int CurrentTilePosition;
     bool isChoosing;
     int choosingType;
@@ -30,8 +30,6 @@ public class Hero : Character
         tilemap = GridHighlighter.Instance.tilemap;
         transform.position = GridHighlighter.Instance.ConvertTileToWorldPosition(tilemap.WorldToCell(transform.position));
 
-        CurrentTilePosition = GetCurrentTilePosition();
-
         HeroUI = Instantiate(CharacterUIPfb, transform.position + CharacterUIPositionOffset, Quaternion.identity, GameObject.Find("CharacterUIs").transform).GetComponent<HeroUI>();
         HeroUI.Init(this);
     }
@@ -43,14 +41,14 @@ public class Hero : Character
         HeroUI.transform.position = transform.position + CharacterUIPositionOffset;
 
         // 임시
-        if (Input.GetKeyDown(KeyCode.Escape) && isSelected)
-        {
-            isSelected = false;
+        // if (Input.GetKeyDown(KeyCode.Escape) && isSelected)
+        // {
+        //     isSelected = false;
 
-            GridHighlighter.Instance.selectedHero = null;
-            GridHighlighter.Instance.UnHighlightAllTile();
-            GridHighlighter.Instance.RemoveAllAttackRange();
-        }
+        //     GridHighlighter.Instance.selectedHero = null;
+        //     GridHighlighter.Instance.UnHighlightAllTile();
+        //     GridHighlighter.Instance.RemoveAllAttackRange();
+        // }
 
         // 전투 기술 바꾸기
         ReEquipSkill();
@@ -85,7 +83,6 @@ public class Hero : Character
                     UIManager.Instance.HideGameInfo();
                 }
             }
-
         }
     }
 
@@ -98,24 +95,32 @@ public class Hero : Character
         stateUI.hideStat();
     }
 
-    void OnMouseDown()
+
+    protected override void OperateCharacter()
     {
-        if (!isSelected)
+        if (myTurn)
         {
-            isSelected = true;
+            CurrentTilePosition = GridHighlighter.Instance.GetCurrentTilePosition(transform);
 
             GridHighlighter.Instance.selectedHero = this;
             GridHighlighter.Instance.HighlightStartTile(CurrentTilePosition);
-        }
-        else
-        {
-            isSelected = false;
 
-            GridHighlighter.Instance.selectedHero = null;
-            GridHighlighter.Instance.UnHighlightAllTile();
-            GridHighlighter.Instance.RemoveAllAttackRange();
-        }
+            // if (!isSelected)
+            // {
+            //     isSelected = true;
 
+            //     GridHighlighter.Instance.selectedHero = this;
+            //     GridHighlighter.Instance.HighlightStartTile(CurrentTilePosition);
+            // }
+            // else
+            // {
+            //     isSelected = false;
+
+            //     GridHighlighter.Instance.selectedHero = null;
+            //     GridHighlighter.Instance.UnHighlightAllTile();
+            //     GridHighlighter.Instance.RemoveAllAttackRange();
+            // }
+        }
     }
 
     void Attack()
@@ -134,30 +139,45 @@ public class Hero : Character
                 }
             }
 
-            // 적 하나 이상 발견
-            if (targets.Count > 1)
+            // 이동만 한 것
+            if (targets.Count == 0)
             {
-                // 단일 공격이라면 하나 선택
-                if (equippedTech.TechTarget == TechTarget.Single)
-                {
-                    ReadyToChooseCharacter(0);
-                }
-                // 다중 공격이라면 모두에게 적용
-                else
-                {
-                    CombatManager.Instance.Combat(this, targets);
-                    GridHighlighter.Instance.RemoveAllAttackRange();
-                }
+                GridHighlighter.Instance.RemoveAllAttackRange();
+
+                // 턴 넘길 준비
+                GoToNextTurn();
             }
-            // 적 하나 발견
             else
             {
-                if (targets.Count > 0)
+                // 적 하나 이상 발견
+                if (targets.Count > 1)
                 {
-                    CombatManager.Instance.Combat(this, targets[0]);
-                    GridHighlighter.Instance.RemoveAllAttackRange();
+                    // 단일 공격이라면 하나 선택
+                    if (equippedTech.TechTarget == TechTarget.Single)
+                    {
+                        ReadyToChooseCharacter(0);
+                    }
+                    // 다중 공격이라면 모두에게 적용
+                    else
+                    {
+                        CombatManager.Instance.Combat(this, targets);
+                        GridHighlighter.Instance.RemoveAllAttackRange();
+                    }
                 }
+                // 적 하나 발견
+                else
+                {
+                    if (targets.Count > 0)
+                    {
+                        CombatManager.Instance.Combat(this, targets[0]);
+                        GridHighlighter.Instance.RemoveAllAttackRange();
+                    }
+                }
+
+                // 턴 넘길 준비
+                // GoToNextTurn();
             }
+
         }
         // 힐이면 -> 플레이어 파악
         else
@@ -170,35 +190,45 @@ public class Hero : Character
                 }
             }
 
-            // 플레이어 하나 이상 발견
-            if (targets.Count > 1)
+            // 이동만 한 것
+            if (targets.Count == 0)
             {
-                // 단일 힐이라면 하나 선택
-                if (equippedTech.TechTarget == TechTarget.Single)
-                {
-                    ReadyToChooseCharacter(1);
-                }
-                // 다중 힐이라면 모두에게 적용
-                else
-                {
-                    CombatManager.Instance.Combat(this, targets);
-                    GridHighlighter.Instance.RemoveAllAttackRange();
-                }
+                GridHighlighter.Instance.RemoveAllAttackRange();
+
+                // 턴 넘길 준비
+                GoToNextTurn();
             }
-            // 플레이어 하나 발견
             else
             {
-                if (targets.Count > 0)
+                // 플레이어 하나 이상 발견
+                if (targets.Count > 1)
                 {
-                    CombatManager.Instance.Combat(this, targets[0]);
-                    GridHighlighter.Instance.RemoveAllAttackRange();
+                    // 단일 힐이라면 하나 선택
+                    if (equippedTech.TechTarget == TechTarget.Single)
+                    {
+                        ReadyToChooseCharacter(1);
+                    }
+                    // 다중 힐이라면 모두에게 적용
+                    else
+                    {
+                        CombatManager.Instance.Combat(this, targets);
+                        GridHighlighter.Instance.RemoveAllAttackRange();
+                    }
                 }
+                // 플레이어 하나 발견
+                else
+                {
+                    if (targets.Count > 0)
+                    {
+                        CombatManager.Instance.Combat(this, targets[0]);
+                        GridHighlighter.Instance.RemoveAllAttackRange();
+                    }
+                }
+
+                // 턴 넘길 준비
+                // GoToNextTurn();
             }
         }
-
-        // 이동만 한 것
-        if (targets.Count == 0)
-            GridHighlighter.Instance.RemoveAllAttackRange();
     }
 
     public override void OnDamaged(int damage, bool isCritical, bool isEffect = true)
@@ -375,14 +405,9 @@ public class Hero : Character
         UIManager.Instance.ShowGameInfo(text);
     }
 
-    Vector3Int GetCurrentTilePosition()
-    {
-        return tilemap.WorldToCell(transform.position);
-    }
-
     public void MoveHero()
     {
-        CurrentTilePosition = GetCurrentTilePosition();
+        CurrentTilePosition = GridHighlighter.Instance.GetCurrentTilePosition(transform);
 
         isSelected = false;
 
@@ -464,14 +489,16 @@ public class Hero : Character
 
     void ReEquipSkill()
     {
-        // if (myTurn)
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (myTurn)
         {
-            techIndex = 0;
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            techIndex = 1;
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                techIndex = 0;
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                techIndex = 1;
+            }
         }
     }
 }

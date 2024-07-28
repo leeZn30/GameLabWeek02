@@ -302,14 +302,20 @@ public class CombatManager : SingleTon<CombatManager>
 
         Camera.main.transform.position = new Vector3(0, 0, -10);
         Camera.main.orthographicSize = targetOrthographicSize;
+
+        TurnManager.Instance.StartNextTurn();
     }
 
     public void CallZoomOutCamera()
     {
         if (CameraCorouine == null)
+        {
+            Debug.Log("카메라 코루틴 없고 줌아웃 시작함");
             CameraCorouine = StartCoroutine(ZoomOutCamera());
+        }
         else
         {
+            Debug.Log("카메라 코루틴 있고 줌아웃 시작함");
             StopCoroutine(CameraCorouine);
             CameraCorouine = StartCoroutine(ZoomOutCamera());
         }

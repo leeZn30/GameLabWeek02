@@ -36,12 +36,13 @@ public class Character : MonoBehaviour
     public int stress;
     // 0: default 1: Awakening 2: Collapse
     public int StressState = 0;
+    public int nowSpeed;
     public bool isStun;
     List<StatusAbnormal> bleedStatus = new List<StatusAbnormal>();
     public bool isBleeding => bleedStatus.Count > 0;
     List<StatusAbnormal> poisonStatus = new List<StatusAbnormal>();
     public bool isPoisoning => poisonStatus.Count > 0;
-    protected bool myTurn = false;
+    public bool myTurn = false;
 
     [Header("타일맵")]
     protected Tilemap tilemap;
@@ -77,14 +78,19 @@ public class Character : MonoBehaviour
         DescGrid.transform.position = transform.position + DescGridPositionOffset;
 
         // 모든 descUI가 없으면 끝난 것 > 카메라 줌 아웃
-        if (FindObjectsOfType<CharacterDescUI>().Length == 0 && Camera.main.orthographicSize != 8)
+        if (myTurn)
         {
-            CombatManager.Instance.CallZoomOutCamera();
+            if (FindObjectsOfType<CharacterDescUI>().Length == 0 && Camera.main.orthographicSize == 4)
+            {
+                CombatManager.Instance.CallZoomOutCamera();
+            }
         }
     }
 
     public virtual void StartTurn()
     {
+        myTurn = true;
+
         // 상태 이상 공격 데미지
         if (bleedStatus.Count > 0)
         {
@@ -141,6 +147,7 @@ public class Character : MonoBehaviour
             }
 
             // 이동 및 공격 시작
+            OperateCharacter();
 
         }
         // 기절 깨우기
@@ -149,8 +156,16 @@ public class Character : MonoBehaviour
             TextMeshProUGUI desc = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
             desc.SetText("<color=yellow> 기절 회복");
             isStun = false;
-        }
 
+            TurnManager.Instance.StartNextTurn();
+        }
+    }
+
+    protected virtual void OperateCharacter() { }
+
+    protected void GoToNextTurn()
+    {
+        TurnManager.Instance.StartNextTurn();
     }
 
     // Hero에서 구현

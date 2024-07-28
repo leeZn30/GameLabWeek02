@@ -53,15 +53,6 @@ public class EnemyAI : Character
 
     void OnMouseDown()
     {
-        enemyPosition = tilemap.WorldToCell(transform.position);
-
-        // targetPlayer는 지정하면서 사거리 기준 위치 잡아주기
-        playerPosition = FindClosestPlayer();
-
-        GridHighlighter.Instance.selectedEnemy = this;
-        Vector3Int targetPosition = GridHighlighter.Instance.GetEnemyRoute(enemyPosition, playerPosition, step);
-
-        StartCoroutine(waitForMoving(targetPosition));
     }
 
     void OnMouseOver()
@@ -72,6 +63,19 @@ public class EnemyAI : Character
     void OnMouseExit()
     {
         stateUI.hideStat();
+    }
+
+    protected override void OperateCharacter()
+    {
+        enemyPosition = tilemap.WorldToCell(transform.position);
+
+        // targetPlayer는 지정하면서 사거리 기준 위치 잡아주기
+        playerPosition = FindClosestPlayer();
+
+        GridHighlighter.Instance.selectedEnemy = this;
+        Vector3Int targetPosition = GridHighlighter.Instance.GetEnemyRoute(enemyPosition, playerPosition, step);
+
+        StartCoroutine(waitForMoving(targetPosition));
     }
 
     /*
@@ -143,16 +147,21 @@ public class EnemyAI : Character
         List<AttackRange> ranges = FindObjectsOfType<AttackRange>().ToList();
 
         // 힐이 아니라면 공격으로 간주 -> 히어로 파악
-        if (equippedTech.TechType != TechType.Heal)
+        foreach (AttackRange go in ranges)
         {
-            foreach (AttackRange go in ranges)
+            if (go.hero != null)
             {
-                if (go.hero != null)
-                {
-                    targets.Add(go.hero);
-                }
+                targets.Add(go.hero);
             }
+        }
 
+        if (targets.Count == 0)
+        {
+            // 턴 넘길 준비
+            GoToNextTurn();
+        }
+        else
+        {
             // 적 하나 이상 발견
             if (targets.Count > 1)
             {
@@ -175,42 +184,7 @@ public class EnemyAI : Character
                     CombatManager.Instance.Combat(this, targets[0]);
                 }
             }
-        }
-        // 힐이면 -> 에너미 파악
-        // 일단 적군은 힐러 없을 예정
-        // 그래도 코드는 남겨놔
-        else
-        {
-            foreach (AttackRange go in ranges)
-            {
-                if (go.enemy != null && go.enemy != this)
-                {
-                    targets.Add(go.enemy);
-                }
-            }
 
-            // 플레이어 하나 이상 발견
-            if (targets.Count > 1)
-            {
-                // 단일 힐이라면 하나 선택
-                if (equippedTech.TechTarget == TechTarget.Single)
-                {
-                    ChooseCharacter(targets);
-                }
-                // 다중 힐이라면 모두에게 적용
-                else
-                {
-                    CombatManager.Instance.Combat(this, targets);
-                }
-            }
-            // 플레이어 하나 발견
-            else
-            {
-                if (targets.Count > 0)
-                {
-                    CombatManager.Instance.Combat(this, targets[0]);
-                }
-            }
         }
 
         GridHighlighter.Instance.RemoveAllAttackRange();

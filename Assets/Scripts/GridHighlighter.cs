@@ -384,4 +384,9 @@ public class GridHighlighter : SingleTon<GridHighlighter>
         return new Vector3(pos.x + 0.5f, pos.y + 0.5f, pos.z);
     }
 
+    public Vector3Int GetCurrentTilePosition(Transform tf)
+    {
+        return tilemap.WorldToCell(tf.position);
+    }
+
 }

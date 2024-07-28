@@ -1,8 +1,130 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+
+class CharacterComparer : IComparer<Character>
+{
+    public int Compare(Character x, Character y)
+    {
+        if (x == null || y == null) return 0;
+
+        // 내림차순으로 정렬
+        int result = y.nowSpeed.CompareTo(x.nowSpeed);
+        if (result == 0)
+        {
+            // 초기 speed값이 높은 캐릭터가 우선
+            result = y.characterData.Speed.CompareTo(x.characterData.Speed); // 이름으로 비교 (초기 speed값 저장 방법이 없으므로 임시로 이름으로 비교)
+        }
+        return result;
+    }
+}
 
 public class TurnManager : SingleTon<TurnManager>
 {
+    public Character nowTurnCharacter;
 
+    SortedSet<Character> priorityQueue;
+
+    Coroutine turn;
+
+    void Start()
+    {
+        orderCharacter();
+    }
+
+    void orderCharacter()
+    {
+        Debug.Log("==================Start Order!=========================");
+
+        // 1. 화면에 있는 모든 Character 타입의 오브젝트를 찾는다.
+        Character[] characters = FindObjectsOfType<Character>();
+
+        // 2. 각 캐릭터의 speed 변수에 1~8 사이의 랜덤값을 더한다.
+        System.Random random = new System.Random();
+        foreach (Character character in characters)
+        {
+            int randomValue = random.Next(1, 9);
+            character.nowSpeed = character.characterData.Speed + randomValue;
+        }
+
+        // 3. 우선순위 큐에 내림차순으로 정렬한다. 값이 같다면 초기 speed가 높은 캐릭터가 우선.
+        priorityQueue = new SortedSet<Character>(new CharacterComparer());
+
+        foreach (Character character in characters)
+        {
+            priorityQueue.Add(character);
+        }
+
+        // 출력 테스트
+        // foreach (Character character in priorityQueue)
+        // {
+        //     Debug.Log($"{character.name} with speed: {character.nowSpeed}");
+        // }
+
+        // 첫번째 시작
+        nowTurnCharacter = priorityQueue.First();
+        priorityQueue.First().StartTurn();
+        priorityQueue.Remove(priorityQueue.First());
+    }
+
+    public void StartNextTurn()
+    {
+        StartCoroutine(waitTurn());
+    }
+
+    IEnumerator waitTurn()
+    {
+        if (turn != null)
+        {
+            yield return turn;
+            turn = StartCoroutine(passTurn());
+        }
+        else
+            turn = StartCoroutine(passTurn());
+    }
+
+    IEnumerator passTurn()
+    {
+        if (nowTurnCharacter is Hero)
+        {
+            nowTurnCharacter.myTurn = false;
+            nowTurnCharacter.GetComponent<Hero>().isSelected = false;
+        }
+        else if (nowTurnCharacter is EnemyAI)
+        {
+            nowTurnCharacter.myTurn = false;
+        }
+        else
+        {
+            Debug.Log("이상한 친구 등장");
+        }
+
+        yield return new WaitForSeconds(2f);
+
+        if (priorityQueue.Count == 0)
+        {
+            orderCharacter();
+            yield break;
+        }
+
+        if (priorityQueue.First() != null)
+        {
+            nowTurnCharacter = priorityQueue.First();
+            priorityQueue.First().StartTurn();
+            priorityQueue.Remove(priorityQueue.First());
+        }
+        else
+        {
+            while (priorityQueue.First() == null)
+            {
+                priorityQueue.Remove(priorityQueue.First());
+            }
+
+            nowTurnCharacter = priorityQueue.First();
+            priorityQueue.First().StartTurn();
+        }
+
+    }
 }

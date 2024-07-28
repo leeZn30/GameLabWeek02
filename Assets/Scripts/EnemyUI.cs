@@ -19,8 +19,33 @@ public class EnemyUI : MonoBehaviour
     private RectTransform hoverRectTransform;
     private RectTransform canvasRectTransform;
 
-    void Awake()
+    void Update()
     {
+        hpGauge.value = enemy.hp;
+        if (enemy.isStun)
+        {
+            stunUI.SetActive(true);
+        }
+        else
+        {
+            stunUI.SetActive(false);
+        }
+        if (enemy.isBleeding)
+        {
+            bleedUI.SetActive(true);
+        }
+        else
+        {
+            bleedUI.SetActive(false);
+        }
+        if (enemy.isPoisoning)
+        {
+            poisonUI.SetActive(true);
+        }
+        else
+        {
+            poisonUI.SetActive(false);
+        }
     }
 
     public void Init(EnemyAI enemy)

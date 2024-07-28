@@ -11,6 +11,7 @@ public class UIManager : SingleTon<UIManager>
     public TextMeshProUGUI MiniStatue;
     public GameObject Statue;
     public TextMeshProUGUI Accuracy;
+    GameObject CharacterUIs;
 
     [Header("프리팹")]
     public TextMeshProUGUI CombatInfo;
@@ -28,6 +29,25 @@ public class UIManager : SingleTon<UIManager>
 
         Accuracy = GameObject.Find("AccuracyUI").GetComponentInChildren<TextMeshProUGUI>();
         Accuracy.transform.parent.gameObject.SetActive(false);
+
+        CharacterUIs = GameObject.Find("CharacterUIs");
+    }
+
+    void Update()
+    {
+        // 임시
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            if (CharacterUIs.activeSelf)
+            {
+                MiniStatue.transform.parent.gameObject.SetActive(false);
+                CharacterUIs.SetActive(false);
+            }
+            else
+            {
+                CharacterUIs.SetActive(true);
+            }
+        }
     }
 
     public void ShowGameInfo(string text)

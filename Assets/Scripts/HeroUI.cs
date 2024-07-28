@@ -52,6 +52,36 @@ public class HeroUI : MonoBehaviour
         poisonUI.SetActive(false);
     }
 
+    void Update()
+    {
+        hpGauge.value = hero.hp;
+        stressGauge.value = hero.stress;
+        if (hero.isStun)
+        {
+            stunUI.SetActive(true);
+        }
+        else
+        {
+            stunUI.SetActive(false);
+        }
+        if (hero.isBleeding)
+        {
+            bleedUI.SetActive(true);
+        }
+        else
+        {
+            bleedUI.SetActive(false);
+        }
+        if (hero.isPoisoning)
+        {
+            poisonUI.SetActive(true);
+        }
+        else
+        {
+            poisonUI.SetActive(false);
+        }
+    }
+
     void OnHoverEnter(GameObject ui, Vector3 mousePosition)
     {
         string str = "";

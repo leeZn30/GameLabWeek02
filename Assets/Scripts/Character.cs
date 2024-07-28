@@ -26,7 +26,7 @@ public class Character : MonoBehaviour
     public float crit => characterData.Crit;
 
     [Header("기술")]
-    protected int techIndex = 0;
+    public int techIndex = 0;
     public TechData equippedTech => characterData.Techs[techIndex];
     public int attackRange => characterData.Techs[techIndex].Range;
     public bool isAtkRangeInternal => characterData.Techs[techIndex].isInternal;
@@ -36,9 +36,11 @@ public class Character : MonoBehaviour
     public int stress;
     // 0: default 1: Awakening 2: Collapse
     public int StressState = 0;
-    bool isStun;
+    public bool isStun;
     List<StatusAbnormal> bleedStatus = new List<StatusAbnormal>();
+    public bool isBleeding => bleedStatus.Count > 0;
     List<StatusAbnormal> poisonStatus = new List<StatusAbnormal>();
+    public bool isPoisoning => poisonStatus.Count > 0;
     protected bool myTurn = false;
 
     [Header("타일맵")]
@@ -196,6 +198,7 @@ public class Character : MonoBehaviour
 
             if (isStun)
             {
+                this.isStun = true;
                 desc.SetText("<color=yellow>기절");
             }
             else

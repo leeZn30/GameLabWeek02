@@ -56,12 +56,6 @@ public class TurnManager : SingleTon<TurnManager>
             character.createTurnUI();
         }
 
-        // 출력 테스트
-        // foreach (Character character in priorityQueue)
-        // {
-        //     Debug.Log($"{character.name} with speed: {character.nowSpeed}");
-        // }
-
         // 첫번째 시작
         nowTurnCharacter = priorityQueue.First();
 
@@ -74,6 +68,8 @@ public class TurnManager : SingleTon<TurnManager>
 
     public void StartNextTurn()
     {
+        UIManager.Instance.HideAccDmgInfo();
+        UIManager.Instance.HideHealInfo();
         StartCoroutine(waitTurn());
     }
 
@@ -98,20 +94,7 @@ public class TurnManager : SingleTon<TurnManager>
             yield break;
         }
 
-        // if (priorityQueue.First() != null)
-        // {
-        //     nowTurnCharacter = priorityQueue.First();
-        // }
-        // else
-        // {
-        //     while (priorityQueue.First() == null)
-        //     {
-        //         priorityQueue.Remove(priorityQueue.First());
-        //     }
-
-        //     nowTurnCharacter = priorityQueue.First();
-        // }
-
+        // 죽을 때 알아서 지우게 함
         nowTurnCharacter = priorityQueue.First();
 
         yield return StartCoroutine(pointNowTurnCharacter());

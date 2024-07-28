@@ -102,7 +102,8 @@ public class Character : MonoBehaviour
 
     void OnDestroy()
     {
-        TurnManager.Instance.removeCharacterFromQueue(this);
+        if (TurnManager.Instance != null)
+            TurnManager.Instance.removeCharacterFromQueue(this);
     }
 
     IEnumerator turnProcedure()

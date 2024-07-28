@@ -13,6 +13,7 @@ public class UIManager : SingleTon<UIManager>
     public GameObject AccDamageUI;
     TextMeshProUGUI accText;
     TextMeshProUGUI dmgText;
+    public TextMeshProUGUI healText;
     GameObject CharacterUIs;
 
     [Header("프리팹")]
@@ -33,6 +34,9 @@ public class UIManager : SingleTon<UIManager>
         accText = AccDamageUI.transform.GetChild(0).GetComponentInChildren<TextMeshProUGUI>();
         dmgText = AccDamageUI.transform.GetChild(1).GetComponentInChildren<TextMeshProUGUI>();
         AccDamageUI.SetActive(false);
+
+        healText = GameObject.Find("HealUI").GetComponentInChildren<TextMeshProUGUI>();
+        healText.transform.parent.gameObject.SetActive(false);
 
         CharacterUIs = GameObject.Find("CharacterUIs");
     }
@@ -100,5 +104,37 @@ public class UIManager : SingleTon<UIManager>
     public void HideAccDmgInfo()
     {
         AccDamageUI.SetActive(false);
+    }
+
+    public void ShowHealInfo(Hero hero)
+    {
+        float minDamage;
+        float maxDamage;
+
+        if (!hero.equippedTech.isFixedDamage)
+        {
+            minDamage
+            = Mathf.RoundToInt(hero.characterData.minDamage * (hero.equippedTech.dMGMod == Mod.positive ? (1 + hero.equippedTech.DamageMod) : (1 - hero.equippedTech.DamageMod)));
+            maxDamage
+            = Mathf.RoundToInt(hero.characterData.maxDamage * (hero.equippedTech.dMGMod == Mod.positive ? (1 + hero.equippedTech.DamageMod) : (1 - hero.equippedTech.DamageMod)));
+        }
+        else
+        {
+            minDamage = hero.equippedTech.FixedMinDamage;
+            maxDamage = hero.equippedTech.FixedMaxDamage;
+        }
+
+        if (hero.equippedTech.TechType == TechType.Heal)
+            healText.SetText(string.Format("힐: {0}~{1}", minDamage, maxDamage));
+        else if (hero.equippedTech.TechType == TechType.StressHeal)
+            healText.SetText(string.Format("스트레스 힐: {0}~{1}", minDamage, maxDamage));
+
+        healText.transform.parent.gameObject.SetActive(true);
+        healText.transform.parent.position = hero.transform.position + new Vector3(-4, 0, 0);
+    }
+
+    public void HideHealInfo()
+    {
+        healText.transform.parent.gameObject.SetActive(false);
     }
 }

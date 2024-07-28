@@ -78,10 +78,20 @@ public class Hero : Character
     void OnMouseOver()
     {
         stateUI.ShowStat(this);
+
+        if (myTurn && (equippedTech.TechType == TechType.Heal || equippedTech.TechType == TechType.StressHeal))
+        {
+            UIManager.Instance.ShowHealInfo(this);
+        }
     }
     void OnMouseExit()
     {
         stateUI.hideStat();
+
+        if (myTurn)
+        {
+            UIManager.Instance.HideHealInfo();
+        }
     }
 
 

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 public class Hero : Character
 {
@@ -11,6 +10,7 @@ public class Hero : Character
     [SerializeField] bool isSelected;
     public Vector3Int CurrentTilePosition;
     bool isChoosing;
+    int choosingType;
     bool isDeathDoor;
 
     [Header("UI")]
@@ -57,15 +57,31 @@ public class Hero : Character
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(mousePosition, Vector2.down, 1f, 1 << LayerMask.NameToLayer("Character"));
 
-            if (hit.collider != null && hit.collider.CompareTag("Enemy"))
+            if (choosingType == 0)
             {
-                CombatManager.Instance.Combat(this, hit.collider.GetComponent<EnemyAI>());
-                GridHighlighter.Instance.RemoveAllAttackRange();
+                if (hit.collider != null && hit.collider.CompareTag("Enemy"))
+                {
+                    CombatManager.Instance.Combat(this, hit.collider.GetComponent<EnemyAI>());
+                    GridHighlighter.Instance.RemoveAllAttackRange();
 
-                isChoosing = false;
+                    isChoosing = false;
 
-                UIManager.Instance.HideGameInfo();
+                    UIManager.Instance.HideGameInfo();
+                }
             }
+            else
+            {
+                if (hit.collider != null && hit.collider.CompareTag("Player") && hit.collider.gameObject != gameObject)
+                {
+                    CombatManager.Instance.Combat(this, hit.collider.GetComponent<Hero>());
+                    GridHighlighter.Instance.RemoveAllAttackRange();
+
+                    isChoosing = false;
+
+                    UIManager.Instance.HideGameInfo();
+                }
+            }
+
         }
     }
 
@@ -120,7 +136,7 @@ public class Hero : Character
                 // 단일 공격이라면 하나 선택
                 if (equippedTech.TechTarget == TechTarget.Single)
                 {
-                    ReadyToChooseEnemy();
+                    ReadyToChooseCharacter(0);
                 }
                 // 다중 공격이라면 모두에게 적용
                 else
@@ -156,7 +172,7 @@ public class Hero : Character
                 // 단일 힐이라면 하나 선택
                 if (equippedTech.TechTarget == TechTarget.Single)
                 {
-                    ReadyToChooseEnemy();
+                    ReadyToChooseCharacter(1);
                 }
                 // 다중 힐이라면 모두에게 적용
                 else
@@ -299,14 +315,14 @@ public class Hero : Character
 
     IEnumerator StressChange()
     {
-        string text = string.Format("{0}의 의지가 시험받고 있습니다...", characterData.ID);
-        UIManager.Instance.ShowGameInfo(text);
-
-        yield return new WaitForSeconds(2f);
-
         // 각성/붕괴 결정
         if (stress >= 100 && StressState == 0)
         {
+            string text = string.Format("{0}의 의지가 시험받고 있습니다...", characterData.ID);
+            UIManager.Instance.ShowGameInfo(text);
+
+            yield return new WaitForSeconds(2f);
+
             if (Random.Range(0, 101) < characterData.WillPower)
             {
                 // 각성
@@ -335,20 +351,23 @@ public class Hero : Character
         // 사망
         else if (characterData.Stress >= 200)
         {
-            text = string.Format("{0} 심장마비", characterData.ID);
+            string text = string.Format("{0} 심장마비", characterData.ID);
             UIManager.Instance.ShowGameInfo(text);
 
             Destroy(gameObject);
         }
     }
 
-    void ReadyToChooseEnemy()
+    void ReadyToChooseCharacter(int characterType)
     {
         if (!isChoosing)
+        {
+            choosingType = characterType;
             isChoosing = true;
+        }
 
         // UI 뜨게
-        string text = "단일 공격입니다.\n공격하고 싶은 적을 클릭하세요.";
+        string text = "단일 타겟 기술입니다.\n원하는 캐릭터를 클릭하세요.";
         UIManager.Instance.ShowGameInfo(text);
     }
 

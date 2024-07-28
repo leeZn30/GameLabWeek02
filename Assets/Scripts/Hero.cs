@@ -75,14 +75,6 @@ public class Hero : Character
         }
     }
 
-    void OnMouseDown()
-    {
-        if (myTurn)
-        {
-
-        }
-    }
-
     void OnMouseOver()
     {
         stateUI.ShowStat(this);
@@ -101,22 +93,6 @@ public class Hero : Character
 
             GridHighlighter.Instance.selectedHero = this;
             GridHighlighter.Instance.HighlightStartTile(CurrentTilePosition);
-
-            // if (!isSelected)
-            // {
-            //     isSelected = true;
-
-            //     GridHighlighter.Instance.selectedHero = this;
-            //     GridHighlighter.Instance.HighlightStartTile(CurrentTilePosition);
-            // }
-            // else
-            // {
-            //     isSelected = false;
-
-            //     GridHighlighter.Instance.selectedHero = null;
-            //     GridHighlighter.Instance.UnHighlightAllTile();
-            //     GridHighlighter.Instance.RemoveAllAttackRange();
-            // }
         }
     }
 
@@ -364,8 +340,6 @@ public class Hero : Character
                 yield return new WaitForSeconds(2f);
 
                 UIManager.Instance.HideGameInfo();
-
-
             }
             else
             {
@@ -516,5 +490,15 @@ public class Hero : Character
 
             }
         }
+    }
+
+    public override void removeTurnUI()
+    {
+        HeroUI.removeTurnUI();
+    }
+
+    public override void createTurnUI()
+    {
+        HeroUI.createTurnUI();
     }
 }

@@ -80,6 +80,11 @@ public class HeroUI : MonoBehaviour
         {
             poisonUI.SetActive(false);
         }
+
+        if (hero == null)
+        {
+            Destroy(gameObject);
+        }
     }
 
     void OnHoverEnter(GameObject ui, Vector3 mousePosition)
@@ -142,6 +147,16 @@ public class HeroUI : MonoBehaviour
         {
             hoverRectTransform.localPosition = new Vector3(canvasWidth - hoverWidth, hoverRectTransform.localPosition.y, hoverRectTransform.localPosition.z);
         }
+    }
+
+    public void removeTurnUI()
+    {
+        turnUI.SetActive(false);
+    }
+
+    public void createTurnUI()
+    {
+        turnUI.SetActive(true);
     }
 
 

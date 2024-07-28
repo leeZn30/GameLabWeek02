@@ -53,6 +53,7 @@ public class TurnManager : SingleTon<TurnManager>
         foreach (Character character in characters)
         {
             priorityQueue.Add(character);
+            character.createTurnUI();
         }
 
         // 출력 테스트
@@ -66,6 +67,7 @@ public class TurnManager : SingleTon<TurnManager>
 
         yield return StartCoroutine(pointNowTurnCharacter());
 
+        nowTurnCharacter.removeTurnUI();
         priorityQueue.First().StartTurn();
         priorityQueue.Remove(priorityQueue.First());
     }
@@ -96,23 +98,25 @@ public class TurnManager : SingleTon<TurnManager>
             yield break;
         }
 
+        // if (priorityQueue.First() != null)
+        // {
+        //     nowTurnCharacter = priorityQueue.First();
+        // }
+        // else
+        // {
+        //     while (priorityQueue.First() == null)
+        //     {
+        //         priorityQueue.Remove(priorityQueue.First());
+        //     }
 
-        if (priorityQueue.First() != null)
-        {
-            nowTurnCharacter = priorityQueue.First();
-        }
-        else
-        {
-            while (priorityQueue.First() == null)
-            {
-                priorityQueue.Remove(priorityQueue.First());
-            }
+        //     nowTurnCharacter = priorityQueue.First();
+        // }
 
-            nowTurnCharacter = priorityQueue.First();
-        }
+        nowTurnCharacter = priorityQueue.First();
 
         yield return StartCoroutine(pointNowTurnCharacter());
 
+        nowTurnCharacter.removeTurnUI();
         nowTurnCharacter.StartTurn();
         priorityQueue.Remove(nowTurnCharacter);
     }
@@ -120,12 +124,20 @@ public class TurnManager : SingleTon<TurnManager>
     IEnumerator pointNowTurnCharacter()
     {
         nowTurnCharacter.Light.gameObject.SetActive(true);
-        for (float t = 0; t < 2; t += Time.deltaTime)
+        for (float t = 0; t < 1.5; t += Time.deltaTime)
         {
             float alpha = Mathf.PingPong(t * 10f, 1f);
             nowTurnCharacter.Light.color = new Color(nowTurnCharacter.Light.color.r, nowTurnCharacter.Light.color.g, nowTurnCharacter.Light.color.b, alpha);
             yield return null;
         }
         nowTurnCharacter.Light.gameObject.SetActive(false);
+    }
+
+    public void removeCharacterFromQueue(Character character)
+    {
+        if (priorityQueue.Count > 0)
+        {
+            priorityQueue.Remove(character);
+        }
     }
 }

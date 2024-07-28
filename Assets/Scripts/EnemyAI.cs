@@ -84,6 +84,16 @@ public class EnemyAI : Character
         StartCoroutine(waitForMoving(targetPosition));
     }
 
+    public override void removeTurnUI()
+    {
+        EnemyUI.removeTurnUI();
+    }
+
+    public override void createTurnUI()
+    {
+        EnemyUI.createTurnUI();
+    }
+
     /*
     1. 가장 가까이에 있는 플레이어를 찾음
     2. 여러개라면, 현재 체력이 가장 약한 애 찾음
@@ -145,6 +155,16 @@ public class EnemyAI : Character
         transform.position = position + new Vector3(0.5f, 0.5f, 0);
         GridHighlighter.Instance.UnHighlightAllTile();
         Attack();
+    }
+
+    public override void OnDamaged(int damage, bool isCritical, bool isEffect = true)
+    {
+        base.OnDamaged(damage, isCritical, isEffect);
+
+        if (hp < 0)
+        {
+            Destroy(gameObject);
+        }
     }
 
     void Attack()

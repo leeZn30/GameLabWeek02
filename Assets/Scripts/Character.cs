@@ -94,8 +94,19 @@ public class Character : MonoBehaviour
 
     public virtual void StartTurn()
     {
-        myTurn = true;
+        StartCoroutine(turnProcedure());
+    }
 
+    public virtual void removeTurnUI() { }
+    public virtual void createTurnUI() { }
+
+    void OnDestroy()
+    {
+        TurnManager.Instance.removeCharacterFromQueue(this);
+    }
+
+    IEnumerator turnProcedure()
+    {
         // 상태 이상 공격 데미지
         if (bleedStatus.Count > 0)
         {
@@ -115,19 +126,21 @@ public class Character : MonoBehaviour
             desc.SetText("<color=#C100A5>출혈 상태");
 
             OnDamaged(sumBleed, false, false);
+
+            yield return new WaitForSeconds(1f);
         }
 
         if (poisonStatus.Count > 0)
         {
             int sumPoison = 0;
-            for (int i = 0; i < bleedStatus.Count; i++)
+            for (int i = 0; i < poisonStatus.Count; i++)
             {
                 sumPoison += poisonStatus[i].damage;
-                bleedStatus[i].turns--;
+                poisonStatus[i].turns--;
 
-                if (bleedStatus[i].turns == 0)
+                if (poisonStatus[i].turns == 0)
                 {
-                    bleedStatus.RemoveAt(i);
+                    poisonStatus.RemoveAt(i);
                 }
             }
 
@@ -135,6 +148,8 @@ public class Character : MonoBehaviour
             desc.SetText("<color=green>중독 상태");
 
             OnDamaged(sumPoison, false, false);
+
+            yield return new WaitForSeconds(1f);
         }
 
         // 기절이 아니라면 각성/붕괴에 따른 효과 후, 이동 및 공격 시작
@@ -144,16 +159,19 @@ public class Character : MonoBehaviour
             if (StressState == 1)
             {
                 DoAwakening();
+                yield return new WaitForSeconds(2f);
             }
             // 붕괴
             else if (StressState == 2)
             {
                 DoCollapse();
+                yield return new WaitForSeconds(2f);
             }
+
+            myTurn = true;
 
             // 이동 및 공격 시작
             OperateCharacter();
-
         }
         // 기절 깨우기
         else
@@ -161,6 +179,8 @@ public class Character : MonoBehaviour
             TextMeshProUGUI desc = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
             desc.SetText("<color=yellow> 기절 회복");
             isStun = false;
+
+            yield return new WaitForSeconds(1f);
 
             TurnManager.Instance.StartNextTurn();
         }

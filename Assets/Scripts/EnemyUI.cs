@@ -46,6 +46,11 @@ public class EnemyUI : MonoBehaviour
         {
             poisonUI.SetActive(false);
         }
+
+        if (enemy == null)
+        {
+            Destroy(gameObject);
+        }
     }
 
     public void Init(EnemyAI enemy)
@@ -133,6 +138,16 @@ public class EnemyUI : MonoBehaviour
         {
             hoverRectTransform.localPosition = new Vector3(canvasWidth - hoverWidth, hoverRectTransform.localPosition.y, hoverRectTransform.localPosition.z);
         }
+    }
+
+    public void removeTurnUI()
+    {
+        turnUI.SetActive(false);
+    }
+
+    public void createTurnUI()
+    {
+        turnUI.SetActive(true);
     }
 
 }

@@ -157,13 +157,16 @@ public class EnemyAI : Character
         Attack();
     }
 
-    public override void OnDamaged(int damage, bool isCritical, bool isEffect = true)
+    public override void OnDamaged(int damage, bool isCritical, bool isEffect = true, bool isStatusAbnormal = false)
     {
         base.OnDamaged(damage, isCritical, isEffect);
 
         if (hp <= 0)
         {
-            Destroy(gameObject);
+            if (isStatusAbnormal)
+                isSkipTurn = true;
+            else
+                Destroy(gameObject);
         }
     }
 

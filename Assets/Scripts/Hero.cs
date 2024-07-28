@@ -214,7 +214,7 @@ public class Hero : Character
         }
     }
 
-    public override void OnDamaged(int damage, bool isCritical, bool isEffect = true)
+    public override void OnDamaged(int damage, bool isCritical, bool isEffect = true, bool isStatusAbnormal = false)
     {
         base.OnDamaged(damage, isCritical);
 
@@ -240,7 +240,11 @@ public class Hero : Character
                 {
                     TextMeshProUGUI desc = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
                     desc.SetText("<color=#721420>사망");
-                    Destroy(gameObject);
+
+                    if (isStatusAbnormal)
+                        isSkipTurn = true;
+                    else
+                        Destroy(gameObject);
                 }
 
             }
@@ -340,37 +344,28 @@ public class Hero : Character
 
             yield return new WaitForSeconds(2f);
 
-            // 붕괴
-            StressState = 2;
-            text = "붕괴!";
-            UIManager.Instance.ShowGameInfo(text);
+            if (Random.Range(0, 101) < characterData.WillPower)
+            {
+                // 각성
+                StressState = 1;
+                text = "각성!";
+                UIManager.Instance.ShowGameInfo(text);
 
-            yield return new WaitForSeconds(2f);
+                yield return new WaitForSeconds(2f);
 
-            UIManager.Instance.HideGameInfo();
+                UIManager.Instance.HideGameInfo();
+            }
+            else
+            {
+                // 붕괴
+                StressState = 2;
+                text = "붕괴!";
+                UIManager.Instance.ShowGameInfo(text);
 
-            // if (Random.Range(0, 101) < characterData.WillPower)
-            // {
-            //     // 각성
-            //     StressState = 1;
-            //     text = "각성!";
-            //     UIManager.Instance.ShowGameInfo(text);
+                yield return new WaitForSeconds(2f);
 
-            //     yield return new WaitForSeconds(2f);
-
-            //     UIManager.Instance.HideGameInfo();
-            // }
-            // else
-            // {
-            //     // 붕괴
-            //     StressState = 2;
-            //     text = "붕괴!";
-            //     UIManager.Instance.ShowGameInfo(text);
-
-            //     yield return new WaitForSeconds(2f);
-
-            //     UIManager.Instance.HideGameInfo();
-            // }
+                UIManager.Instance.HideGameInfo();
+            }
         }
         // 사망
         else if (stress >= 200)
@@ -443,8 +438,7 @@ public class Hero : Character
     // Hero에서 구현
     public override void DoCollapse()
     {
-        // int index = Random.Range(0, 4);
-        int index = 2;
+        int index = Random.Range(0, 4);
         TextMeshProUGUI text = null;
 
         switch (index)

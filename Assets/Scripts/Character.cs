@@ -114,6 +114,8 @@ public class Character : MonoBehaviour
 
     IEnumerator turnProcedure()
     {
+        // 개복잡
+
         // 상태 이상 공격 데미지
         if (bleedStatus.Count > 0)
         {
@@ -132,73 +134,95 @@ public class Character : MonoBehaviour
             TextMeshProUGUI desc = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
             desc.SetText("<color=#C100A5>출혈 상태");
 
-            OnDamaged(sumBleed, false, false);
+            OnDamaged(sumBleed, false, false, true);
 
             yield return new WaitForSeconds(1f);
         }
 
-        if (poisonStatus.Count > 0)
+        // 출혈로 죽으면 isSkipTurn 활성화
+        if (isSkipTurn)
         {
-            int sumPoison = 0;
-            for (int i = 0; i < poisonStatus.Count; i++)
+            TurnManager.Instance.StartNextTurn();
+            Destroy(gameObject);
+        }
+        else
+        {
+            if (poisonStatus.Count > 0)
             {
-                sumPoison += poisonStatus[i].damage;
-                poisonStatus[i].turns--;
-
-                if (poisonStatus[i].turns == 0)
+                int sumPoison = 0;
+                for (int i = 0; i < poisonStatus.Count; i++)
                 {
-                    poisonStatus.RemoveAt(i);
+                    sumPoison += poisonStatus[i].damage;
+                    poisonStatus[i].turns--;
+
+                    if (poisonStatus[i].turns == 0)
+                    {
+                        poisonStatus.RemoveAt(i);
+                    }
                 }
+
+                TextMeshProUGUI desc = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
+                desc.SetText("<color=green>중독 상태");
+
+                OnDamaged(sumPoison, false, false, true);
+
+                yield return new WaitForSeconds(1f);
             }
 
-            TextMeshProUGUI desc = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
-            desc.SetText("<color=green>중독 상태");
-
-            OnDamaged(sumPoison, false, false);
-
-            yield return new WaitForSeconds(1f);
-        }
-
-        // 기절이 아니라면 각성/붕괴에 따른 효과 후, 이동 및 공격 시작
-        if (!isStun)
-        {
-            // 각성
-            if (StressState == 1)
+            // 중독으로 죽으면 isSkipTurn 활성화
+            if (isSkipTurn)
             {
-                DoAwakening();
-                yield return new WaitForSeconds(2f);
-            }
-            // 붕괴
-            else if (StressState == 2)
-            {
-                DoCollapse();
-                yield return new WaitForSeconds(2f);
-            }
-
-            myTurn = true;
-
-            if (!isSkipTurn)
-            {
-                // 이동 및 공격 시작
-                OperateCharacter();
+                TurnManager.Instance.StartNextTurn();
+                Destroy(gameObject);
             }
             else
             {
-                isSkipTurn = true;
-                TurnManager.Instance.StartNextTurn();
+                // 기절이 아니라면 각성/붕괴에 따른 효과 후, 이동 및 공격 시작
+                if (!isStun)
+                {
+                    // 각성
+                    if (StressState == 1)
+                    {
+                        DoAwakening();
+                        yield return new WaitForSeconds(2f);
+                    }
+                    // 붕괴
+                    else if (StressState == 2)
+                    {
+                        DoCollapse();
+                        yield return new WaitForSeconds(2f);
+                    }
+
+                    myTurn = true;
+
+                    if (!isSkipTurn)
+                    {
+                        // 이동 및 공격 시작
+                        OperateCharacter();
+                    }
+                    else
+                    {
+                        isSkipTurn = true;
+                        TurnManager.Instance.StartNextTurn();
+                    }
+                }
+                // 기절 깨우기
+                else
+                {
+                    TextMeshProUGUI desc = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
+                    desc.SetText("<color=yellow> 기절 회복");
+                    isStun = false;
+
+                    yield return new WaitForSeconds(1f);
+
+                    TurnManager.Instance.StartNextTurn();
+                }
+
             }
-        }
-        // 기절 깨우기
-        else
-        {
-            TextMeshProUGUI desc = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
-            desc.SetText("<color=yellow> 기절 회복");
-            isStun = false;
 
-            yield return new WaitForSeconds(1f);
 
-            TurnManager.Instance.StartNextTurn();
         }
+
     }
 
     protected virtual void OperateCharacter() { }
@@ -214,7 +238,7 @@ public class Character : MonoBehaviour
     // Hero에서 구현
     public virtual void DoCollapse() { }
 
-    public virtual void OnDamaged(int damage, bool isCritical, bool isEffect = true)
+    public virtual void OnDamaged(int damage, bool isCritical, bool isEffect = true, bool isStatusAbnormal = false)
     {
         TextMeshProUGUI desc = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
         if (isCritical)

@@ -92,7 +92,7 @@ public class TurnManager : SingleTon<TurnManager>
 
         if (priorityQueue.Count == 0)
         {
-            orderCharacter();
+            StartCoroutine(orderCharacter());
             yield break;
         }
 

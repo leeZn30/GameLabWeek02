@@ -265,15 +265,11 @@ public class CombatManager : SingleTon<CombatManager>
 
     IEnumerator ZoomInCamera(GameObject attacker)
     {
-        // if (CharacterUIs.activeSelf)
-        // {
-        //     MiniStatue.transform.parent.gameObject.SetActive(false);
-        //     CharacterUIs.SetActive(false);
-        // }
-        // else
-        // {
-        //     CharacterUIs.SetActive(true);
-        // }
+        if (UIManager.Instance.CharacterUIs.activeSelf)
+        {
+            UIManager.Instance.MiniStatue.transform.parent.gameObject.SetActive(false);
+            UIManager.Instance.CharacterUIs.SetActive(false);
+        }
 
         Vector3 initialCameraPosition = Camera.main.transform.position;
         Vector3 targetCameraPosition = new Vector3(attacker.transform.position.x, attacker.transform.position.y, Camera.main.transform.position.z);
@@ -320,6 +316,11 @@ public class CombatManager : SingleTon<CombatManager>
 
         Camera.main.transform.position = new Vector3(0, 0, -10);
         Camera.main.orthographicSize = targetOrthographicSize;
+
+        if (!UIManager.Instance.CharacterUIs.activeSelf)
+        {
+            UIManager.Instance.CharacterUIs.SetActive(true);
+        }
 
         TurnManager.Instance.StartNextTurn();
     }

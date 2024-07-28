@@ -15,7 +15,7 @@ public class UIManager : SingleTon<UIManager>
     TextMeshProUGUI accText;
     TextMeshProUGUI dmgText;
     public TextMeshProUGUI healText;
-    GameObject CharacterUIs;
+    public GameObject CharacterUIs;
 
     [Header("프리팹")]
     public TextMeshProUGUI CombatInfo;

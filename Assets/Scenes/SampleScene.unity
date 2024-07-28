@@ -6191,6 +6191,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Paladin
       objectReference: {fileID: 0}
+    - target: {fileID: 781293016889928941, guid: 1add3d2f7992d114181746d8e06dc006, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2123092325564513420, guid: 1add3d2f7992d114181746d8e06dc006, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.24928272
@@ -6302,10 +6306,6 @@ PrefabInstance:
     - target: {fileID: 781293016889928941, guid: e48beb6cdaa06b54fa64faf795c8471c, type: 3}
       propertyPath: m_Name
       value: Plague Doctor
-      objectReference: {fileID: 0}
-    - target: {fileID: 781293016889928941, guid: e48beb6cdaa06b54fa64faf795c8471c, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2123092325564513420, guid: e48beb6cdaa06b54fa64faf795c8471c, type: 3}
       propertyPath: m_LocalPosition.x

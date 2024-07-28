@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -77,22 +78,22 @@ public class UIManager : SingleTon<UIManager>
             float acc = hero.equippedTech.Acc + hero.characterData.AccMod - enemy.characterData.Dodge;
             accText.SetText(string.Format("명중률: {0}%", acc));
 
-            float minDamage;
-            float maxDamage;
+            int minDamage;
+            int maxDamage;
 
             if (!hero.equippedTech.isFixedDamage)
             {
                 minDamage
                 = Mathf.RoundToInt(hero.characterData.minDamage * (hero.equippedTech.dMGMod == Mod.positive ? (1 + hero.equippedTech.DamageMod) : (1 - hero.equippedTech.DamageMod)));
-                minDamage = minDamage * ((100 - enemy.characterData.defense) / 100);
+                minDamage = Mathf.RoundToInt(minDamage * ((100 - enemy.characterData.defense) / 100));
                 maxDamage
                 = Mathf.RoundToInt(hero.characterData.maxDamage * (hero.equippedTech.dMGMod == Mod.positive ? (1 + hero.equippedTech.DamageMod) : (1 - hero.equippedTech.DamageMod)));
-                maxDamage = maxDamage * ((100 - enemy.characterData.defense) / 100);
+                maxDamage = Mathf.RoundToInt(maxDamage * ((100 - enemy.characterData.defense) / 100));
             }
             else
             {
-                minDamage = hero.equippedTech.FixedMinDamage * ((100 - enemy.characterData.defense) / 100);
-                maxDamage = hero.equippedTech.FixedMaxDamage * ((100 - enemy.characterData.defense) / 100);
+                minDamage = Mathf.RoundToInt(hero.equippedTech.FixedMinDamage * ((100 - enemy.characterData.defense) / 100));
+                maxDamage = Mathf.RoundToInt(hero.equippedTech.FixedMaxDamage * ((100 - enemy.characterData.defense) / 100));
             }
             dmgText.SetText(string.Format("데미지 범위: {0}~{1}", minDamage, maxDamage));
 

@@ -17,7 +17,7 @@ public class CharacterData
     public int Step; // 걸음 수
     public int minDamage; // 기본 최소 데미지
     public int maxDamage; // 기본 최대 데미지
-    public int defense; // 방어
+    public float defense; // 방어
     public int WillPower = 25; // 각성/붕괴
 
     [Header("저항력")]

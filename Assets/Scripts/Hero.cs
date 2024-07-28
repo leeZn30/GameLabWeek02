@@ -219,7 +219,7 @@ public class Hero : Character
         base.OnDamaged(damage, isCritical);
 
         // Hero에서 필요
-        if (hp < 0)
+        if (hp <= 0)
         {
             if (!isDeathDoor)
             {

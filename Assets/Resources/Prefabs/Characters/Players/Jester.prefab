@@ -298,7 +298,7 @@ MonoBehaviour:
     PoisonResist: 40
     DeathResist: 67
     Techs:
-    - ID: "\uC804\uD22C\uC758 \uBC1C\uB77C\uB4DC"
+    - ID: "\uACA9\uB824\uC758 \uC120\uC728"
       TechType: 3
       TechTarget: 1
       Acc: 0
@@ -357,7 +357,6 @@ MonoBehaviour:
   heal: {fileID: 3126842929217700142, guid: a6cf83fd14ffb644db2b69751128e0d7, type: 3}
   stressheal: {fileID: 3126842929217700142, guid: 8f876d7346e60ea4eb7524ad445d7c30, type: 3}
   Light: {fileID: 8538696263163544730}
-  isSelected: 0
   CurrentTilePosition: {x: 0, y: 0, z: 0}
   stateUI: {fileID: 0}
 --- !u!61 &6298981789609791314

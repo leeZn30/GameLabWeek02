@@ -215,7 +215,7 @@ public class CombatManager : SingleTon<CombatManager>
             else
                 defaultDmg = Mathf.RoundToInt(attack.FixedMaxDamage * (attack.dMGMod == Mod.positive ? (1 + attack.DamageMod) : (1 - attack.DamageMod)) * 1.5f);
 
-            return defaultDmg * ((100 - taker.defense) / 100);
+            return Mathf.RoundToInt(defaultDmg * ((100 - taker.defense) / 100));
         }
         else
         {
@@ -226,9 +226,9 @@ public class CombatManager : SingleTon<CombatManager>
                 = Mathf.RoundToInt(Random.Range(attackerData.minDamage, attackerData.maxDamage + 1) * (attack.dMGMod == Mod.positive ? (1 + attack.DamageMod) : (1 - attack.DamageMod)));
             else
                 defaultDmg
-                = Mathf.RoundToInt(Random.Range(attack.FixedMinDamage, attack.FixedMaxDamage + 1) * (attack.dMGMod == Mod.positive ? (1 + attack.DamageMod) : (1 - attack.DamageMod)) * 1.5f);
+                = Mathf.RoundToInt(Random.Range(attack.FixedMinDamage, attack.FixedMaxDamage + 1) * (attack.dMGMod == Mod.positive ? (1 + attack.DamageMod) : (1 - attack.DamageMod)));
 
-            return defaultDmg * ((100 - taker.defense) / 100);
+            return Mathf.RoundToInt(defaultDmg * ((100 - taker.defense) / 100));
         }
     }
 

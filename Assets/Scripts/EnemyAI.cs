@@ -161,7 +161,7 @@ public class EnemyAI : Character
     {
         base.OnDamaged(damage, isCritical, isEffect);
 
-        if (hp < 0)
+        if (hp <= 0)
         {
             Destroy(gameObject);
         }

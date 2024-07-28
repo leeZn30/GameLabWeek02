@@ -102,6 +102,11 @@ public class Character : MonoBehaviour
 
     void OnDestroy()
     {
+        if (myTurn)
+        {
+            GoToNextTurn();
+        }
+
         if (TurnManager.Instance != null)
             TurnManager.Instance.removeCharacterFromQueue(this);
     }

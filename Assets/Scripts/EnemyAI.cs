@@ -137,7 +137,8 @@ public class EnemyAI : Character
                         int distance = Mathf.Abs(enemyPosition.x - targetPosition.x) + Mathf.Abs(enemyPosition.y - targetPosition.y);
 
                         // 거리차가 1이하라면 더 체력 낮은 애한테
-                        if (distance - minDistance <= 1 && playerHealth < lowestHealth)
+                        // distance - minDistance <= 1 && playerHealth < lowestHealth
+                        if (distance < minDistance || (distance == minDistance && playerHealth < lowestHealth))
                         {
                             minDistance = distance;
                             closestPosition = targetPosition;
@@ -157,8 +158,6 @@ public class EnemyAI : Character
             // 제자리에 있기
             closestPosition = GridHighlighter.Instance.tilemap.WorldToCell(transform.position);
         }
-
-        Debug.Log(closestPosition);
 
         return closestPosition;
     }

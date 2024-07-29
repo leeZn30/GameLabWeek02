@@ -56,6 +56,18 @@ public class Hero : Character
             {
                 if (hit.collider != null && hit.collider.CompareTag("Player") && hit.collider.gameObject != gameObject)
                 {
+                    // 자힐
+                    bool crit = CombatManager.Instance.isCritical(this);
+                    int heal = CombatManager.Instance.GetHeal(this, crit);
+                    if (equippedTech.TechType == TechType.Heal)
+                    {
+                        OnHealed(heal, crit);
+                    }
+                    else
+                    {
+                        OnStressHealed(heal, crit);
+                    }
+
                     CombatManager.Instance.Combat(this, hit.collider.GetComponent<Hero>());
                     GridHighlighter.Instance.RemoveAllAttackRange();
 
@@ -151,8 +163,6 @@ public class Hero : Character
                     }
                 }
 
-                // 턴 넘길 준비
-                // GoToNextTurn();
             }
 
         }
@@ -188,6 +198,18 @@ public class Hero : Character
                     // 다중 힐이라면 모두에게 적용
                     else
                     {
+                        // 자힐
+                        bool crit = CombatManager.Instance.isCritical(this);
+                        int heal = CombatManager.Instance.GetHeal(this, crit);
+                        if (equippedTech.TechType == TechType.Heal)
+                        {
+                            OnHealed(heal, crit);
+                        }
+                        else
+                        {
+                            OnStressHealed(heal, crit);
+                        }
+
                         CombatManager.Instance.Combat(this, targets);
                         GridHighlighter.Instance.RemoveAllAttackRange();
                     }
@@ -197,13 +219,23 @@ public class Hero : Character
                 {
                     if (targets.Count > 0)
                     {
+                        // 자힐
+                        bool crit = CombatManager.Instance.isCritical(this);
+                        int heal = CombatManager.Instance.GetHeal(this, crit);
+                        if (equippedTech.TechType == TechType.Heal)
+                        {
+                            OnHealed(heal, crit);
+                        }
+                        else
+                        {
+                            OnStressHealed(heal, crit);
+                        }
+
                         CombatManager.Instance.Combat(this, targets[0]);
                         GridHighlighter.Instance.RemoveAllAttackRange();
                     }
                 }
 
-                // 턴 넘길 준비
-                // GoToNextTurn();
             }
         }
     }

@@ -112,6 +112,13 @@ public class HeroUI : MonoBehaviour
                 layout.SetActive(true);
             deathDoorUI.gameObject.SetActive(true);
         }
+        else
+        {
+            deathDoorUI.gameObject.SetActive(false);
+
+            if (!awakeningUI.gameObject.activeSelf && !collapseUI.gameObject.activeSelf)
+                layout.SetActive(false);
+        }
 
         if (hero == null)
         {

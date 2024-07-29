@@ -49,11 +49,15 @@ public class CombatManager : SingleTon<CombatManager>
                 case TechType.Heal:
                     int heal = GetHeal(attacker, crit);
                     taker.OnHealed(heal, crit);
+                    // int heal2 = GetHeal(attacker, crit);
+                    // attacker.OnHealed(heal2, crit);
                     break;
 
                 case TechType.StressHeal:
                     int stressheal = GetHeal(attacker, crit);
                     taker.OnStressHealed(stressheal, crit);
+                    // int heal3 = GetHeal(attacker, crit);
+                    // attacker.OnStressHealed(heal3, crit);
                     break;
             }
 
@@ -127,7 +131,7 @@ public class CombatManager : SingleTon<CombatManager>
             // 명중률 = 기술 명중 + 캐릭터 명중 보정치 - 적 회피
             float accuracy = attack.Acc + attacker.AccMod - taker.Dodge;
 
-            if (Random.Range(0.0f, 1f) <= accuracy)
+            if (Random.Range(0, maxPercent) <= accuracy)
             {
                 // 명중
                 return true;
@@ -143,7 +147,7 @@ public class CombatManager : SingleTon<CombatManager>
 
     }
 
-    bool isCritical(Character attacker)
+    public bool isCritical(Character attacker)
     {
         CharacterData attackerData = attacker.characterData;
         TechData attack = attacker.equippedTech;
@@ -239,7 +243,7 @@ public class CombatManager : SingleTon<CombatManager>
         }
     }
 
-    int GetHeal(Character attacker, bool isCritical)
+    public int GetHeal(Character attacker, bool isCritical)
     {
         CharacterData attackerData = attacker.characterData;
         TechData attack = attacker.equippedTech;

@@ -12,6 +12,7 @@ public class AttackRange : MonoBehaviour
         if (other.CompareTag("Enemy"))
         {
             enemy = other.GetComponent<EnemyAI>();
+            // Debug.Log("Enemy Detected");
         }
         else if (other.CompareTag("Player"))
         {

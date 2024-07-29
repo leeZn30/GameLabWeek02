@@ -364,7 +364,7 @@ MonoBehaviour:
     MaxHp: 33
     Stress: 0
     AccMod: 0
-    Dodge: 12
+    Dodge: 10
     Crit: 3
     Step: 3
     minDamage: 6

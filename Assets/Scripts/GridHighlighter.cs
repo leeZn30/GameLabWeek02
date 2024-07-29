@@ -43,7 +43,7 @@ public class GridHighlighter : SingleTon<GridHighlighter>
                 Vector3Int tilePosition = tilemap.WorldToCell(worldPosition);
                 if (highlightedTilePositions.Contains(tilePosition))
                 {
-                    selectedHero.transform.position = tilePosition + new Vector3(0.5f, 0.5f, 0);
+                    selectedHero.transform.position = ConvertTileToWorldPosition(tilePosition);
                     selectedHero.MoveHero();
                 }
             }
@@ -53,6 +53,7 @@ public class GridHighlighter : SingleTon<GridHighlighter>
     #region  Player 관련
     void HighlightMovableTiles()
     {
+
         // 마우스 위치에서 타일을 가져옴
         Vector3Int mousePosition = tilemap.WorldToCell(Camera.main.ScreenToWorldPoint(Input.mousePosition));
 
@@ -91,11 +92,14 @@ public class GridHighlighter : SingleTon<GridHighlighter>
 
             // 이전 위치 갱신
             if (highlightedTilePositions.Count > 1)
+            {
                 PrevHighlightedPosition = highlightedTilePositions.ElementAt(1);
+            }
             else
+            {
                 PrevHighlightedPosition = highlightedTilePositions.Peek();
-
-
+            }
+            Debug.Log("!!!!");
             showAttackRange(NowHighlightedPosition, selectedHero.attackRange, selectedHero.isAtkRangeInternal);
         }
 

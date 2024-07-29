@@ -28,6 +28,15 @@ public class GameManager : SingleTon<GameManager>
         }
 
         ObserveGame();
+
+        if (Input.GetKey(KeyCode.Space) && isGameProgressing)
+        {
+            Time.timeScale = 5f;
+        }
+        else
+        {
+            Time.timeScale = 1f;
+        }
     }
 
     void SetPlayerLocation()

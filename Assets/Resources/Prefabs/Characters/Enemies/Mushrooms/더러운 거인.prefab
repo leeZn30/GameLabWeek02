@@ -366,7 +366,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4707160193662644677, guid: ef782f609133c1d44be86104bbfd5a36, type: 3}
       propertyPath: characterData.MaxHp
-      value: 30
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 4707160193662644677, guid: ef782f609133c1d44be86104bbfd5a36, type: 3}
       propertyPath: characterData.Speed
@@ -438,7 +438,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4707160193662644677, guid: ef782f609133c1d44be86104bbfd5a36, type: 3}
       propertyPath: characterData.Techs.Array.data[0].FixedMaxDamage
-      value: 27
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 4707160193662644677, guid: ef782f609133c1d44be86104bbfd5a36, type: 3}
       propertyPath: characterData.Techs.Array.data[0].FixedMinDamage

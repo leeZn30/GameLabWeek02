@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 2842802499935944470}
   - component: {fileID: 6603006179159040325}
   - component: {fileID: -1065122669090416196}
+  - component: {fileID: 5715945053537234255}
+  - component: {fileID: -8889295682927455374}
   m_Layer: 5
   m_Name: CharcterUI
   m_TagString: Untagged
@@ -135,3 +137,27 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &5715945053537234255
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3665906506788903959}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a783cfd3d2469a49a1270334fe31254, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-8889295682927455374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3665906506788903959}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be7253e39e1b1f140ad4a22279b1d6c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

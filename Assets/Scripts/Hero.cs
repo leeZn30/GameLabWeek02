@@ -253,7 +253,7 @@ public class Hero : Character
                 // 죽음의 문턱
                 hp = 0;
                 isDeathDoor = true;
-                UIManager.Instance.ShowGameInfo(string.Format("{0}이 죽음의 문턱에 섰습니다.\n회복 없이 이후 공격 받은면, 바로 죽을 수도 있습니다.", characterData.ID));
+                UIManager.Instance.ShowGameInfo(string.Format("{0}이(가) 죽음의 문턱에 섰습니다.\n회복 없이 이후 공격 받으면, 바로 죽을 수도 있습니다.", characterData.ID));
             }
             else
             {

@@ -10,6 +10,9 @@ public class DragDropHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     private Canvas canvas;
     private RectTransform rectTransform;
     Transform originalParent;
+    Hero hero;
+
+    bool ismouseover;
 
     void Awake()
     {
@@ -17,6 +20,41 @@ public class DragDropHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         rectTransform = GetComponent<RectTransform>();
 
         originalParent = transform.parent;
+
+        GetComponent<UIHoverHandler>().OnHoverEnter += OnHoverEnter;
+        GetComponent<UIHoverHandler>().OnHoverExit += OnHoverExit;
+    }
+
+    void Update()
+    {
+        if (ismouseover)
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                hero.techIndex = 0;
+                UIManager.Instance.ShowStateUI(hero);
+
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                hero.techIndex = 1;
+                UIManager.Instance.ShowStateUI(hero);
+            }
+        }
+    }
+
+    void OnHoverEnter(GameObject ui, Vector3 mousePosition)
+    {
+        ismouseover = true;
+
+        hero = UnitData.Instance.characters.Find(e => e.characterData.ID == ID);
+        UIManager.Instance.ShowStateUI(hero);
+    }
+    void OnHoverExit(GameObject ui, Vector3 mousePosition)
+    {
+        hero = null;
+        ismouseover = false;
+        UIManager.Instance.HideStateUI(UnitData.Instance.characters.Find(e => e.characterData.ID == ID));
     }
 
     public void OnBeginDrag(PointerEventData eventData)

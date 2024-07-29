@@ -182,7 +182,7 @@ public class UIManager : SingleTon<UIManager>
             go.GetComponent<DragDropHandler>().ID = id;
         }
 
-        ShowGameInfo("표시된 곳에 유닛을 배치해주세요.\n배치가 완료된 후 스페이스를 눌러주세요.");
+        ShowGameInfo("표시된 곳에 유닛을 4명 드래그 앤 드롭해주세요.\n배치가 완료된 후 스페이스를 눌러주세요.\n유닛의 능력치는 중요합니다.");
         locateUI.SetActive(true);
     }
 

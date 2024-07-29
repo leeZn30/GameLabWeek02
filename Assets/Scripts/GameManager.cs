@@ -20,7 +20,7 @@ public class GameManager : SingleTon<GameManager>
     {
         if (Input.GetKeyDown(KeyCode.Space) && !isGameProgressing)
         {
-            if (UIManager.Instance.GetReadyCharacter() == 0)
+            if (UIManager.Instance.GetReadyCharacter() == 5)
             {
                 UIManager.Instance.CloseLocateUI();
                 StartGame();
@@ -47,7 +47,8 @@ public class GameManager : SingleTon<GameManager>
         DragDropHandler[] gos = FindObjectsOfType<DragDropHandler>();
         foreach (DragDropHandler go in gos)
         {
-            Instantiate(UnitData.Instance.characters.Find(e => e.characterData.ID == go.ID), go.transform.position, Quaternion.identity, Characters.transform);
+            if (go.transform.parent != UIManager.Instance.locateUI.transform)
+                Instantiate(UnitData.Instance.characters.Find(e => e.characterData.ID == go.ID), go.transform.position, Quaternion.identity, Characters.transform);
             Destroy(go.gameObject);
         }
 

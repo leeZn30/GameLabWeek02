@@ -361,6 +361,8 @@ public class Hero : Character
         Instantiate(stressheal, transform.position, stressheal.transform.rotation);
 
         stress -= heal;
+        if (stress < 0)
+            stress = 0;
     }
 
     public override void OnDidCritical()
@@ -488,7 +490,7 @@ public class Hero : Character
         {
             case 0: // 스트레스 전파
                 text = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
-                text.SetText("<color=702B76>이 판은 망했어.\n(스트레스 증가 및 전파)");
+                text.SetText("<color=#702B76>이 판은 망했어.\n(스트레스 증가 및 전파)");
 
                 OnStressed(10, false, false);
 

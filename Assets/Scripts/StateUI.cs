@@ -5,9 +5,6 @@ using UnityEngine;
 
 public class StateUI : MonoBehaviour
 {
-    RectTransform rect;
-    RectTransform canvasRectTransform;
-
     [Header("캐릭터 능력치")]
     [SerializeField] TextMeshProUGUI characterNameText;
     [SerializeField] TextMeshProUGUI stepText;
@@ -29,18 +26,6 @@ public class StateUI : MonoBehaviour
     [SerializeField] TextMeshProUGUI bleedDescText;
     [SerializeField] TextMeshProUGUI poisonText;
     [SerializeField] TextMeshProUGUI poisonDescText;
-
-
-    void Awake()
-    {
-        rect = GetComponent<RectTransform>();
-        canvasRectTransform = transform.parent.GetComponent<RectTransform>();
-    }
-
-    void Start()
-    {
-        gameObject.SetActive(false);
-    }
 
     public void ShowStat(Character character)
     {
@@ -104,9 +89,6 @@ public class StateUI : MonoBehaviour
 
         if (!gameObject.activeSelf)
             gameObject.SetActive(true);
-
-        // transform.position = character.transform.position + new Vector3(0, 5, 0);
-        locate(character.transform);
     }
 
     public void hideStat()
@@ -115,40 +97,5 @@ public class StateUI : MonoBehaviour
         {
             gameObject.SetActive(false);
         }
-    }
-
-    void locate(Transform tf)
-    {
-        transform.position = tf.position + new Vector3(0, 5);
-
-        // float halfWidth = rect.rect.width / 2;
-        // float halfHeight = rect.rect.height / 2;
-
-        // Vector2 Right = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height * 0.5f));
-        // Vector2 Left = -Right;
-        // Vector2 Top = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width * 0.5f, Screen.height));
-        // // Vector2 Bottom = -Top;
-
-        // // 위에서 잘리는지 확인
-        // if (Camera.main.WorldToViewportPoint(transform.position + new Vector3(0, halfHeight, 0)).y > 1f)
-        //     transform.position = new Vector2(transform.position.x, tf.position.y - 4);
-
-        // if (transform.position.y + halfHeight > Top.y)
-        //     transform.position = new Vector2(transform.position.x, tf.position.y - 1);
-
-        // // 좌에서 잘리는지 확인
-        // if (transform.position.x - halfWidth < Left.x)
-        //     transform.position = new Vector2(transform.position.x + halfWidth, transform.position.y);
-
-        // // 우에서 잘리는지 확인
-        // if (transform.position.x + halfWidth > Right.x)
-        //     transform.position = new Vector2(transform.position.x - halfWidth, transform.position.y);
-
-        // Vector3 pos = Camera.main.WorldToViewportPoint(transform.position);
-        // if (pos.x < 0f) pos.x = 0f;
-        // if (pos.x > 1f) pos.x = 1f;
-        // if (pos.y < 0f) pos.y = 0f;
-        // if (pos.y > 1f) pos.y = 1f;
-        // transform.position = Camera.main.ViewportToWorldPoint(pos);
     }
 }

@@ -14,14 +14,6 @@ public class Hero : Character
 
     [Header("UI")]
     HeroUI HeroUI;
-    [SerializeField] StateUI stateUI;
-
-    protected override void Awake()
-    {
-        base.Awake();
-
-        stateUI = FindObjectOfType<StateUI>();
-    }
 
     void Start()
     {
@@ -77,17 +69,17 @@ public class Hero : Character
 
     void OnMouseOver()
     {
-        stateUI.ShowStat(this);
-
         if (myTurn && (equippedTech.TechType == TechType.Heal || equippedTech.TechType == TechType.StressHeal))
         {
             UIManager.Instance.ShowHealInfo(this);
         }
+        else
+        {
+            UIManager.Instance.HideHealInfo();
+        }
     }
     void OnMouseExit()
     {
-        stateUI.hideStat();
-
         if (myTurn)
         {
             UIManager.Instance.HideHealInfo();
@@ -99,6 +91,8 @@ public class Hero : Character
     {
         if (myTurn)
         {
+            UIManager.Instance.ShowStateUI(this);
+
             CurrentTilePosition = GridHighlighter.Instance.GetCurrentTilePosition(transform);
 
             GridHighlighter.Instance.selectedHero = this;
@@ -477,6 +471,8 @@ public class Hero : Character
     {
         if (myTurn)
         {
+            UIManager.Instance.ShowStateUI(this);
+
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
                 TextMeshProUGUI text = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();

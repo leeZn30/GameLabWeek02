@@ -36,12 +36,12 @@ public class GridHighlighter : SingleTon<GridHighlighter>
         {
             HighlightMovableTiles();
 
-            // hero의 원래 위치가 아니고, 갈 수 있는 곳이며, 마우스가 클릭되면 해당 위치로 이동
+            //갈 수 있는 곳이며, 마우스가 클릭되면 해당 위치로 이동
             if (Input.GetMouseButton(0))
             {
                 Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 Vector3Int tilePosition = tilemap.WorldToCell(worldPosition);
-                if (highlightedTilePositions.Contains(tilePosition) && tilePosition != selectedHero.CurrentTilePosition)
+                if (highlightedTilePositions.Contains(tilePosition))
                 {
                     selectedHero.transform.position = tilePosition + new Vector3(0.5f, 0.5f, 0);
                     selectedHero.MoveHero();

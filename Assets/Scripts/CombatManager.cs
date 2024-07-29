@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CombatManager : SingleTon<CombatManager>
@@ -294,7 +295,7 @@ public class CombatManager : SingleTon<CombatManager>
         Camera.main.orthographicSize = targetOrthographicSize;
     }
 
-    IEnumerator ZoomOutCamera()
+    IEnumerator ZoomOutCamera(Character attacker)
     {
         Vector3 initialCameraPosition = Camera.main.transform.position;
         float initialOrthographicSize = Camera.main.orthographicSize;
@@ -322,19 +323,19 @@ public class CombatManager : SingleTon<CombatManager>
             UIManager.Instance.CharacterUIs.SetActive(true);
         }
 
-        TurnManager.Instance.StartNextTurn();
+        attacker.GoToNextTurn();
     }
 
-    public void CallZoomOutCamera()
+    public void CallZoomOutCamera(Character c)
     {
         if (ZoomOut == null)
         {
-            ZoomOut = StartCoroutine(ZoomOutCamera());
+            ZoomOut = StartCoroutine(ZoomOutCamera(c));
         }
         else
         {
             StopCoroutine(ZoomOut);
-            ZoomOut = StartCoroutine(ZoomOutCamera());
+            ZoomOut = StartCoroutine(ZoomOutCamera(c));
         }
     }
 }

@@ -89,7 +89,7 @@ public class Character : MonoBehaviour
         {
             if (FindObjectsOfType<CharacterDescUI>().Length == 0 && Camera.main.orthographicSize == 4)
             {
-                CombatManager.Instance.CallZoomOutCamera();
+                CombatManager.Instance.CallZoomOutCamera(this);
             }
         }
     }
@@ -221,8 +221,10 @@ public class Character : MonoBehaviour
 
     protected virtual void OperateCharacter() { }
 
-    protected void GoToNextTurn()
+    public void GoToNextTurn()
     {
+        UIManager.Instance.HideStateUI(this);
+
         GridHighlighter.Instance.UnHighlightAllTile();
 
         if (TurnManager.Instance != null)

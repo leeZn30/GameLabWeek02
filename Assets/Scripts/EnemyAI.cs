@@ -19,15 +19,11 @@ public class EnemyAI : Character
     private Vector3Int playerPosition;
     public Hero targetPlayer;
 
-    [SerializeField] StateUI stateUI;
-
     protected override void Awake()
     {
         base.Awake();
 
         heroes = FindObjectsOfType<Hero>().ToList();
-
-        stateUI = FindObjectOfType<StateUI>();
     }
 
     void Start()
@@ -53,7 +49,8 @@ public class EnemyAI : Character
 
     void OnMouseOver()
     {
-        stateUI.ShowStat(this);
+        UIManager.Instance.ShowStateUI(this);
+        // stateUI.ShowStat(this);
 
         if (TurnManager.Instance.nowTurnCharacter is Hero)
         {
@@ -63,7 +60,8 @@ public class EnemyAI : Character
 
     void OnMouseExit()
     {
-        stateUI.hideStat();
+        UIManager.Instance.HideStateUI(this);
+        // stateUI.hideStat();
 
         if (TurnManager.Instance.nowTurnCharacter is Hero)
         {

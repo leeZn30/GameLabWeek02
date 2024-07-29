@@ -10,12 +10,13 @@ public class UIManager : SingleTon<UIManager>
     [Header("오브젝트")]
     TextMeshProUGUI GameInfo;
     public TextMeshProUGUI MiniStatue;
-    public GameObject Statue;
     public GameObject AccDamageUI;
     TextMeshProUGUI accText;
     TextMeshProUGUI dmgText;
     public TextMeshProUGUI healText;
     public GameObject CharacterUIs;
+    StateUI playerStateUI;
+    StateUI enemyStateUI;
 
     [Header("프리팹")]
     public TextMeshProUGUI CombatInfo;
@@ -28,9 +29,6 @@ public class UIManager : SingleTon<UIManager>
         MiniStatue = GameObject.Find("MiniStateUI").GetComponentInChildren<TextMeshProUGUI>();
         MiniStatue.transform.parent.gameObject.SetActive(false);
 
-        Statue = GameObject.Find("StateUI");
-        Statue.SetActive(false);
-
         AccDamageUI = GameObject.Find("AccDamageUI");
         accText = AccDamageUI.transform.GetChild(0).GetComponentInChildren<TextMeshProUGUI>();
         dmgText = AccDamageUI.transform.GetChild(1).GetComponentInChildren<TextMeshProUGUI>();
@@ -40,6 +38,11 @@ public class UIManager : SingleTon<UIManager>
         healText.transform.parent.gameObject.SetActive(false);
 
         CharacterUIs = GameObject.Find("CharacterUIs");
+
+        playerStateUI = GameObject.Find("PlayerStateUI").GetComponent<StateUI>();
+        enemyStateUI = GameObject.Find("EnemyStateUI").GetComponent<StateUI>();
+        playerStateUI.gameObject.SetActive(false);
+        enemyStateUI.gameObject.SetActive(false);
     }
 
     void Update()
@@ -98,7 +101,7 @@ public class UIManager : SingleTon<UIManager>
             dmgText.SetText(string.Format("데미지 범위: {0}~{1}", minDamage, maxDamage));
 
             AccDamageUI.SetActive(true);
-            AccDamageUI.transform.position = enemy.transform.position + new Vector3(-4, 0, 0);
+            AccDamageUI.transform.position = enemy.transform.position + new Vector3(0, 2, 0);
         }
     }
 
@@ -131,11 +134,28 @@ public class UIManager : SingleTon<UIManager>
             healText.SetText(string.Format("스트레스 힐: {0}~{1}", minDamage, maxDamage));
 
         healText.transform.parent.gameObject.SetActive(true);
-        healText.transform.parent.position = hero.transform.position + new Vector3(-4, 0, 0);
+        healText.transform.parent.position = hero.transform.position + new Vector3(0, 2, 0);
     }
 
     public void HideHealInfo()
     {
         healText.transform.parent.gameObject.SetActive(false);
+    }
+
+    public void ShowStateUI(Hero hero)
+    {
+        playerStateUI.ShowStat(hero);
+    }
+    public void ShowStateUI(EnemyAI enemy)
+    {
+        enemyStateUI.ShowStat(enemy);
+    }
+
+    public void HideStateUI(Character c)
+    {
+        if (c is Hero)
+            playerStateUI.hideStat();
+
+        else enemyStateUI.hideStat();
     }
 }

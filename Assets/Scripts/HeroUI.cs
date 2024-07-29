@@ -8,6 +8,7 @@ public class HeroUI : MonoBehaviour
 {
     [SerializeField] Hero hero;
 
+    [SerializeField] GameObject normals;
     [SerializeField] GameObject turnUI;
     [SerializeField] GameObject stunUI;
     [SerializeField] GameObject bleedUI;
@@ -71,26 +72,38 @@ public class HeroUI : MonoBehaviour
         stressGauge.value = hero.stress;
         if (hero.isStun)
         {
+            if (!normals.activeSelf)
+                normals.SetActive(true);
             stunUI.SetActive(true);
         }
         else
         {
+            if (normals.transform.childCount == 0)
+                normals.SetActive(false);
             stunUI.SetActive(false);
         }
         if (hero.isBleeding)
         {
+            if (!normals.activeSelf)
+                normals.SetActive(true);
             bleedUI.SetActive(true);
         }
         else
         {
+            if (normals.transform.childCount == 0)
+                normals.SetActive(false);
             bleedUI.SetActive(false);
         }
         if (hero.isPoisoning)
         {
+            if (!normals.activeSelf)
+                normals.SetActive(true);
             poisonUI.SetActive(true);
         }
         else
         {
+            if (normals.transform.childCount == 0)
+                normals.SetActive(false);
             poisonUI.SetActive(false);
         }
         if (hero.StressState == 1)

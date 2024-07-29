@@ -71,7 +71,7 @@ public class Character : MonoBehaviour
         hp = characterData.MaxHp;
         stress = characterData.Stress;
 
-        CharacterUIPositionOffset = new Vector3(0, transform.localScale.y / 2 + CharacterUIPfb.transform.localScale.y / 2, 0);
+        CharacterUIPositionOffset = new Vector3(0, CharacterUIPfb.transform.localScale.y / 2, 0);
         DescGridPositionOffset = new Vector3(0, transform.localScale.y / 2, 0);
         DescGrid = Instantiate(DescUIGridPfb, transform.position + DescGridPositionOffset, Quaternion.identity, GameObject.Find("Canvas").transform);
 

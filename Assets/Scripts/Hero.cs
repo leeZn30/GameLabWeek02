@@ -363,7 +363,7 @@ public class Hero : Character
     IEnumerator StressChange()
     {
         // 각성/붕괴 결정
-        if (stress >= 60 && StressState == 0)
+        if (stress >= 50 && StressState == 0)
         {
             string text = string.Format("{0}의 의지가 시험받고 있습니다...", characterData.ID);
             UIManager.Instance.ShowGameInfo(text);
@@ -394,7 +394,7 @@ public class Hero : Character
             }
         }
         // 사망
-        else if (stress >= 120)
+        else if (stress >= 100)
         {
             string text = string.Format("{0} 심장마비", characterData.ID);
             // UIManager.Instance.ShowGameInfo(text);
@@ -421,10 +421,8 @@ public class Hero : Character
     public void MoveHero()
     {
         CurrentTilePosition = GridHighlighter.Instance.GetCurrentTilePosition(transform);
-
         GridHighlighter.Instance.selectedHero = null;
         GridHighlighter.Instance.UnHighlightAllTile();
-
         Attack();
     }
 

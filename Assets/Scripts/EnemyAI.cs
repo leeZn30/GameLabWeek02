@@ -18,13 +18,6 @@ public class EnemyAI : Character
     private Vector3Int playerPosition;
     public Hero targetPlayer;
 
-    protected override void Awake()
-    {
-        base.Awake();
-
-        heroes = FindObjectsOfType<Hero>().ToList();
-    }
-
     void Start()
     {
         tilemap = GridHighlighter.Instance.tilemap;
@@ -98,6 +91,8 @@ public class EnemyAI : Character
     */
     Vector3Int FindClosestPlayer()
     {
+        heroes = FindObjectsOfType<Hero>().ToList();
+
         Hero closestPlayer = null;
         Vector3Int closestPosition = Vector3Int.zero;
         float minDistance = float.MaxValue;

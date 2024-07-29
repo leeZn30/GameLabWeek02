@@ -104,6 +104,11 @@ public class Character : MonoBehaviour
 
     void OnDestroy()
     {
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.RemoveCharacter(this);
+        }
+
         if (TurnManager.Instance != null)
         {
             TurnManager.Instance.removeCharacterFromQueue(this);

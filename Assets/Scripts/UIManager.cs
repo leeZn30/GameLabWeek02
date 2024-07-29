@@ -8,7 +8,7 @@ using UnityEngine.UIElements;
 public class UIManager : SingleTon<UIManager>
 {
     [Header("오브젝트")]
-    TextMeshProUGUI GameInfo;
+    [SerializeField] TextMeshProUGUI GameInfo;
     public TextMeshProUGUI MiniStatue;
     public GameObject AccDamageUI;
     TextMeshProUGUI accText;
@@ -17,13 +17,15 @@ public class UIManager : SingleTon<UIManager>
     public GameObject CharacterUIs;
     StateUI playerStateUI;
     StateUI enemyStateUI;
+    [SerializeField] GameObject locateUI;
 
     [Header("프리팹")]
     public TextMeshProUGUI CombatInfo;
+    public GameObject characterUI;
 
     void Awake()
     {
-        GameInfo = GameObject.Find("GameInfo").GetComponentInChildren<TextMeshProUGUI>();
+        // GameInfo = GameObject.Find("GameInfo").GetComponentInChildren<TextMeshProUGUI>();
         GameInfo.transform.parent.gameObject.SetActive(false);
 
         MiniStatue = GameObject.Find("MiniStateUI").GetComponentInChildren<TextMeshProUGUI>();
@@ -157,5 +159,35 @@ public class UIManager : SingleTon<UIManager>
             playerStateUI.hideStat();
 
         else enemyStateUI.hideStat();
+    }
+
+    public void SetLocateUI()
+    {
+
+        foreach (string id in UnitData.Instance.unitNames)
+        {
+            GameObject go = Instantiate(characterUI, Vector3.zero, Quaternion.identity, locateUI.transform);
+
+            Instantiate(UnitData.Instance.GetCharacterOfUI(id))
+            .transform.SetParent(go.transform);
+
+            Debug.Log(id);
+            go.GetComponent<DragDropHandler>().ID = id;
+        }
+
+        ShowGameInfo("표시된 곳에 유닛을 배치해주세요.\n배치가 완료된 후 스페이스를 눌러주세요.");
+        locateUI.SetActive(true);
+    }
+
+    public void CloseLocateUI()
+    {
+
+        ShowGameInfo("");
+        locateUI.SetActive(true);
+    }
+
+    public int GetReadyCharacter()
+    {
+        return locateUI.transform.childCount;
     }
 }

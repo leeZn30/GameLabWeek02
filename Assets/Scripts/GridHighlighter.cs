@@ -24,9 +24,12 @@ public class GridHighlighter : SingleTon<GridHighlighter>
     [SerializeField] Tile rangeTile;
     [SerializeField] GameObject attackRange;
 
+    [Header("최초 지정 위치")]
+    public List<Vector3Int> InitialPlayerPositions = new List<Vector3Int>();
+
     void Awake()
     {
-        tilemap = GetComponent<Tilemap>();
+        // tilemap = GetComponent<Tilemap>();
         lineRenderer = GetComponent<LineRenderer>();
     }
 
@@ -41,6 +44,7 @@ public class GridHighlighter : SingleTon<GridHighlighter>
             {
                 Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 Vector3Int tilePosition = tilemap.WorldToCell(worldPosition);
+
                 if (highlightedTilePositions.Contains(tilePosition))
                 {
                     selectedHero.transform.position = ConvertTileToWorldPosition(tilePosition);
@@ -50,10 +54,27 @@ public class GridHighlighter : SingleTon<GridHighlighter>
         }
     }
 
+    public void PlaceCharacterOnTile(Vector3Int cellPosition, GameObject go)
+    {
+        // 타일맵의 셀 위치를 월드 위치로 변환
+        Vector3 worldPosition = tilemap.GetCellCenterWorld(cellPosition);
+
+        // 캐릭터를 타일맵 위치로 이동
+        go.transform.position = worldPosition;
+    }
+
+    public void HighlightSpecificTile(Vector3Int pose)
+    {
+        if (tilemap.GetTile(pose) != highlightedTile)
+        {
+            tilemap.SetTile(pose, highlightedTile);
+            highlightedTilePositions.Push(pose);
+        }
+    }
+
     #region  Player 관련
     void HighlightMovableTiles()
     {
-
         // 마우스 위치에서 타일을 가져옴
         Vector3Int mousePosition = tilemap.WorldToCell(Camera.main.ScreenToWorldPoint(Input.mousePosition));
 
@@ -81,7 +102,7 @@ public class GridHighlighter : SingleTon<GridHighlighter>
                 }
             }
         }
-        else // 이전 위치로 갔으면 빼주기
+        else if (mousePosition == PrevHighlightedPosition)// 이전 위치로 갔으면 빼주기
         {
             if (highlightedTilePositions.Count > 1)
                 // 표시된 타일셋에서 제거
@@ -92,14 +113,10 @@ public class GridHighlighter : SingleTon<GridHighlighter>
 
             // 이전 위치 갱신
             if (highlightedTilePositions.Count > 1)
-            {
                 PrevHighlightedPosition = highlightedTilePositions.ElementAt(1);
-            }
             else
-            {
                 PrevHighlightedPosition = highlightedTilePositions.Peek();
-            }
-            Debug.Log("!!!!");
+
             showAttackRange(NowHighlightedPosition, selectedHero.attackRange, selectedHero.isAtkRangeInternal);
         }
 
@@ -352,6 +369,7 @@ public class GridHighlighter : SingleTon<GridHighlighter>
                     if (Mathf.Abs(x) + Mathf.Abs(y) <= range && tilemap.HasTile(position))
                     {
                         Instantiate(attackRange, ConvertTileToWorldPosition(position), Quaternion.identity);
+                        // Instantiate(attackRange, ConvertTileToWorldPosition(position), Quaternion.identity);
                     }
                 }
             }

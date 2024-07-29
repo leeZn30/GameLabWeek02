@@ -30,7 +30,7 @@ public class HeroUI : MonoBehaviour
 
         hpGauge.maxValue = hero.characterData.MaxHp;
         hpGauge.value = hero.hp;
-        stressGauge.maxValue = 120;
+        stressGauge.maxValue = 100;
         stressGauge.value = hero.characterData.Stress;
 
         hpGauge.GetComponent<UIHoverHandler>().OnHoverEnter += OnHoverEnter;

@@ -31,6 +31,10 @@ public class TurnManager : SingleTon<TurnManager>
 
     void Start()
     {
+    }
+
+    public void StartInitTurn()
+    {
         StartCoroutine(orderCharacter());
     }
 
@@ -124,7 +128,7 @@ public class TurnManager : SingleTon<TurnManager>
 
     public void removeCharacterFromQueue(Character character)
     {
-        if (priorityQueue.Count > 0)
+        if (priorityQueue != null && priorityQueue.Count > 0)
         {
             priorityQueue.Remove(character);
         }

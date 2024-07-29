@@ -39,7 +39,7 @@ public class Hero : Character
         if (isChoosing && Input.GetMouseButton(0))
         {
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            RaycastHit2D hit = Physics2D.Raycast(mousePosition, Vector2.down, 1f, 1 << LayerMask.NameToLayer("Character"));
+            RaycastHit2D hit = Physics2D.Raycast(mousePosition, Vector2.zero, 1f, 1 << LayerMask.NameToLayer("Character"));
 
             if (choosingType == 0)
             {

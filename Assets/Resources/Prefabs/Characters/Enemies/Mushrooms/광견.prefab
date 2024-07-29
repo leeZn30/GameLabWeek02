@@ -526,7 +526,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4707160193662644677, guid: ef782f609133c1d44be86104bbfd5a36, type: 3}
       propertyPath: characterData.Step
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4707160193662644677, guid: ef782f609133c1d44be86104bbfd5a36, type: 3}
       propertyPath: characterData.Dodge

@@ -346,7 +346,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2724423396588771031, guid: ef782f609133c1d44be86104bbfd5a36, type: 3}
       propertyPath: m_Name
-      value: "\uD3EC\uC790 \uBC15\uACA9\uD3EC"
+      value: "\uD3EC\uC790 \uBC15\uACA9\uD3EC 1"
       objectReference: {fileID: 0}
     - target: {fileID: 4707160193662644677, guid: ef782f609133c1d44be86104bbfd5a36, type: 3}
       propertyPath: searchRange

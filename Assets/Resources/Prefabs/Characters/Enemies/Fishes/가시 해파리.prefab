@@ -594,7 +594,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4707160193662644677, guid: ef782f609133c1d44be86104bbfd5a36, type: 3}
       propertyPath: characterData.Techs.Array.data[0].FixedMaxDamage
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4707160193662644677, guid: ef782f609133c1d44be86104bbfd5a36, type: 3}
       propertyPath: characterData.Techs.Array.data[0].FixedMinDamage

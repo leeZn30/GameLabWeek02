@@ -666,11 +666,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4707160193662644677, guid: ef782f609133c1d44be86104bbfd5a36, type: 3}
       propertyPath: characterData.Techs.Array.data[0].FixedMaxDamage
-      value: 15
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 4707160193662644677, guid: ef782f609133c1d44be86104bbfd5a36, type: 3}
       propertyPath: characterData.Techs.Array.data[0].FixedMinDamage
-      value: 15
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 7276498115906394310, guid: ef782f609133c1d44be86104bbfd5a36, type: 3}
       propertyPath: m_LocalPosition.x

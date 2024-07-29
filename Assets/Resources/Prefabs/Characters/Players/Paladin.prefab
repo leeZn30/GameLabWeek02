@@ -369,7 +369,7 @@ MonoBehaviour:
     Step: 3
     minDamage: 6
     maxDamage: 12
-    defense: 40
+    defense: 25
     WillPower: 25
     StunResist: 40
     BleedResist: 30

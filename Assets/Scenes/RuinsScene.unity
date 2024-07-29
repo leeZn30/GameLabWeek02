@@ -297,7 +297,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 600, y: 80}
+  m_SizeDelta: {x: 1000, y: 80}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &34400167
 MonoBehaviour:
@@ -6911,29 +6911,17 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1040997051000876921, guid: af447919d7cc9374c8c6edadd7df159d, type: 3}
-      propertyPath: unitNames.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 1040997051000876921, guid: af447919d7cc9374c8c6edadd7df159d, type: 3}
-      propertyPath: unitNames.Array.data[0]
-      value: "\uB178\uC0C1\uAC15\uB3C4"
-      objectReference: {fileID: 0}
-    - target: {fileID: 1040997051000876921, guid: af447919d7cc9374c8c6edadd7df159d, type: 3}
-      propertyPath: unitNames.Array.data[1]
-      value: "\uD314\uB77C\uB518"
-      objectReference: {fileID: 0}
-    - target: {fileID: 1040997051000876921, guid: af447919d7cc9374c8c6edadd7df159d, type: 3}
-      propertyPath: unitNames.Array.data[2]
-      value: "\uC131\uB140"
-      objectReference: {fileID: 0}
-    - target: {fileID: 1040997051000876921, guid: af447919d7cc9374c8c6edadd7df159d, type: 3}
-      propertyPath: unitNames.Array.data[3]
-      value: "\uC11D\uAD81 \uC0AC\uC218"
-      objectReference: {fileID: 0}
-    - target: {fileID: 1040997051000876921, guid: af447919d7cc9374c8c6edadd7df159d, type: 3}
-      propertyPath: characterUIs.Array.data[4].go
+      propertyPath: characterUIs.Array.data[6].go
       value: 
-      objectReference: {fileID: 5810024771563791682, guid: d882eb4559ee7884f9caea4f0ea1fdab, type: 3}
+      objectReference: {fileID: 781293016889928941, guid: d640ab9af6956a34f9390de7196ac6cd, type: 3}
+    - target: {fileID: 1040997051000876921, guid: af447919d7cc9374c8c6edadd7df159d, type: 3}
+      propertyPath: characterUIs.Array.data[7].go
+      value: 
+      objectReference: {fileID: 781293016889928941, guid: 048d8932f7cbee94fae32abbcd1e6501, type: 3}
+    - target: {fileID: 1040997051000876921, guid: af447919d7cc9374c8c6edadd7df159d, type: 3}
+      propertyPath: characterUIs.Array.data[8].go
+      value: 
+      objectReference: {fileID: 781293016889928941, guid: 68727dacd60e82144ae264dd9e666d9b, type: 3}
     - target: {fileID: 1267818978847248506, guid: af447919d7cc9374c8c6edadd7df159d, type: 3}
       propertyPath: m_Name
       value: UnitData

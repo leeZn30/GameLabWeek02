@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Hero : Character
 {
@@ -295,29 +296,31 @@ public class Hero : Character
     {
         TextMeshProUGUI desc = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
         if (isCritical)
-            desc.SetText(string.Format("<color=black>치명타!\n{0}", stress));
+            desc.SetText(string.Format("<color=#702B76>치명타!\n{0}", stress));
         else
-            desc.SetText(string.Format("<color=black>{0}", stress));
+            desc.SetText(string.Format("<color=#702B76>{0}", stress));
 
         if (isEffect)
-            StartCoroutine(stressed());
+            Instantiate(sts, transform.position, sts.transform.rotation);
+        // StartCoroutine(stressed());
 
         this.stress += stress;
 
         ChangeStressState();
     }
 
-    public override void OnHealed(int heal, bool isCritical)
+    public override void OnHealed(int healMount, bool isCritical)
     {
         TextMeshProUGUI desc = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
         if (isCritical)
-            desc.SetText(string.Format("<color=#9BFF00>치명타! {0}", heal));
+            desc.SetText(string.Format("<color=#9BFF00>치명타! {0}", healMount));
         else
-            desc.SetText(string.Format("<color=#9BFF00>{0}", heal));
+            desc.SetText(string.Format("<color=#9BFF00>{0}", healMount));
 
-        StartCoroutine(healed());
+        // StartCoroutine(healed());
+        Instantiate(heal, transform.position, heal.transform.rotation);
 
-        hp += heal;
+        hp += healMount;
 
         if (isDeathDoor)
             isDeathDoor = false;
@@ -335,7 +338,8 @@ public class Hero : Character
             desc.SetText(string.Format("<color=white>치명타!\n{0}", heal));
         else
             desc.SetText(string.Format("<color=white>{0}", heal));
-        StartCoroutine(stresshealed());
+        // StartCoroutine(stresshealed());
+        Instantiate(stressheal, transform.position, stressheal.transform.rotation);
 
         stress -= heal;
     }
@@ -466,7 +470,7 @@ public class Hero : Character
         {
             case 0: // 스트레스 전파
                 text = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
-                text.SetText("<color=black>이 판은 망했어.\n(스트레스 증가 및 전파)");
+                text.SetText("<color=702B76>이 판은 망했어.\n(스트레스 증가 및 전파)");
 
                 OnStressed(10, false, false);
 

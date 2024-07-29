@@ -58,11 +58,10 @@ public class Character : MonoBehaviour
     Vector3 DescGridPositionOffset;
 
     [Header("Effect")]
-    GameObject nowEffect;
-    [SerializeField] GameObject atk;
-    [SerializeField] GameObject sts;
-    [SerializeField] GameObject heal;
-    [SerializeField] GameObject stressheal;
+    public GameObject atk;
+    public GameObject sts;
+    public GameObject heal;
+    public GameObject stressheal;
 
     [Header("오브젝트")]
     public SpriteRenderer Light;
@@ -113,8 +112,6 @@ public class Character : MonoBehaviour
         {
             TurnManager.Instance.removeCharacterFromQueue(this);
         }
-
-        Destroy(nowEffect);
     }
 
     IEnumerator turnProcedure()
@@ -254,7 +251,8 @@ public class Character : MonoBehaviour
         }
 
         if (isEffect)
-            StartCoroutine(damaged());
+            Instantiate(atk, transform.position, atk.transform.rotation);
+        // StartCoroutine(damaged());
 
         hp -= damage;
     }
@@ -334,11 +332,13 @@ public class Character : MonoBehaviour
         switch (techType)
         {
             case TechType.Attack:
-                StartCoroutine(damaged());
+                Instantiate(atk, transform.position, atk.transform.rotation);
+                // StartCoroutine(damaged());
                 break;
 
             case TechType.Stress:
-                StartCoroutine(stressed());
+                Instantiate(sts, transform.position, atk.transform.rotation);
+                // StartCoroutine(stressed());
                 break;
         }
 
@@ -404,43 +404,6 @@ public class Character : MonoBehaviour
             }
         }
         return results;
-    }
-
-
-    IEnumerator damaged()
-    {
-        nowEffect = Instantiate(atk, transform.position, atk.transform.rotation);
-
-        yield return new WaitForSeconds(2f);
-
-        Destroy(nowEffect);
-    }
-
-    protected IEnumerator stressed()
-    {
-        nowEffect = Instantiate(sts, transform.position, sts.transform.rotation);
-
-        yield return new WaitForSeconds(2f);
-
-        Destroy(nowEffect);
-    }
-
-    protected IEnumerator healed()
-    {
-        nowEffect = Instantiate(heal, transform.position, heal.transform.rotation);
-
-        yield return new WaitForSeconds(2f);
-
-        Destroy(nowEffect);
-    }
-
-    protected IEnumerator stresshealed()
-    {
-        nowEffect = Instantiate(stressheal, transform.position, stressheal.transform.rotation);
-
-        yield return new WaitForSeconds(2f);
-
-        Destroy(nowEffect);
     }
 
     IEnumerator dodged()

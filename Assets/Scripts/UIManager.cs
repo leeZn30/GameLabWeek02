@@ -171,7 +171,6 @@ public class UIManager : SingleTon<UIManager>
             Instantiate(UnitData.Instance.GetCharacterOfUI(id))
             .transform.SetParent(go.transform);
 
-            Debug.Log(id);
             go.GetComponent<DragDropHandler>().ID = id;
         }
 

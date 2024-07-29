@@ -286,7 +286,7 @@ MonoBehaviour:
     MaxHp: 19
     Stress: 0
     AccMod: 0
-    Dodge: 15
+    Dodge: 20
     Crit: 4
     Step: 4
     minDamage: 4
@@ -358,7 +358,7 @@ MonoBehaviour:
   stressheal: {fileID: 3126842929217700142, guid: 8f876d7346e60ea4eb7524ad445d7c30, type: 3}
   Light: {fileID: 8538696263163544730}
   CurrentTilePosition: {x: 0, y: 0, z: 0}
-  stateUI: {fileID: 0}
+  isDeathDoor: 0
 --- !u!61 &6298981789609791314
 BoxCollider2D:
   m_ObjectHideFlags: 0

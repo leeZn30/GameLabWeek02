@@ -179,6 +179,7 @@ public class GridHighlighter : SingleTon<GridHighlighter>
 
         Vector3Int targetPosition = start;
         tilemap.SetTile(targetPosition, highlightedTile);
+        highlightedTilePositions.Push(targetPosition);
         if (path.Count > 0)
         {
             for (int i = 0; i < Mathf.Min(step, path.Count - 1); i++)
@@ -188,7 +189,6 @@ public class GridHighlighter : SingleTon<GridHighlighter>
                 highlightedTilePositions.Push(targetPosition);
             }
         }
-
 
         showAttackRange(targetPosition, selectedEnemy.attackRange, selectedEnemy.isAtkRangeInternal);
         return targetPosition;
@@ -268,20 +268,27 @@ public class GridHighlighter : SingleTon<GridHighlighter>
 
     Vector3Int GetClosestPosition(List<Vector3Int> openSet, Vector3Int goal)
     {
-        Vector3Int closest = openSet[0];
-        int minDistance = Heuristic(openSet[0], goal);
-
-        foreach (Vector3Int pos in openSet)
+        try
         {
-            int distance = Heuristic(pos, goal);
-            if (distance < minDistance)
-            {
-                closest = pos;
-                minDistance = distance;
-            }
-        }
+            Vector3Int closest = openSet[0];
+            int minDistance = Heuristic(openSet[0], goal);
 
-        return closest;
+            foreach (Vector3Int pos in openSet)
+            {
+                int distance = Heuristic(pos, goal);
+                if (distance < minDistance)
+                {
+                    closest = pos;
+                    minDistance = distance;
+                }
+            }
+
+            return closest;
+        }
+        catch (InvalidCastException)
+        {
+            return tilemap.WorldToCell(selectedEnemy.transform.position);
+        }
     }
 
     List<Vector3Int> GetNeighbors(Vector3Int pos)

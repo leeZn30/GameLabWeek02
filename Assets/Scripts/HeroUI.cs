@@ -14,22 +14,23 @@ public class HeroUI : MonoBehaviour
     [SerializeField] GameObject poisonUI;
     [SerializeField] Slider hpGauge;
     [SerializeField] Slider stressGauge;
+    [SerializeField] GameObject layout;
+    [SerializeField] Image awakeningUI;
+    [SerializeField] Image collapseUI;
+    [SerializeField] Image deathDoorUI;
 
     GameObject hoverObject;
     private RectTransform hoverRectTransform;
-    private RectTransform canvasRectTransform;
 
     public void Init(Hero hero)
     {
         this.hero = hero;
         hoverObject = UIManager.Instance.MiniStatue.transform.parent.gameObject;
         hoverRectTransform = UIManager.Instance.MiniStatue.transform.parent.GetComponent<RectTransform>();
-        // Canvas의 RectTransform 가져오기
-        canvasRectTransform = hoverObject.GetComponentInParent<Canvas>().GetComponent<RectTransform>();
 
         hpGauge.maxValue = hero.characterData.MaxHp;
         hpGauge.value = hero.hp;
-        stressGauge.maxValue = 200;
+        stressGauge.maxValue = 120;
         stressGauge.value = hero.characterData.Stress;
 
         hpGauge.GetComponent<UIHoverHandler>().OnHoverEnter += OnHoverEnter;
@@ -47,9 +48,21 @@ public class HeroUI : MonoBehaviour
         poisonUI.GetComponent<UIHoverHandler>().OnHoverEnter += OnHoverEnter;
         poisonUI.GetComponent<UIHoverHandler>().OnHoverExit += OnHoverExit;
 
+        awakeningUI.GetComponent<UIHoverHandler>().OnHoverEnter += OnHoverEnter;
+        awakeningUI.GetComponent<UIHoverHandler>().OnHoverExit += OnHoverExit;
+
+        collapseUI.GetComponent<UIHoverHandler>().OnHoverEnter += OnHoverEnter;
+        collapseUI.GetComponent<UIHoverHandler>().OnHoverExit += OnHoverExit;
+
+        deathDoorUI.GetComponent<UIHoverHandler>().OnHoverEnter += OnHoverEnter;
+        deathDoorUI.GetComponent<UIHoverHandler>().OnHoverExit += OnHoverExit;
+
         stunUI.SetActive(false);
         bleedUI.SetActive(false);
         poisonUI.SetActive(false);
+        awakeningUI.gameObject.SetActive(false);
+        collapseUI.gameObject.SetActive(false);
+        deathDoorUI.gameObject.SetActive(false);
     }
 
     void Update()
@@ -79,6 +92,25 @@ public class HeroUI : MonoBehaviour
         else
         {
             poisonUI.SetActive(false);
+        }
+        if (hero.StressState == 1)
+        {
+            if (!layout.activeSelf)
+                layout.SetActive(true);
+
+            awakeningUI.gameObject.SetActive(true);
+        }
+        else if (hero.StressState == 2)
+        {
+            if (!layout.activeSelf)
+                layout.SetActive(true);
+            collapseUI.gameObject.SetActive(true);
+        }
+        if (hero.isDeathDoor)
+        {
+            if (!layout.activeSelf)
+                layout.SetActive(true);
+            deathDoorUI.gameObject.SetActive(true);
         }
 
         if (hero == null)
@@ -112,6 +144,18 @@ public class HeroUI : MonoBehaviour
         {
             Tuple<int, int> result = hero.GetPoisonState();
             str = string.Format("중독 상태 | 데미지: {0} | 남은 턴 수: {1}", result.Item1, result.Item2);
+        }
+        else if (ui == awakeningUI.gameObject)
+        {
+            str = "각성 상태";
+        }
+        else if (ui == collapseUI.gameObject)
+        {
+            str = "붕괴 상태";
+        }
+        else if (ui == deathDoorUI.gameObject)
+        {
+            str = "죽음의 문턱";
         }
 
         if (UIManager.Instance.MiniStatue.transform.parent.gameObject.activeSelf)

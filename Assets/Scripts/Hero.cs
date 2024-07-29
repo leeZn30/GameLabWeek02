@@ -10,7 +10,7 @@ public class Hero : Character
     public Vector3Int CurrentTilePosition;
     bool isChoosing;
     int choosingType;
-    bool isDeathDoor;
+    public bool isDeathDoor;
 
     [Header("UI")]
     HeroUI HeroUI;
@@ -331,7 +331,7 @@ public class Hero : Character
     IEnumerator StressChange()
     {
         // 각성/붕괴 결정
-        if (stress >= 100 && StressState == 0)
+        if (stress >= 60 && StressState == 0)
         {
             string text = string.Format("{0}의 의지가 시험받고 있습니다...", characterData.ID);
             UIManager.Instance.ShowGameInfo(text);
@@ -362,7 +362,7 @@ public class Hero : Character
             }
         }
         // 사망
-        else if (stress >= 200)
+        else if (stress >= 120)
         {
             string text = string.Format("{0} 심장마비", characterData.ID);
             // UIManager.Instance.ShowGameInfo(text);
@@ -400,14 +400,14 @@ public class Hero : Character
     // Hero에서 구현
     public override void DoAwakening()
     {
-        int index = Random.Range(0, 3);
+        int index = Random.Range(0, 2);
         TextMeshProUGUI text = null;
 
         switch (index)
         {
             case 0: // 스트레스 회복 전파
                 text = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
-                text.SetText("<color=white>아직 모두 할 수 있어");
+                text.SetText("<color=white>아직 모두 할 수 있어.\n(스트레스 회복 및 전파)");
 
                 OnStressHealed(10, false);
 
@@ -419,12 +419,9 @@ public class Hero : Character
 
             case 1: // 자힐
                 text = Instantiate(DescUIPfb, DescGrid.transform).GetComponent<TextMeshProUGUI>();
-                text.SetText("<color=#9BFF00>저에게 힘을 주소서.");
+                text.SetText("<color=#9BFF00>저에게 힘을 주소서.\n(체력 회복)");
 
                 OnHealed(5, false);
-                break;
-
-            default:
                 break;
         }
     }
@@ -469,7 +466,7 @@ public class Hero : Character
 
     void ReEquipSkill()
     {
-        if (myTurn)
+        if (myTurn && !isChoosing)
         {
             UIManager.Instance.ShowStateUI(this);
 

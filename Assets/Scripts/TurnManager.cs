@@ -36,6 +36,12 @@ public class TurnManager : SingleTon<TurnManager>
 
     IEnumerator orderCharacter()
     {
+        UIManager.Instance.ShowGameInfo("전투 순서 정비 중...");
+
+        yield return new WaitForSeconds(2f);
+
+        UIManager.Instance.HideGameInfo();
+
         // 1. 화면에 있는 모든 Character 타입의 오브젝트를 찾는다.
         Character[] characters = FindObjectsOfType<Character>();
 

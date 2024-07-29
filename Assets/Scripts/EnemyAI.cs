@@ -7,13 +7,12 @@ using UnityEngine.Tilemaps;
 
 public class EnemyAI : Character
 {
-
     [Header("UI")]
     EnemyUI EnemyUI;
 
-
+    [Header("플레이어 관련")]
+    [SerializeField] int searchRange = 5; // 예시로 5칸 이하를 설정했습니다. 필요한 범위로 변경하세요.
     List<Hero> heroes = new List<Hero>();
-
     private Vector3Int enemyPosition;
     // Position은 기술의 사거리에 따라 달라짐(tragetplayer의 위치 != playerPosition)
     private Vector3Int playerPosition;
@@ -119,30 +118,48 @@ public class EnemyAI : Character
                 Vector3Int playerPosition = tilemap.WorldToCell(player.transform.position);
                 int playerHealth = player.hp;
 
-                // 공격 기술을 먼저 정함
-                // 해당 기술의 attackRange 만큼 떨어진 만큼이 목표 위치임
-                foreach (Vector3Int vec in dir)
+                // 플레이어와 적 사이의 맨해튼 거리 계산
+                int playerDistance = Mathf.Abs(enemyPosition.x - playerPosition.x) + Mathf.Abs(enemyPosition.y - playerPosition.y);
+
+                // 플레이어가 지정된 검색 범위 내에 있는지 확인
+                if (playerDistance <= searchRange)
                 {
-                    // 사거리 -1 만큼 가야함
-                    Vector3Int targetPosition = playerPosition + (attackRange - 1) * vec;
-
-                    // 맨해튼 거리 계산
-                    int distance = Mathf.Abs(enemyPosition.x - targetPosition.x) + Mathf.Abs(enemyPosition.y - targetPosition.y);
-
-
-                    if (distance < minDistance || (distance == minDistance && playerHealth < lowestHealth))
+                    // 공격 기술을 먼저 정함
+                    // 해당 기술의 attackRange 만큼 떨어진 만큼이 목표 위치임
+                    foreach (Vector3Int vec in dir)
                     {
-                        minDistance = distance;
-                        closestPosition = targetPosition;
+                        Vector3Int targetPosition = playerPosition + (attackRange - 1) * vec;
 
-                        lowestHealth = playerHealth;
-                        closestPlayer = player;
+                        if (!GridHighlighter.Instance.tilemap.HasTile(targetPosition))
+                            continue;
+
+                        // 맨해튼 거리 계산
+                        int distance = Mathf.Abs(enemyPosition.x - targetPosition.x) + Mathf.Abs(enemyPosition.y - targetPosition.y);
+
+                        // 거리차가 1이하라면 더 체력 낮은 애한테
+                        if (distance - minDistance <= 1 && playerHealth < lowestHealth)
+                        {
+                            minDistance = distance;
+                            closestPosition = targetPosition;
+
+                            lowestHealth = playerHealth;
+                            closestPlayer = player;
+                        }
                     }
                 }
             }
         }
 
         targetPlayer = closestPlayer;
+
+        if (targetPlayer == null)
+        {
+            // 제자리에 있기
+            closestPosition = GridHighlighter.Instance.tilemap.WorldToCell(transform.position);
+        }
+
+        Debug.Log(closestPosition);
+
         return closestPosition;
     }
 
@@ -215,6 +232,7 @@ public class EnemyAI : Character
         }
 
         GridHighlighter.Instance.RemoveAllAttackRange();
+        GridHighlighter.Instance.UnHighlightAllTile();
     }
 
     void ChooseCharacter(List<Character> characters)

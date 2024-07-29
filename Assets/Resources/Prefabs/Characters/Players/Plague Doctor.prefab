@@ -111,7 +111,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 781293016889928941}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -3.234747, y: -7.88, z: 0.08462445}
   m_LocalScale: {x: 0.9, y: 0.9, z: 1}
   m_ConstrainProportionsScale: 0
@@ -196,7 +196,7 @@ MonoBehaviour:
     MaxHp: 22
     Stress: 0
     AccMod: 0
-    Dodge: 5
+    Dodge: 10
     Crit: 2
     Step: 3
     minDamage: 4
@@ -212,8 +212,8 @@ MonoBehaviour:
       TechType: 0
       TechTarget: 1
       Acc: 95
-      TechRange: 1
-      Range: 2
+      TechRange: 0
+      Range: 1
       isInternal: 1
       isFixedDamage: 0
       dMGMod: 1
@@ -267,9 +267,8 @@ MonoBehaviour:
   heal: {fileID: 3126842929217700142, guid: a6cf83fd14ffb644db2b69751128e0d7, type: 3}
   stressheal: {fileID: 3126842929217700142, guid: 8f876d7346e60ea4eb7524ad445d7c30, type: 3}
   Light: {fileID: 837162053930164473}
-  isSelected: 0
   CurrentTilePosition: {x: 0, y: 0, z: 0}
-  stateUI: {fileID: 0}
+  isDeathDoor: 0
 --- !u!61 &6298981789609791314
 BoxCollider2D:
   m_ObjectHideFlags: 0

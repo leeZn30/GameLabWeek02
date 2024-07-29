@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 public class EnemyAI : Character
 {
@@ -233,25 +232,34 @@ public class EnemyAI : Character
     {
         // 일단 가장 체력 낮은 애
         // 더 발전하면 현재 공격 타입에 따라서 제일 약한 애
+        // Hero hero = null;
+        // foreach (Character c in characters)
+        // {
+        //     Hero h = c.GetComponent<Hero>();
 
-        Hero hero = null;
-        foreach (Character c in characters)
-        {
-            Hero h = c.GetComponent<Hero>();
+        //     if (h != null)
+        //     {
+        //         if (hero == null)
+        //             hero = h;
+        //         else
+        //         {
+        //             // if (equippedTech.TechType == TechType.Attack)
+        //             // {
+        //             //     if (h.hp < hero.hp)
+        //             //         hero = h;
+        //             // }
+        //             // else
+        //             // {
+        //             //     if (h.stress > hero.stress)
+        //             //         hero = h;
+        //             // }
 
-            if (h != null)
-            {
-                if (hero == null)
-                    hero = h;
-                else
-                {
-                    if (h.hp < hero.hp)
-                    {
-                        hero = h;
-                    }
-                }
-            }
-        }
+        //         }
+        //     }
+        // }
+
+        // 그냥 랜덤
+        Hero hero = characters[UnityEngine.Random.Range(0, characters.Count)].GetComponent<Hero>();
 
         CombatManager.Instance.Combat(this, hero);
 

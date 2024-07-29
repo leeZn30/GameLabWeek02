@@ -11,6 +11,7 @@ public class GridHighlighter : SingleTon<GridHighlighter>
     public EnemyAI selectedEnemy;
     public Vector3Int PrevHighlightedPosition;
     public Vector3Int NowHighlightedPosition;
+    bool prevIsCurrent;
 
     public Tilemap tilemap;
     LineRenderer lineRenderer;
@@ -44,11 +45,11 @@ public class GridHighlighter : SingleTon<GridHighlighter>
             {
                 Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 Vector3Int tilePosition = tilemap.WorldToCell(worldPosition);
-
                 if (highlightedTilePositions.Contains(tilePosition))
                 {
                     selectedHero.transform.position = ConvertTileToWorldPosition(tilePosition);
                     selectedHero.MoveHero();
+                    selectedHero = null;
                 }
             }
         }
@@ -98,11 +99,12 @@ public class GridHighlighter : SingleTon<GridHighlighter>
                     // 현재 위치 갱신
                     NowHighlightedPosition = mousePosition;
 
+                    prevIsCurrent = false;
                     showAttackRange(NowHighlightedPosition, selectedHero.attackRange, selectedHero.isAtkRangeInternal);
                 }
             }
         }
-        else if (mousePosition == PrevHighlightedPosition)// 이전 위치로 갔으면 빼주기
+        else// 이전 위치로 갔으면 빼주기
         {
             if (highlightedTilePositions.Count > 1)
                 // 표시된 타일셋에서 제거
@@ -113,11 +115,31 @@ public class GridHighlighter : SingleTon<GridHighlighter>
 
             // 이전 위치 갱신
             if (highlightedTilePositions.Count > 1)
+            {
+                prevIsCurrent = false;
                 PrevHighlightedPosition = highlightedTilePositions.ElementAt(1);
-            else
-                PrevHighlightedPosition = highlightedTilePositions.Peek();
 
-            showAttackRange(NowHighlightedPosition, selectedHero.attackRange, selectedHero.isAtkRangeInternal);
+                showAttackRange(NowHighlightedPosition, selectedHero.attackRange, selectedHero.isAtkRangeInternal);
+            }
+            else
+            {
+                if (!prevIsCurrent)
+                {
+                    prevIsCurrent = true;
+                    showAttackRange(NowHighlightedPosition, selectedHero.attackRange, selectedHero.isAtkRangeInternal);
+                }
+                else
+                {
+                    if (FindObjectsOfType<AttackRange>().Length == 0)
+                    {
+                        showAttackRange(NowHighlightedPosition, selectedHero.attackRange, selectedHero.isAtkRangeInternal);
+                    }
+                }
+                PrevHighlightedPosition = highlightedTilePositions.Peek();
+            }
+
+
+            // showAttackRange(NowHighlightedPosition, selectedHero.attackRange, selectedHero.isAtkRangeInternal);
         }
 
         lineRenderer.positionCount = highlightedTilePositions.Count;

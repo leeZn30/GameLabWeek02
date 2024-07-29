@@ -52,6 +52,7 @@ public class GameManager : SingleTon<GameManager>
             Destroy(go.gameObject);
         }
 
+        UIManager.Instance.HideStateUI(new Hero());
         UIManager.Instance.locateUI.SetActive(false);
         UIManager.Instance.HideGameInfo();
 

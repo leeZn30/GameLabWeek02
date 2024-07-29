@@ -113,10 +113,29 @@ public class Hero : Character
         }
     }
 
+    public void AttackInPlace()
+    {
+        StartCoroutine(stop());
+    }
+
+    IEnumerator stop()
+    {
+        yield return new WaitForEndOfFrame();
+
+        GridHighlighter.Instance.showAttackRange(CurrentTilePosition, attackRange, isAtkRangeInternal);
+
+        Attack();
+    }
+
     void Attack()
     {
         List<Character> targets = new List<Character>();
         List<AttackRange> ranges = FindObjectsOfType<AttackRange>().ToList();
+
+        foreach (AttackRange ag in ranges)
+        {
+            Debug.Log(ag);
+        }
 
         // 힐이 아니라면 공격으로 간주 -> 에너미 파악
         if (equippedTech.TechType != TechType.Heal && equippedTech.TechType != TechType.StressHeal)
@@ -425,7 +444,6 @@ public class Hero : Character
     public void MoveHero()
     {
         CurrentTilePosition = GridHighlighter.Instance.GetCurrentTilePosition(transform);
-        GridHighlighter.Instance.selectedHero = null;
         GridHighlighter.Instance.UnHighlightAllTile();
         Attack();
     }

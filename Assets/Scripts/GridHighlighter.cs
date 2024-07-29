@@ -306,7 +306,7 @@ public class GridHighlighter : SingleTon<GridHighlighter>
 
             return closest;
         }
-        catch (InvalidCastException)
+        catch
         {
             return tilemap.WorldToCell(selectedEnemy.transform.position);
         }

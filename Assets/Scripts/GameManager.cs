@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : SingleTon<GameManager>
 {
-    bool isGameProgressing;
-    List<Hero> aliveHeroes;
-    List<EnemyAI> aliveEnemies;
+    public bool isGameProgressing;
+    List<Hero> aliveHeroes = new List<Hero>();
+    List<EnemyAI> aliveEnemies = new List<EnemyAI>();
+    public GameObject Characters;
 
     void Awake()
     {
@@ -43,12 +45,14 @@ public class GameManager : SingleTon<GameManager>
         isGameProgressing = true;
 
         DragDropHandler[] gos = FindObjectsOfType<DragDropHandler>();
-
         foreach (DragDropHandler go in gos)
         {
-            Instantiate(UnitData.Instance.characters.Find(e => e.characterData.ID == go.ID), go.transform.position, Quaternion.identity);
+            Instantiate(UnitData.Instance.characters.Find(e => e.characterData.ID == go.ID), go.transform.position, Quaternion.identity, Characters.transform);
             Destroy(go.gameObject);
         }
+
+        UIManager.Instance.locateUI.SetActive(false);
+        UIManager.Instance.HideGameInfo();
 
         aliveHeroes = FindObjectsOfType<Hero>().ToList();
         aliveEnemies = FindObjectsOfType<EnemyAI>().ToList();
@@ -84,11 +88,31 @@ public class GameManager : SingleTon<GameManager>
 
     public void ClearGame()
     {
-        Debug.Log("Clear");
+        UIManager.Instance.menuText.SetText("원정 성공");
+
+        isGameProgressing = false;
+
+        UIManager.Instance.OpenMenu();
     }
 
     public void FailGame()
     {
-        Debug.Log("Fail");
+        UIManager.Instance.menuText.SetText("원정 실패");
+
+        isGameProgressing = false;
+
+        UIManager.Instance.OpenMenu();
+    }
+
+    public void ReLoadScene()
+    {
+        string str = SceneManager.GetActiveScene().name;
+        Debug.Log(str);
+        SceneManager.LoadScene(str);
+    }
+
+    public void LoadScene(string name)
+    {
+        SceneManager.LoadScene(name);
     }
 }

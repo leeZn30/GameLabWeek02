@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 public class UIManager : SingleTon<UIManager>
 {
@@ -17,7 +17,11 @@ public class UIManager : SingleTon<UIManager>
     public GameObject CharacterUIs;
     StateUI playerStateUI;
     StateUI enemyStateUI;
-    [SerializeField] GameObject locateUI;
+    public GameObject locateUI;
+    [SerializeField] GameObject menu;
+    public TextMeshProUGUI menuText;
+    [SerializeField] Button dungeonBtn;
+    [SerializeField] Button restartBtn;
 
     [Header("프리팹")]
     public TextMeshProUGUI CombatInfo;
@@ -26,7 +30,7 @@ public class UIManager : SingleTon<UIManager>
     void Awake()
     {
         // GameInfo = GameObject.Find("GameInfo").GetComponentInChildren<TextMeshProUGUI>();
-        GameInfo.transform.parent.gameObject.SetActive(false);
+        // GameInfo.transform.parent.gameObject.SetActive(false);
 
         MiniStatue = GameObject.Find("MiniStateUI").GetComponentInChildren<TextMeshProUGUI>();
         MiniStatue.transform.parent.gameObject.SetActive(false);
@@ -45,6 +49,11 @@ public class UIManager : SingleTon<UIManager>
         enemyStateUI = GameObject.Find("EnemyStateUI").GetComponent<StateUI>();
         playerStateUI.gameObject.SetActive(false);
         enemyStateUI.gameObject.SetActive(false);
+
+        dungeonBtn.onClick.AddListener(() => GameManager.Instance.LoadScene("DungeonScene"));
+        restartBtn.onClick.AddListener(() => GameManager.Instance.ReLoadScene());
+
+        menu.SetActive(false);
     }
 
     void Update()
@@ -163,7 +172,6 @@ public class UIManager : SingleTon<UIManager>
 
     public void SetLocateUI()
     {
-
         foreach (string id in UnitData.Instance.unitNames)
         {
             GameObject go = Instantiate(characterUI, Vector3.zero, Quaternion.identity, locateUI.transform);
@@ -188,5 +196,15 @@ public class UIManager : SingleTon<UIManager>
     public int GetReadyCharacter()
     {
         return locateUI.transform.childCount;
+    }
+
+    public void OpenMenu()
+    {
+        menu.SetActive(true);
+    }
+
+    public void CloseMenu()
+    {
+        menu.SetActive(false);
     }
 }

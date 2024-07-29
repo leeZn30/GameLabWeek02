@@ -68,11 +68,11 @@ MonoBehaviour:
   - name: "\uC5ED\uBCD1\uC758\uC0AC"
     go: {fileID: 781293016889928941, guid: 1aced747a6668544ab324021021be7a3, type: 3}
   - name: "\uB098\uBCD1\uD658\uC790"
-    go: {fileID: 5071508470457708884, guid: 3f19e3d131e41b142ab0c5eb1084952a, type: 3}
+    go: {fileID: 781293016889928941, guid: d640ab9af6956a34f9390de7196ac6cd, type: 3}
   - name: "\uB3C4\uAD74\uAFBC"
-    go: {fileID: 2168210396399977685, guid: 68b459390055a6641b217d4cd7ef03ec, type: 3}
+    go: {fileID: 781293016889928941, guid: 048d8932f7cbee94fae32abbcd1e6501, type: 3}
   - name: "\uC2E0\uBE44\uD559\uC790"
-    go: {fileID: 1616168484982480093, guid: d33c70eb5e38c764092e5e4a1332df6c, type: 3}
+    go: {fileID: 781293016889928941, guid: 68727dacd60e82144ae264dd9e666d9b, type: 3}
   unitNames:
   - "\uC11D\uAD81 \uC0AC\uC218"
   - "\uB3C4\uAD74\uAFBC"

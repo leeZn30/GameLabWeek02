@@ -78,9 +78,12 @@ public class TurnManager : SingleTon<TurnManager>
 
     public void StartNextTurn()
     {
-        UIManager.Instance.HideAccDmgInfo();
-        UIManager.Instance.HideHealInfo();
-        StartCoroutine(waitTurn());
+        if (GameManager.Instance.isGameProgressing)
+        {
+            UIManager.Instance.HideAccDmgInfo();
+            UIManager.Instance.HideHealInfo();
+            StartCoroutine(waitTurn());
+        }
     }
 
     IEnumerator waitTurn()

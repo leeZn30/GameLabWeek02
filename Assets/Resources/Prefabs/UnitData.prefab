@@ -54,6 +54,7 @@ MonoBehaviour:
   - {fileID: 393103592699270206, guid: 60b1752604d1d2543ac7f47228848b93, type: 3}
   - {fileID: 6701932844089598399, guid: 5db0e4dfbd8f4ef4397db9c10ed1d7d9, type: 3}
   - {fileID: 940789222471633974, guid: 791fff879ce681948ac22790fac84559, type: 3}
+  - {fileID: 1275688165424266246, guid: 676ed291ca744fd4190c55d31e8c94fc, type: 3}
   characterUIs:
   - name: "\uD314\uB77C\uB518"
     go: {fileID: 781293016889928941, guid: 43d6df70367159245baaeb9271ce8689, type: 3}
@@ -73,6 +74,8 @@ MonoBehaviour:
     go: {fileID: 781293016889928941, guid: 048d8932f7cbee94fae32abbcd1e6501, type: 3}
   - name: "\uC2E0\uBE44\uD559\uC790"
     go: {fileID: 781293016889928941, guid: 68727dacd60e82144ae264dd9e666d9b, type: 3}
+  - name: "\uC57C\uB9CC\uC778"
+    go: {fileID: 781293016889928941, guid: 99021ab065fa872418638d952829498a, type: 3}
   unitNames:
   - "\uC11D\uAD81 \uC0AC\uC218"
   - "\uB3C4\uAD74\uAFBC"
@@ -83,3 +86,4 @@ MonoBehaviour:
   - "\uC2E0\uBE44\uD559\uC790"
   - "\uC5ED\uBCD1 \uC758\uC0AC"
   - "\uAD11\uB300"
+  - "\uC57C\uB9CC\uC778"

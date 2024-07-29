@@ -80,6 +80,8 @@ public class StateUI : MonoBehaviour
         {
             crit = character.characterData.Crit + character.equippedTech.CriticalMod;
         }
+        if (crit < 0)
+            crit = 0;
         skillCriticalText.SetText(crit.ToString());
         stunText.SetText(character.equippedTech.Stun.ToString());
         bleedText.SetText(character.equippedTech.Bleed.ToString());

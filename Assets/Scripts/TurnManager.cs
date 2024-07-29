@@ -42,7 +42,7 @@ public class TurnManager : SingleTon<TurnManager>
     {
         UIManager.Instance.ShowGameInfo("전투 순서 정비 중...");
 
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
 
         UIManager.Instance.HideGameInfo();
 
@@ -120,7 +120,7 @@ public class TurnManager : SingleTon<TurnManager>
     IEnumerator pointNowTurnCharacter()
     {
         nowTurnCharacter.Light.gameObject.SetActive(true);
-        for (float t = 0; t < 1.5; t += Time.deltaTime)
+        for (float t = 0; t < 1; t += Time.deltaTime)
         {
             float alpha = Mathf.PingPong(t * 10f, 1f);
             nowTurnCharacter.Light.color = new Color(nowTurnCharacter.Light.color.r, nowTurnCharacter.Light.color.g, nowTurnCharacter.Light.color.b, alpha);

@@ -20,7 +20,7 @@ public class GameManager : SingleTon<GameManager>
     {
         if (Input.GetKeyDown(KeyCode.Space) && !isGameProgressing)
         {
-            if (UIManager.Instance.GetReadyCharacter() == 5)
+            if (UIManager.Instance.GetReadyCharacter() == 6)
             {
                 UIManager.Instance.CloseLocateUI();
                 StartGame();
